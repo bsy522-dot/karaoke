@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>StarVoice v2 - 노래방</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:#555;border-radius:3px}
+body{background:#0a0818;color:#eee;font-family:'Noto Sans KR',sans-serif;overflow:hidden;height:100vh;user-select:none}
+
+#app{height:100vh;display:flex;flex-direction:column}
+
+/* Header */
+#header{background:linear-gradient(135deg,#1a1040,#2a1060);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #6a3aaa;flex-shrink:0}
+#header h1{font-size:22px;color:#ff6ab0;text-shadow:0 0 20px rgba(255,106,176,.5)}
+.header-btns{display:flex;gap:8px}
+.header-btns button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:6px 14px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s}
+.header-btns button:hover,.header-btns button.active{background:rgba(255,106,176,.3);border-color:#ff6ab0}
+
+/* Song Select Screen */
+#songSelect{flex:1;overflow-y:auto;padding:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;align-content:start}
+.song-card{background:linear-gradient(135deg,rgba(40,20,80,.8),rgba(60,30,100,.6));border:2px solid rgba(255,106,176,.2);border-radius:16px;padding:20px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.song-card:hover{border-color:#ff6ab0;transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,106,176,.2)}
+.song-card .song-icon{font-size:40px;margin-bottom:8px}
+.song-card .song-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:4px}
+.song-card .song-info{font-size:12px;color:#aaa}
+.song-card .song-stars{color:#ffd700;margin-top:8px;font-size:16px}
+.song-card .song-high{font-size:11px;color:#8f8;margin-top:4px}
+.song-card .difficulty-badge{position:absolute;top:12px;right:12px;font-size:11px;padding:3px 10px;border-radius:12px;font-weight:700}
+.diff-easy{background:#4caf50;color:#fff}
+.diff-medium{background:#ff9800;color:#fff}
+.diff-hard{background:#f44336;color:#fff}
+
+/* Singing Screen */
+#singScreen{flex:1;display:none;flex-direction:column;position:relative}
+
+/* Pitch Display */
+#pitchArea{flex:1;position:relative;background:linear-gradient(180deg,#0a0818 0%,#15102a 100%);overflow:hidden}
+#pitchCanvas{width:100%;height:100%}
+
+/* Lyrics Area */
+#lyricsArea{height:140px;background:linear-gradient(180deg,rgba(30,15,60,.95),rgba(20,10,40,.98));border-top:2px solid #6a3aaa;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 20px;flex-shrink:0}
+#lyricsArea .current-lyric{font-size:28px;font-weight:900;color:#fff;text-align:center;text-shadow:0 0 20px rgba(255,106,176,.6);transition:all .3s}
+#lyricsArea .next-lyric{font-size:16px;color:rgba(255,255,255,.3);text-align:center;margin-top:8px}
+#lyricsArea .lyric-progress{width:80%;max-width:500px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:10px;overflow:hidden}
+#lyricsArea .lyric-progress-bar{height:100%;background:linear-gradient(90deg,#ff6ab0,#a855f7);border-radius:2px;transition:width .1s linear}
+
+/* Score HUD */
+#scoreHUD{position:absolute;top:10px;right:16px;text-align:right;z-index:5}
+#scoreHUD .score-val{font-size:36px;font-weight:900;color:#ffd700;text-shadow:0 0 15px rgba(255,215,0,.5)}
+#scoreHUD .combo-val{font-size:14px;color:#8f8}
+#scoreHUD .pitch-indicator{margin-top:4px;font-size:13px;color:#aaa}
+
+/* Pitch Meter (vertical bar on left) */
+#pitchMeter{position:absolute;left:12px;top:10px;bottom:10px;width:40px;background:rgba(255,255,255,.05);border-radius:8px;z-index:5;overflow:hidden}
+#pitchMeter .meter-target{position:absolute;left:0;width:100%;height:24px;background:rgba(76,175,80,.3);border:2px solid #4caf50;border-radius:4px;transition:top .15s}
+#pitchMeter .meter-user{position:absolute;left:0;width:100%;height:8px;background:#ff6ab0;border-radius:4px;transition:top .08s;box-shadow:0 0 10px rgba(255,106,176,.6)}
+#pitchMeter .meter-label{position:absolute;bottom:4px;width:100%;text-align:center;font-size:9px;color:#888}
+
+/* Timer */
+#timerBar{position:absolute;top:0;left:0;right:0;height:4px;z-index:5}
+#timerBarFill{height:100%;background:linear-gradient(90deg,#ff6ab0,#a855f7);transition:width .5s linear}
+
+/* Bouncing Ball */
+.bounce-ball{width:16px;height:16px;background:radial-gradient(circle at 30% 30%,#fff,#ff6ab0);border-radius:50%;position:absolute;z-index:5;box-shadow:0 0 12px rgba(255,106,176,.8);pointer-events:none;transition:left .15s linear}
+
+/* Result Screen */
+#resultScreen{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center}
+#resultScreen .result-title{font-size:28px;font-weight:900;color:#ff6ab0;margin-bottom:10px}
+#resultScreen .result-score{font-size:72px;font-weight:900;color:#ffd700;text-shadow:0 0 30px rgba(255,215,0,.5)}
+#resultScreen .result-stars{font-size:48px;margin:16px 0}
+#resultScreen .result-detail{font-size:14px;color:#aaa;margin-bottom:24px}
+#resultScreen .result-btns{display:flex;gap:12px}
+#resultScreen .result-btns button{padding:12px 28px;border:none;border-radius:24px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-retry{background:linear-gradient(135deg,#ff6ab0,#a855f7);color:#fff}
+.btn-back{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)!important}
+
+/* Mic Permission */
+#micPrompt{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:100;flex-direction:column;align-items:center;justify-content:center}
+#micPrompt.show{display:flex}
+#micPrompt .mic-icon{font-size:64px;margin-bottom:16px}
+#micPrompt p{font-size:18px;color:#ccc;margin-bottom:20px;text-align:center;line-height:1.6;padding:0 20px}
+#micPrompt button{padding:14px 36px;background:linear-gradient(135deg,#ff6ab0,#a855f7);border:none;color:#fff;border-radius:28px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+
+/* Mobile */
+@media(max-width:600px){
+  #songSelect{grid-template-columns:1fr;padding:12px}
+  .song-card{padding:14px}
+  #lyricsArea .current-lyric{font-size:22px}
+  #scoreHUD .score-val{font-size:28px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="header">
+    <h1>StarVoice v2</h1>
+    <div class="header-btns">
+      <button id="btnMicToggle">마이크 OFF</button>
+      <button id="btnHighScores">기록</button>
+    </div>
+  </div>
+
+  <div id="songSelect"></div>
+
+  <div id="singScreen">
+    <div id="timerBar"><div id="timerBarFill"></div></div>
+    <div id="pitchArea"><canvas id="pitchCanvas"></canvas></div>
+    <div id="pitchMeter">
+      <div class="meter-target"></div>
+      <div class="meter-user"></div>
+      <div class="meter-label">음정</div>
+    </div>
+    <div id="scoreHUD">
+      <div class="score-val" id="scoreDisplay">0</div>
+      <div class="combo-val" id="comboDisplay"></div>
+      <div class="pitch-indicator" id="pitchNote"></div>
+    </div>
+    <div id="lyricsArea">
+      <div class="current-lyric" id="currentLyric"></div>
+      <div class="next-lyric" id="nextLyric"></div>
+      <div class="lyric-progress"><div class="lyric-progress-bar" id="lyricProgress"></div></div>
+    </div>
+  </div>
+
+  <div id="resultScreen">
+    <div class="result-title">노래 완료!</div>
+    <div class="result-score" id="finalScore">0</div>
+    <div class="result-stars" id="finalStars"></div>
+    <div class="result-detail" id="finalDetail"></div>
+    <div class="result-btns">
+      <button class="btn-retry" id="btnRetry">다시 부르기</button>
+      <button class="btn-back" id="btnBackToList">곡 선택</button>
+    </div>
+  </div>
+</div>
+
+<div id="micPrompt">
+  <div class="mic-icon">🎤</div>
+  <p>마이크 사용 권한이 필요합니다.<br>음정 측정을 위해 마이크를 허용해 주세요.</p>
+  <button id="btnAllowMic">마이크 허용</button>
+</div>
+
+<script>
+// =================== SONG DATA ===================
+const SONGS = [
+  {
+    id: 1, title: "학교종이 땡땡땡", icon: "🏫", difficulty: "쉬움", diffClass: "diff-easy",
+    bpm: 120, key: "C4",
+    // C4=261.63, D4=293.66, E4=329.63, F4=349.23, G4=392.00, A4=440, B4=493.88
+    melody: [
+      // 학교 종이 땡땡땡 (G G A A G G E)
+      {t:0.0,d:0.5,f:392},{t:0.5,d:0.5,f:392},{t:1.0,d:0.5,f:440},{t:1.5,d:0.5,f:440},
+      {t:2.0,d:0.5,f:392},{t:2.5,d:0.5,f:392},{t:3.0,d:1.0,f:329.63},
+      // 어서 모이자 (G G E E D)
+      {t:4.0,d:0.5,f:392},{t:4.5,d:0.5,f:392},{t:5.0,d:0.5,f:329.63},{t:5.5,d:0.5,f:329.63},
+      {t:6.0,d:1.0,f:293.66},
+      // 선생님이 우리를 (G G A A G G E)
+      {t:7.0,d:0.5,f:392},{t:7.5,d:0.5,f:392},{t:8.0,d:0.5,f:440},{t:8.5,d:0.5,f:440},
+      {t:9.0,d:0.5,f:392},{t:9.5,d:0.5,f:392},{t:10.0,d:1.0,f:329.63},
+      // 기다리신다 (G E D E C)
+      {t:11.0,d:0.5,f:392},{t:11.5,d:0.5,f:329.63},{t:12.0,d:0.5,f:293.66},
+      {t:12.5,d:0.5,f:329.63},{t:13.0,d:1.0,f:261.63},
+      // Repeat
+      {t:14.5,d:0.5,f:392},{t:15.0,d:0.5,f:392},{t:15.5,d:0.5,f:440},{t:16.0,d:0.5,f:440},
+      {t:16.5,d:0.5,f:392},{t:17.0,d:0.5,f:392},{t:17.5,d:1.0,f:329.63},
+      {t:18.5,d:0.5,f:392},{t:19.0,d:0.5,f:392},{t:19.5,d:0.5,f:329.63},{t:20.0,d:0.5,f:329.63},
+      {t:20.5,d:1.0,f:293.66},
+      {t:21.5,d:0.5,f:392},{t:22.0,d:0.5,f:392},{t:22.5,d:0.5,f:440},{t:23.0,d:0.5,f:440},
+      {t:23.5,d:0.5,f:392},{t:24.0,d:0.5,f:392},{t:24.5,d:1.0,f:329.63},
+      {t:25.5,d:0.5,f:392},{t:26.0,d:0.5,f:329.63},{t:26.5,d:0.5,f:293.66},
+      {t:27.0,d:0.5,f:329.63},{t:27.5,d:1.5,f:261.63}
+    ],
+    lyrics: [
+      {t:0,text:"학교 종이 땡땡땡"},{t:4,text:"어서 모이자"},
+      {t:7,text:"선생님이 우리를"},{t:11,text:"기다리신다"},
+      {t:14.5,text:"학교 종이 땡땡땡"},{t:18.5,text:"어서 모이자"},
+      {t:21.5,text:"선생님이 우리를"},{t:25.5,text:"기다리신다"}
+    ],
+    duration: 30
+  },
+  {
+    id: 2, title: "반짝반짝 작은별", icon: "⭐", difficulty: "쉬움", diffClass: "diff-easy",
+    bpm: 100, key: "C4",
+    melody: [
+      // 반짝 반짝 작은 별 (C C G G A A G)
+      {t:0.0,d:0.5,f:261.63},{t:0.5,d:0.5,f:261.63},{t:1.0,d:0.5,f:392},{t:1.5,d:0.5,f:392},
+      {t:2.0,d:0.5,f:440},{t:2.5,d:0.5,f:440},{t:3.0,d:1.0,f:392},
+      // 아름답게 비치네 (F F E E D D C)
+      {t:4.0,d:0.5,f:349.23},{t:4.5,d:0.5,f:349.23},{t:5.0,d:0.5,f:329.63},{t:5.5,d:0.5,f:329.63},
+      {t:6.0,d:0.5,f:293.66},{t:6.5,d:0.5,f:293.66},{t:7.0,d:1.0,f:261.63},
+      // 서쪽 하늘에서도 (G G F F E E D)
+      {t:8.0,d:0.5,f:392},{t:8.5,d:0.5,f:392},{t:9.0,d:0.5,f:349.23},{t:9.5,d:0.5,f:349.23},
+      {t:10.0,d:0.5,f:329.63},{t:10.5,d:0.5,f:329.63},{t:11.0,d:1.0,f:293.66},
+      // 동쪽 하늘에서도 (G G F F E E D)
+      {t:12.0,d:0.5,f:392},{t:12.5,d:0.5,f:392},{t:13.0,d:0.5,f:349.23},{t:13.5,d:0.5,f:349.23},
+      {t:14.0,d:0.5,f:329.63},{t:14.5,d:0.5,f:329.63},{t:15.0,d:1.0,f:293.66},
+      // 반짝 반짝 작은 별 (C C G G A A G)
+      {t:16.0,d:0.5,f:261.63},{t:16.5,d:0.5,f:261.63},{t:17.0,d:0.5,f:392},{t:17.5,d:0.5,f:392},
+      {t:18.0,d:0.5,f:440},{t:18.5,d:0.5,f:440},{t:19.0,d:1.0,f:392},
+      // 아름답게 비치네 (F F E E D D C)
+      {t:20.0,d:0.5,f:349.23},{t:20.5,d:0.5,f:349.23},{t:21.0,d:0.5,f:329.63},{t:21.5,d:0.5,f:329.63},
+      {t:22.0,d:0.5,f:293.66},{t:22.5,d:0.5,f:293.66},{t:23.0,d:1.5,f:261.63}
+    ],
+    lyrics: [
+      {t:0,text:"반짝 반짝 작은 별"},{t:4,text:"아름답게 비치네"},
+      {t:8,text:"서쪽 하늘에서도"},{t:12,text:"동쪽 하늘에서도"},
+      {t:16,text:"반짝 반짝 작은 별"},{t:20,text:"아름답게 비치네"}
+    ],
+    duration: 25
+  },
+  {
+    id: 3, title: "곰 세 마리", icon: "🐻", difficulty: "쉬움", diffClass: "diff-easy",
+    bpm: 110, key: "C4",
+    melody: [
+      // 곰 세 마리가 (C D E C)
+      {t:0.0,d:0.5,f:261.63},{t:0.5,d:0.5,f:293.66},{t:1.0,d:0.5,f:329.63},{t:1.5,d:0.5,f:261.63},
+      // 한 집에 있어 (C D E C)
+      {t:2.0,d:0.5,f:261.63},{t:2.5,d:0.5,f:293.66},{t:3.0,d:0.5,f:329.63},{t:3.5,d:0.5,f:261.63},
+      // 아빠 곰 (E F G)
+      {t:4.0,d:0.5,f:329.63},{t:4.5,d:0.5,f:349.23},{t:5.0,d:1.0,f:392},
+      // 엄마 곰 (E F G)
+      {t:6.0,d:0.5,f:329.63},{t:6.5,d:0.5,f:349.23},{t:7.0,d:1.0,f:392},
+      // 애기 곰 (G A G F E C)
+      {t:8.0,d:0.35,f:392},{t:8.35,d:0.35,f:440},{t:8.7,d:0.35,f:392},{t:9.05,d:0.35,f:349.23},
+      {t:9.4,d:0.5,f:329.63},{t:9.9,d:0.6,f:261.63},
+      // 아빠 곰은 뚱뚱해 (C G1 C D E)  G1=below
+      {t:10.5,d:0.5,f:261.63},{t:11.0,d:0.5,f:196},{t:11.5,d:0.5,f:261.63},{t:12.0,d:0.5,f:293.66},
+      {t:12.5,d:1.0,f:329.63},
+      // 엄마 곰은 날씬해 (C G1 C D E)
+      {t:13.5,d:0.5,f:261.63},{t:14.0,d:0.5,f:196},{t:14.5,d:0.5,f:261.63},{t:15.0,d:0.5,f:293.66},
+      {t:15.5,d:1.0,f:329.63},
+      // 애기 곰은 너무 귀여워 (G A G F E D C)
+      {t:16.5,d:0.4,f:392},{t:16.9,d:0.4,f:440},{t:17.3,d:0.4,f:392},{t:17.7,d:0.4,f:349.23},
+      {t:18.1,d:0.4,f:329.63},{t:18.5,d:0.4,f:293.66},{t:18.9,d:1.0,f:261.63},
+      // 으쓱 으쓱 잘한다 (D E D C)
+      {t:20.0,d:0.5,f:293.66},{t:20.5,d:0.5,f:329.63},{t:21.0,d:0.5,f:293.66},{t:21.5,d:1.5,f:261.63}
+    ],
+    lyrics: [
+      {t:0,text:"곰 세 마리가"},{t:2,text:"한 집에 있어"},
+      {t:4,text:"아빠 곰"},{t:6,text:"엄마 곰"},{t:8,text:"애기 곰"},
+      {t:10.5,text:"아빠 곰은 뚱뚱해"},{t:13.5,text:"엄마 곰은 날씬해"},
+      {t:16.5,text:"애기 곰은 너무 귀여워"},{t:20,text:"으쓱 으쓱 잘한다"}
+    ],
+    duration: 24
+  },
+  {
+    id: 4, title: "아리랑", icon: "🏔️", difficulty: "보통", diffClass: "diff-medium",
+    bpm: 80, key: "A3",
+    melody: [
+      // 아리랑 (A3 C4 D4)
+      {t:0.0,d:0.75,f:220},{t:0.75,d:0.75,f:261.63},{t:1.5,d:1.0,f:293.66},
+      // 아리랑 (E4 D4 C4)
+      {t:2.5,d:0.75,f:329.63},{t:3.25,d:0.75,f:293.66},{t:4.0,d:1.0,f:261.63},
+      // 아라리요 (A3 C4 A3 G3)
+      {t:5.0,d:0.5,f:220},{t:5.5,d:0.5,f:261.63},{t:6.0,d:0.75,f:220},{t:6.75,d:1.0,f:196},
+      // 아리랑 고개로 (E4 D4 C4 A3 C4)
+      {t:8.0,d:0.6,f:329.63},{t:8.6,d:0.6,f:293.66},{t:9.2,d:0.6,f:261.63},
+      {t:9.8,d:0.6,f:220},{t:10.4,d:1.0,f:261.63},
+      // 넘어간다 (D4 C4 A3)
+      {t:11.5,d:0.75,f:293.66},{t:12.25,d:0.75,f:261.63},{t:13.0,d:1.5,f:220},
+      // 나를 버리고 (A3 C4 D4 E4)
+      {t:15.0,d:0.5,f:220},{t:15.5,d:0.5,f:261.63},{t:16.0,d:0.75,f:293.66},{t:16.75,d:0.75,f:329.63},
+      // 가시는 님은 (D4 C4 A3 C4)
+      {t:17.5,d:0.6,f:293.66},{t:18.1,d:0.6,f:261.63},{t:18.7,d:0.6,f:220},{t:19.3,d:0.7,f:261.63},
+      // 십리도 못가서 (D4 E4 D4 C4)
+      {t:20.5,d:0.5,f:293.66},{t:21.0,d:0.5,f:329.63},{t:21.5,d:0.75,f:293.66},{t:22.25,d:0.75,f:261.63},
+      // 발병난다 (A3 C4 A3)
+      {t:23.5,d:0.75,f:220},{t:24.25,d:0.75,f:261.63},{t:25.0,d:1.5,f:220}
+    ],
+    lyrics: [
+      {t:0,text:"아리랑"},{t:2.5,text:"아리랑"},{t:5,text:"아라리요"},
+      {t:8,text:"아리랑 고개로"},{t:11.5,text:"넘어간다"},
+      {t:15,text:"나를 버리고"},{t:17.5,text:"가시는 님은"},
+      {t:20.5,text:"십리도 못가서"},{t:23.5,text:"발병난다"}
+    ],
+    duration: 28
+  },
+  {
+    id: 5, title: "나비야", icon: "🦋", difficulty: "쉬움", diffClass: "diff-easy",
+    bpm: 110, key: "C4",
+    melody: [
+      // 나비야 나비야 (G E E F D D)
+      {t:0.0,d:0.5,f:392},{t:0.5,d:0.5,f:329.63},{t:1.0,d:1.0,f:329.63},
+      {t:2.0,d:0.5,f:349.23},{t:2.5,d:0.5,f:293.66},{t:3.0,d:1.0,f:293.66},
+      // 이리 날아 오너라 (C D E F G G G)
+      {t:4.0,d:0.4,f:261.63},{t:4.4,d:0.4,f:293.66},{t:4.8,d:0.4,f:329.63},
+      {t:5.2,d:0.4,f:349.23},{t:5.6,d:0.4,f:392},{t:6.0,d:0.4,f:392},{t:6.4,d:0.6,f:392},
+      // 노랑 나비 흰 나비 (G E E F D D)
+      {t:7.0,d:0.5,f:392},{t:7.5,d:0.5,f:329.63},{t:8.0,d:1.0,f:329.63},
+      {t:9.0,d:0.5,f:349.23},{t:9.5,d:0.5,f:293.66},{t:10.0,d:1.0,f:293.66},
+      // 춤을 추며 오너라 (C E G G E)
+      {t:11.0,d:0.5,f:261.63},{t:11.5,d:0.5,f:329.63},{t:12.0,d:0.5,f:392},
+      {t:12.5,d:0.5,f:392},{t:13.0,d:1.5,f:329.63},
+      // Repeat verse 2
+      {t:14.5,d:0.5,f:392},{t:15.0,d:0.5,f:329.63},{t:15.5,d:1.0,f:329.63},
+      {t:16.5,d:0.5,f:349.23},{t:17.0,d:0.5,f:293.66},{t:17.5,d:1.0,f:293.66},
+      {t:18.5,d:0.4,f:261.63},{t:18.9,d:0.4,f:293.66},{t:19.3,d:0.4,f:329.63},
+      {t:19.7,d:0.4,f:349.23},{t:20.1,d:0.4,f:392},{t:20.5,d:0.4,f:392},{t:20.9,d:0.6,f:392},
+      {t:21.5,d:0.5,f:392},{t:22.0,d:0.5,f:329.63},{t:22.5,d:1.0,f:329.63},
+      {t:23.5,d:0.5,f:349.23},{t:24.0,d:0.5,f:293.66},{t:24.5,d:1.0,f:293.66},
+      {t:25.5,d:0.5,f:261.63},{t:26.0,d:0.5,f:329.63},{t:26.5,d:0.5,f:261.63},
+      {t:27.0,d:0.5,f:261.63},{t:27.5,d:1.5,f:261.63}
+    ],
+    lyrics: [
+      {t:0,text:"나비야 나비야"},{t:4,text:"이리 날아 오너라"},
+      {t:7,text:"노랑 나비 흰 나비"},{t:11,text:"춤을 추며 오너라"},
+      {t:14.5,text:"나비야 나비야"},{t:18.5,text:"이리 날아 오너라"},
+      {t:21.5,text:"노랑 나비 흰 나비"},{t:25.5,text:"춤을 추며 오너라"}
+    ],
+    duration: 30
+  }
+];
+
+// =================== AUDIO CONTEXT & PITCH DETECTION ===================
+let audioCtx = null, analyser = null, micStream = null, micActive = false;
+const BUFFER_SIZE = 2048;
+let audioBuffer = new Float32Array(BUFFER_SIZE);
+
+function initAudioContext() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+async function startMic() {
+  try {
+    initAudioContext();
+    micStream = await navigator.mediaDevices.getUserMedia({audio:true});
+    const source = audioCtx.createMediaStreamSource(micStream);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = BUFFER_SIZE;
+    source.connect(analyser);
+    micActive = true;
+    document.getElementById('btnMicToggle').textContent = '마이크 ON';
+    document.getElementById('btnMicToggle').classList.add('active');
+    return true;
+  } catch(e) {
+    console.error('Mic error:', e);
+    return false;
+  }
+}
+
+function stopMic() {
+  if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
+  micActive = false;
+  document.getElementById('btnMicToggle').textContent = '마이크 OFF';
+  document.getElementById('btnMicToggle').classList.remove('active');
+}
+
+// Autocorrelation pitch detection
+function detectPitch() {
+  if (!analyser || !micActive) return null;
+  analyser.getFloatTimeDomainData(audioBuffer);
+
+  // Check if there's enough signal
+  let rms = 0;
+  for (let i = 0; i < BUFFER_SIZE; i++) rms += audioBuffer[i] * audioBuffer[i];
+  rms = Math.sqrt(rms / BUFFER_SIZE);
+  if (rms < 0.01) return null; // too quiet
+
+  // Autocorrelation
+  const correlations = new Float32Array(BUFFER_SIZE);
+  for (let lag = 0; lag < BUFFER_SIZE; lag++) {
+    let sum = 0;
+    for (let i = 0; i < BUFFER_SIZE - lag; i++) {
+      sum += audioBuffer[i] * audioBuffer[i + lag];
+    }
+    correlations[lag] = sum;
+  }
+
+  // Find first dip then first peak after it
+  let dip = 1;
+  while (dip < BUFFER_SIZE - 1 && correlations[dip] > correlations[dip + 1]) dip++;
+
+  let maxVal = -1, maxLag = -1;
+  for (let i = dip; i < BUFFER_SIZE - 1; i++) {
+    if (correlations[i] > maxVal) { maxVal = correlations[i]; maxLag = i; }
+  }
+  if (maxLag === -1 || maxVal < 0.01) return null;
+
+  const sampleRate = audioCtx.sampleRate;
+  const freq = sampleRate / maxLag;
+  if (freq < 80 || freq > 1000) return null;
+  return freq;
+}
+
+// =================== SYNTH (play melody notes) ===================
+let synthOsc = null, synthGain = null;
+
+function playSynthNote(freq) {
+  initAudioContext();
+  if (!synthOsc) {
+    synthOsc = audioCtx.createOscillator();
+    synthGain = audioCtx.createGain();
+    synthOsc.type = 'sine';
+    synthGain.gain.value = 0.08;
+    synthOsc.connect(synthGain);
+    synthGain.connect(audioCtx.destination);
+    synthOsc.start();
+  }
+  synthOsc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  synthGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+}
+
+function stopSynth() {
+  if (synthGain) synthGain.gain.setValueAtTime(0, audioCtx.currentTime);
+}
+
+function destroySynth() {
+  if (synthOsc) { try { synthOsc.stop(); } catch(e){} synthOsc = null; synthGain = null; }
+}
+
+// =================== NOTE NAME HELPER ===================
+const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+function freqToNote(f) {
+  if (!f || f <= 0) return "";
+  const n = 12 * (Math.log2(f / 440)) + 69;
+  const nn = Math.round(n);
+  const oct = Math.floor(nn / 12) - 1;
+  return NOTE_NAMES[nn % 12] + oct;
+}
+
+// =================== GAME STATE ===================
+let currentSong = null, gameState = 'select'; // select, singing, result
+let startTime = 0, score = 0, combo = 0, maxCombo = 0, totalNotes = 0, hitNotes = 0;
+let animFrameId = null;
+let userPitchHistory = [], targetPitchHistory = [];
+
+// High scores
+function getHighScores() {
+  try { return JSON.parse(localStorage.getItem('noraebang_v2_scores') || '{}'); } catch(e) { return {}; }
+}
+function saveHighScore(songId, sc) {
+  const scores = getHighScores();
+  if (!scores[songId] || sc > scores[songId]) scores[songId] = sc;
+  localStorage.setItem('noraebang_v2_scores', JSON.stringify(scores));
+}
+function getStars(sc) {
+  if (sc >= 95) return 5;
+  if (sc >= 80) return 4;
+  if (sc >= 60) return 3;
+  if (sc >= 40) return 2;
+  if (sc >= 20) return 1;
+  return 0;
+}
+
+// =================== RENDER SONG LIST ===================
+function renderSongList() {
+  const container = document.getElementById('songSelect');
+  const scores = getHighScores();
+  container.innerHTML = '';
+  SONGS.forEach(song => {
+    const card = document.createElement('div');
+    card.className = 'song-card';
+    const hs = scores[song.id];
+    const stars = hs !== undefined ? getStars(hs) : 0;
+    card.innerHTML = `
+      <div class="difficulty-badge ${song.diffClass}">${song.difficulty}</div>
+      <div class="song-icon">${song.icon}</div>
+      <div class="song-title">${song.title}</div>
+      <div class="song-info">BPM ${song.bpm} · ${song.duration}초</div>
+      <div class="song-stars">${stars > 0 ? '★'.repeat(stars) + '☆'.repeat(5 - stars) : '☆☆☆☆☆'}</div>
+      ${hs !== undefined ? `<div class="song-high">최고 ${hs}점</div>` : ''}
+    `;
+    card.onclick = () => startSong(song);
+    container.appendChild(card);
+  });
+}
+
+// =================== START SONG ===================
+async function startSong(song) {
+  currentSong = song;
+  score = 0; combo = 0; maxCombo = 0; totalNotes = 0; hitNotes = 0;
+  userPitchHistory = []; targetPitchHistory = [];
+
+  // Ensure mic
+  if (!micActive) {
+    document.getElementById('micPrompt').classList.add('show');
+    document.getElementById('btnAllowMic').onclick = async () => {
+      const ok = await startMic();
+      document.getElementById('micPrompt').classList.remove('show');
+      if (ok) beginSinging();
+    };
+    return;
+  }
+  beginSinging();
+}
+
+function beginSinging() {
+  gameState = 'singing';
+  document.getElementById('songSelect').style.display = 'none';
+  document.getElementById('singScreen').style.display = 'flex';
+  document.getElementById('resultScreen').style.display = 'none';
+
+  initAudioContext();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+
+  const canvas = document.getElementById('pitchCanvas');
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = canvas.parentElement.clientHeight;
+
+  startTime = performance.now();
+  gameLoop();
+}
+
+// =================== GAME LOOP ===================
+function gameLoop() {
+  if (gameState !== 'singing') return;
+
+  const now = performance.now();
+  const elapsed = (now - startTime) / 1000;
+
+  if (elapsed >= currentSong.duration) {
+    endSong();
+    return;
+  }
+
+  // Timer
+  const progress = elapsed / currentSong.duration;
+  document.getElementById('timerBarFill').style.width = (progress * 100) + '%';
+
+  // Detect user pitch
+  const userFreq = detectPitch();
+
+  // Find current target note
+  let targetFreq = null, currentNoteObj = null;
+  for (const note of currentSong.melody) {
+    if (elapsed >= note.t && elapsed <= note.t + note.d) {
+      targetFreq = note.f;
+      currentNoteObj = note;
+      break;
+    }
+  }
+
+  // Play synth guide
+  if (targetFreq) {
+    playSynthNote(targetFreq);
+  } else {
+    stopSynth();
+  }
+
+  // Score calculation
+  if (targetFreq && userFreq) {
+    const cents = 1200 * Math.log2(userFreq / targetFreq);
+    const absCents = Math.abs(cents);
+    if (absCents < 50) { // within half semitone
+      hitNotes++;
+      combo++;
+      if (combo > maxCombo) maxCombo = combo;
+      const noteScore = Math.max(0, 100 - absCents * 2);
+      score += noteScore * (1 + Math.min(combo, 10) * 0.05);
+    } else if (absCents < 100) {
+      // partial credit
+      score += 20;
+    } else {
+      combo = 0;
+    }
+    totalNotes++;
+  } else if (targetFreq) {
+    // Singing is expected but no pitch detected
+    totalNotes++;
+    combo = 0;
+  }
+
+  // Update displays
+  const finalScore = totalNotes > 0 ? Math.min(100, Math.round(score / Math.max(1, totalNotes))) : 0;
+  document.getElementById('scoreDisplay').textContent = finalScore;
+  document.getElementById('comboDisplay').textContent = combo > 1 ? `${combo} 콤보!` : '';
+  document.getElementById('pitchNote').textContent = userFreq ? freqToNote(userFreq) : '---';
+
+  // Pitch meter
+  const meterH = document.getElementById('pitchMeter').clientHeight;
+  if (targetFreq) {
+    const targetPos = Math.max(0, Math.min(1, 1 - (Math.log2(targetFreq / 100) / 3.5)));
+    document.querySelector('.meter-target').style.top = (targetPos * (meterH - 24)) + 'px';
+  }
+  if (userFreq) {
+    const userPos = Math.max(0, Math.min(1, 1 - (Math.log2(userFreq / 100) / 3.5)));
+    document.querySelector('.meter-user').style.top = (userPos * (meterH - 8)) + 'px';
+    document.querySelector('.meter-user').style.display = 'block';
+  } else {
+    document.querySelector('.meter-user').style.display = 'none';
+  }
+
+  // Lyrics
+  let currentLyricIdx = -1;
+  for (let i = currentSong.lyrics.length - 1; i >= 0; i--) {
+    if (elapsed >= currentSong.lyrics[i].t) { currentLyricIdx = i; break; }
+  }
+  if (currentLyricIdx >= 0) {
+    document.getElementById('currentLyric').textContent = currentSong.lyrics[currentLyricIdx].text;
+    const nextIdx = currentLyricIdx + 1;
+    document.getElementById('nextLyric').textContent = nextIdx < currentSong.lyrics.length ? currentSong.lyrics[nextIdx].text : '';
+
+    // Lyric progress bar
+    const lyricStart = currentSong.lyrics[currentLyricIdx].t;
+    const lyricEnd = nextIdx < currentSong.lyrics.length ? currentSong.lyrics[nextIdx].t : currentSong.duration;
+    const lyricProgress = Math.min(1, (elapsed - lyricStart) / (lyricEnd - lyricStart));
+    document.getElementById('lyricProgress').style.width = (lyricProgress * 100) + '%';
+  }
+
+  // Draw pitch canvas
+  drawPitchCanvas(elapsed, userFreq, targetFreq);
+
+  animFrameId = requestAnimationFrame(gameLoop);
+}
+
+// =================== PITCH CANVAS ===================
+function drawPitchCanvas(elapsed, userFreq, targetFreq) {
+  const canvas = document.getElementById('pitchCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Draw grid lines for notes
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  const noteFreqs = [196, 220, 261.63, 293.66, 329.63, 349.23, 392, 440, 493.88, 523.25];
+  const noteLabels = ["G3","A3","C4","D4","E4","F4","G4","A4","B4","C5"];
+  const minLog = Math.log2(150), maxLog = Math.log2(600);
+
+  noteFreqs.forEach((f, i) => {
+    const y = H - ((Math.log2(f) - minLog) / (maxLog - minLog)) * H;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+    ctx.font = '10px sans-serif';
+    ctx.fillText(noteLabels[i], 4, y - 3);
+  });
+
+  // Draw upcoming melody notes
+  const windowStart = elapsed - 2;
+  const windowEnd = elapsed + 6;
+  const timeToX = (t) => ((t - windowStart) / (windowEnd - windowStart)) * W;
+  const freqToY = (f) => H - ((Math.log2(f) - minLog) / (maxLog - minLog)) * H;
+
+  // Current time line
+  const nowX = timeToX(elapsed);
+  ctx.strokeStyle = 'rgba(255,106,176,0.3)';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(nowX, 0); ctx.lineTo(nowX, H); ctx.stroke();
+
+  // Target notes as bars
+  currentSong.melody.forEach(note => {
+    if (note.t + note.d < windowStart || note.t > windowEnd) return;
+    const x = timeToX(note.t);
+    const x2 = timeToX(note.t + note.d);
+    const y = freqToY(note.f);
+
+    const isPast = elapsed > note.t + note.d;
+    const isCurrent = elapsed >= note.t && elapsed <= note.t + note.d;
+
+    ctx.fillStyle = isCurrent ? 'rgba(76,175,80,0.6)' : isPast ? 'rgba(100,100,100,0.3)' : 'rgba(106,58,170,0.5)';
+    ctx.strokeStyle = isCurrent ? '#4caf50' : isPast ? '#555' : '#8855cc';
+    ctx.lineWidth = 2;
+    const barH = 14;
+    ctx.beginPath();
+    ctx.roundRect(x, y - barH/2, Math.max(4, x2 - x), barH, 4);
+    ctx.fill(); ctx.stroke();
+  });
+
+  // Store and draw user pitch trail
+  if (userFreq) {
+    userPitchHistory.push({t: elapsed, f: userFreq});
+  }
+  // Keep last 8 seconds
+  while (userPitchHistory.length > 0 && userPitchHistory[0].t < elapsed - 8) {
+    userPitchHistory.shift();
+  }
+
+  if (userPitchHistory.length > 1) {
+    ctx.strokeStyle = '#ff6ab0';
+    ctx.lineWidth = 3;
+    ctx.shadowColor = 'rgba(255,106,176,0.6)';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    let started = false;
+    userPitchHistory.forEach(p => {
+      const x = timeToX(p.t);
+      const y = freqToY(p.f);
+      if (!started) { ctx.moveTo(x, y); started = true; }
+      else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+
+  // Bouncing ball on current user pitch
+  if (userFreq) {
+    const bx = nowX;
+    const by = freqToY(userFreq);
+    ctx.beginPath();
+    ctx.arc(bx, by, 8, 0, Math.PI * 2);
+    ctx.fillStyle = '#ff6ab0';
+    ctx.shadowColor = 'rgba(255,106,176,0.8)';
+    ctx.shadowBlur = 15;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
+
+// =================== END SONG ===================
+function endSong() {
+  gameState = 'result';
+  destroySynth();
+  if (animFrameId) cancelAnimationFrame(animFrameId);
+
+  const finalScore = totalNotes > 0 ? Math.min(100, Math.round(score / Math.max(1, totalNotes))) : 0;
+  const stars = getStars(finalScore);
+  saveHighScore(currentSong.id, finalScore);
+
+  document.getElementById('singScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'flex';
+  document.getElementById('finalScore').textContent = finalScore + '점';
+  document.getElementById('finalStars').textContent = '★'.repeat(stars) + '☆'.repeat(5 - stars);
+  document.getElementById('finalDetail').textContent =
+    `최대 콤보: ${maxCombo} · 정확도: ${totalNotes > 0 ? Math.round(hitNotes/totalNotes*100) : 0}%`;
+}
+
+// =================== EVENT HANDLERS ===================
+document.getElementById('btnRetry').onclick = () => { startSong(currentSong); };
+document.getElementById('btnBackToList').onclick = () => {
+  gameState = 'select';
+  destroySynth();
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('singScreen').style.display = 'none';
+  document.getElementById('songSelect').style.display = 'grid';
+  renderSongList();
+};
+document.getElementById('btnMicToggle').onclick = async () => {
+  if (micActive) stopMic();
+  else await startMic();
+};
+document.getElementById('btnHighScores').onclick = () => {
+  const scores = getHighScores();
+  let msg = '=== 최고 기록 ===\n\n';
+  SONGS.forEach(s => {
+    const sc = scores[s.id];
+    if (sc !== undefined) msg += `${s.icon} ${s.title}: ${sc}점 ${'★'.repeat(getStars(sc))}\n`;
+    else msg += `${s.icon} ${s.title}: 기록 없음\n`;
+  });
+  alert(msg);
+};
+
+// Canvas resize
+window.addEventListener('resize', () => {
+  if (gameState === 'singing') {
+    const canvas = document.getElementById('pitchCanvas');
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = canvas.parentElement.clientHeight;
+  }
+});
+
+// =================== INIT ===================
+renderSongList();
+</script>
+</body>
+</html>

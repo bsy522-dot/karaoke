@@ -1,0 +1,227 @@
+/* =====================================================================
+   KaraokeFX - VFX Stylesheet (pure CSS, mobile-responsive)
+   Pairs with vfx_effects.js (window.KaraokeFX)
+   ===================================================================== */
+
+/* ---------- Layer container ---------- */
+.fx-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+/* ---------- Confetti canvas ---------- */
+.fx-confetti-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* =====================================================================
+   Keyframes
+   ===================================================================== */
+@keyframes float-up-fade {
+  0%   { transform: translate(-50%, 0) scale(0.6); opacity: 0; }
+  20%  { transform: translate(-50%, -10px) scale(1.15); opacity: 1; }
+  60%  { transform: translate(-50%, -32px) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -64px) scale(0.9); opacity: 0; }
+}
+
+@keyframes ring-pulse {
+  0%   { transform: translate(-50%, -50%) scale(0.4); opacity: 0.9; }
+  60%  { opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(var(--combo-scale, 2)); opacity: 0; }
+}
+
+@keyframes syllable-bounce {
+  0%   { transform: translateY(0) scale(1); }
+  35%  { transform: translateY(-18%) scale(1.18); }
+  70%  { transform: translateY(0) scale(1.04); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes screen-flash {
+  0%   { opacity: 0; }
+  30%  { opacity: 0.45; }
+  100% { opacity: 0; }
+}
+
+@keyframes perfect-glow {
+  0%   { filter: drop-shadow(0 0 0 #fff8); transform: rotate(0deg) scale(0.6); }
+  35%  { filter: drop-shadow(0 0 18px #FFD93D); transform: rotate(45deg) scale(1.2); }
+  100% { filter: drop-shadow(0 0 8px #FFD93D); transform: rotate(90deg) scale(1); }
+}
+
+@keyframes burst-out {
+  0%   { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+  30%  { opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--tx, 0px)), calc(-50% + var(--ty, 0px))) scale(0.4); opacity: 0; }
+}
+
+@keyframes pop-in {
+  0%   { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+  50%  { transform: translate(-50%, -50%) scale(1.18); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+@keyframes fade-icon {
+  0%   { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* =====================================================================
+   Judgment burst container
+   ===================================================================== */
+.fx-judge {
+  position: absolute;
+  width: clamp(80px, 14vw, 140px);
+  height: clamp(80px, 14vw, 140px);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.fx-judge svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+             fade-icon 0.85s ease-out both;
+}
+
+.fx-judge-text {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, 0);
+  font-weight: 900;
+  font-size: clamp(18px, 3.6vw, 32px);
+  letter-spacing: 1px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6), 0 0 12px currentColor;
+  animation: float-up-fade 0.85s ease-out both;
+  white-space: nowrap;
+}
+
+/* Variant tints */
+.fx-judge-perfect svg { animation: perfect-glow 0.6s ease-out both, fade-icon 0.85s ease-out both; }
+.fx-judge-perfect .fx-judge-text { font-size: clamp(22px, 4.4vw, 40px); }
+.fx-judge-great   svg { filter: drop-shadow(0 0 8px #6BCB77aa); }
+.fx-judge-good    svg { filter: drop-shadow(0 0 6px #4D96FFaa); }
+.fx-judge-miss    svg { filter: drop-shadow(0 0 4px #FF6B6Baa); opacity: 0.85; }
+.fx-judge-miss    .fx-judge-text { font-size: clamp(16px, 3vw, 26px); opacity: 0.9; }
+
+/* =====================================================================
+   Particle ring (judge bursts)
+   ===================================================================== */
+.fx-particle {
+  position: absolute;
+  width: clamp(6px, 1vw, 10px);
+  height: clamp(6px, 1vw, 10px);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: burst-out 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* =====================================================================
+   Screen flash (PERFECT)
+   ===================================================================== */
+.fx-screen-flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, #FFD93D88 0%, transparent 70%);
+  animation: screen-flash 0.18s ease-out both;
+  pointer-events: none;
+}
+
+/* =====================================================================
+   Combo pulse ring
+   ===================================================================== */
+.fx-combo-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: clamp(80px, 12vw, 140px);
+  height: clamp(80px, 12vw, 140px);
+  border-radius: 50%;
+  border: 4px solid #FFD93D;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: ring-pulse 0.8s ease-out both;
+  box-shadow: 0 0 16px #FFD93D88, inset 0 0 16px #FFD93D44;
+}
+
+.fx-combo-lo  { border-color: #4D96FF; box-shadow: 0 0 14px #4D96FF99, inset 0 0 14px #4D96FF44; }
+.fx-combo-mid { border-color: #6BCB77; box-shadow: 0 0 18px #6BCB77aa, inset 0 0 18px #6BCB7755; }
+.fx-combo-hi  { border-color: #FFD93D; border-width: 6px; box-shadow: 0 0 32px #FFD93D, inset 0 0 24px #FFD93Daa; }
+
+/* =====================================================================
+   Lyrics syllable bounce
+   ===================================================================== */
+.fx-syllable-bounce {
+  display: inline-block;
+  animation: syllable-bounce 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transform-origin: 50% 100%;
+  color: #FFD93D;
+  text-shadow: 0 2px 8px #FFD93D88, 0 0 4px #fff;
+}
+
+/* =====================================================================
+   Reduced motion fallback
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .fx-judge svg,
+  .fx-judge-text,
+  .fx-particle,
+  .fx-combo-ring,
+  .fx-syllable-bounce,
+  .fx-screen-flash {
+    animation-duration: 0.1s !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* =====================================================================
+   Mobile tweaks
+   ===================================================================== */
+@media (max-width: 480px) {
+  .fx-judge { width: clamp(60px, 22vw, 100px); height: clamp(60px, 22vw, 100px); }
+  .fx-judge-text { font-size: clamp(16px, 5vw, 24px); }
+  .fx-combo-ring { width: clamp(60px, 22vw, 110px); height: clamp(60px, 22vw, 110px); }
+}
+
+/* =====================================================================
+   Compose hooks for v3 host elements
+   ===================================================================== */
+#pitchArea .fx-syllable-bounce {
+  will-change: transform;
+}
+
+#particleCanvas + .fx-confetti-canvas {
+  z-index: 1;
+}
+
+/* Stage glow helper - matches stageLight() output style for consistency */
+.fx-stage-pulse {
+  animation: stage-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes stage-pulse {
+  0%, 100% { box-shadow: inset 0 0 30px 4px rgba(255, 217, 61, 0.4); }
+  50%      { box-shadow: inset 0 0 60px 14px rgba(255, 217, 61, 0.8); }
+}
+
+/* SVG icon defaults (svg primitives drawn by JS) */
+.fx-star-svg,
+.fx-check-svg,
+.fx-circle-svg,
+.fx-x-svg {
+  display: block;
+  overflow: visible;
+}
