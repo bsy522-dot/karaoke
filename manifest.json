@@ -1,17 +1,17 @@
 {
-  "name": "StarVoice - 노래방",
+  "name": "StarVoice v4 — 노래방",
   "short_name": "StarVoice",
-  "description": "마이크로 부르고 점수를 받는 노래방 앱",
+  "description": "AI 음정 분석 K-노래방",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#0A0818",
-  "theme_color": "#FF4B9A",
+  "orientation": "portrait",
+  "background_color": "#0f0a1e",
+  "theme_color": "#0f0a1e",
   "icons": [
-    {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A0818'/%3E%3Ccircle cx='32' cy='24' r='9' fill='%23FF4B9A'/%3E%3Crect x='29' y='33' width='6' height='16' rx='3' fill='%23FF4B9A'/%3E%3Ccircle cx='32' cy='53' r='4' fill='%23333'/%3E%3Cpath d='M20 20a14 14 0 0 1 24 0' stroke='%23FFD700' stroke-width='2' fill='none'/%3E%3C/svg%3E",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ],
+  "categories": ["entertainment", "music", "games"],
+  "lang": "ko"
 }

@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f0a1e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>StarVoice v4 - 노래방</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -92,6 +98,7 @@ button{font-family:inherit;cursor:pointer}
 .btn-retry{background:linear-gradient(135deg,#ff6ab0,#a855f7);color:#fff}
 .btn-back{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)!important}
 .btn-play{background:rgba(76,175,80,.3);color:#8f8;border:1px solid rgba(76,175,80,.4)!important}
+.btn-share{background:linear-gradient(135deg,#a855f7,#6366f1);color:#fff}
 
 /* Practice Modal */
 #practiceModal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:50;flex-direction:column;align-items:center;justify-content:center;padding:20px}
@@ -397,6 +404,14 @@ button{font-family:inherit;cursor:pointer}
       <div class="nxt-lyric" id="nxtLyric"></div>
       <div class="lyric-prog"><div class="lyric-prog-bar" id="lyricProg"></div></div>
     </div>
+    <div id="dbgPanel" style="display:none;position:absolute;right:8px;top:50px;background:rgba(0,0,0,.7);color:#0f0;font-family:monospace;font-size:10px;padding:6px 8px;border-radius:6px;z-index:20;line-height:1.4;pointer-events:none;min-width:140px">
+      <div>freq: <span id="dbgFreq">-</span> Hz</div>
+      <div>note: <span id="dbgNote">-</span></div>
+      <div>cents: <span id="dbgCents">-</span></div>
+      <div>clarity: <span id="dbgClarity">-</span></div>
+      <div>RMS: <span id="dbgRMS">-</span></div>
+      <div>fps: <span id="dbgFps">-</span></div>
+    </div>
   </div>
   <div id="resultScreen"></div>
 </div>
@@ -442,6 +457,9 @@ button{font-family:inherit;cursor:pointer}
   var lastRMS = 0;
   var lastCentroid = 0;
   var lastFlatness = 0;
+
+  // Last pitch detection result (for debug panel)
+  var _lastDetection = null;
 
   // ---------- Init ----------
   function init(audioCtx, analyserNode, bufSize) {
@@ -584,7 +602,7 @@ button{font-family:inherit;cursor:pointer}
 
   // ---------- Public: detectPitch ----------
   function detectPitch() {
-    if (!ctx || !ana || !buf) return null;
+    if (!ctx || !ana || !buf) { _lastDetection = null; return null; }
     ana.getFloatTimeDomainData(buf);
 
     // Spectral diagnostics (always update; cheap-ish)
@@ -597,21 +615,21 @@ button{font-family:inherit;cursor:pointer}
 
     // Voicing gate
     var voiced = (rms > 0.018) && (sm.flat < 0.5);
-    if (!voiced) return null;
+    if (!voiced) { _lastDetection = null; return null; }
 
     // NSDF
     var ns = nsdf(buf);
     var k = pickPeak(ns);
-    if (k < 2) return null;
+    if (k < 2) { _lastDetection = null; return null; }
     var clarity = ns[k];
-    if (clarity < 0.85) return null;
+    if (clarity < 0.85) { _lastDetection = { freq: 0, clarity: clarity, voiced: false }; return null; }
 
     // sub-sample peak
     var refined = parabolic(ns, k);
     var lag = refined.x;
-    if (lag <= 0) return null;
+    if (lag <= 0) { _lastDetection = null; return null; }
     var freq = ctx.sampleRate / lag;
-    if (freq < 80 || freq > 1000) return null;
+    if (freq < 80 || freq > 1000) { _lastDetection = null; return null; }
 
     var now = (typeof performance !== 'undefined' ? performance.now() : Date.now());
 
@@ -640,7 +658,9 @@ button{font-family:inherit;cursor:pointer}
     }
     if (note) note.total++;
 
-    return { freq: fm, clarity: clarity, voiced: true };
+    var _out = { freq: fm, clarity: clarity, voiced: true };
+    _lastDetection = _out;
+    return _out;
   }
 
   // ---------- Per-note scoring ----------
@@ -709,7 +729,8 @@ button{font-family:inherit;cursor:pointer}
     endNote: endNote,
     estimateUserRange: estimateUserRange,
     getRMS: getRMS,
-    getSpectralCentroid: getSpectralCentroid
+    getSpectralCentroid: getSpectralCentroid,
+    getLastDetection: function () { return _lastDetection; }
   };
 
 })(typeof window !== 'undefined' ? window : this);
@@ -1758,6 +1779,26 @@ async function pickSong(song,isPractice){
     return;
   }
   beginSing();
+  // v4: auto key-shift suggestion 5s after song start (one-shot)
+  window.__keyShiftSuggested=false;
+  setTimeout(()=>{
+    if(window.__keyShiftSuggested||gState!=='singing')return;
+    const r=KaraokeAudio.estimateUserRange?KaraokeAudio.estimateUserRange():null;
+    if(r&&Math.abs(r.suggestedKeyShift)>=2){
+      const div=document.createElement('div');
+      div.style.cssText='position:absolute;top:60px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,rgba(168,85,247,.95),rgba(255,106,176,.95));color:#fff;padding:10px 16px;border-radius:20px;font-size:13px;z-index:30;box-shadow:0 4px 20px rgba(255,106,176,.4);cursor:pointer;animation:fade-in .3s';
+      const dir=r.suggestedKeyShift>0?'+':'';
+      div.textContent='\u{1F3B5} 음역 추천: 키 '+dir+r.suggestedKeyShift+' (탭하여 적용)';
+      div.onclick=()=>{
+        keyShift=r.suggestedKeyShift;
+        div.remove();
+        window.__keyShiftSuggested=true;
+      };
+      document.getElementById('singScreen').appendChild(div);
+      setTimeout(()=>{if(div.parentNode){div.style.opacity='0';setTimeout(()=>{if(div.parentNode)div.remove();},300);}},5000);
+      window.__keyShiftSuggested=true;
+    }
+  },5000);
 }
 
 function beginSing(){
@@ -1984,6 +2025,22 @@ function gameLoop(){
   }
   if(now-lastLineFbTime>1500)document.getElementById('lineFb').textContent='';
 
+  // v4: debug panel (opt-in via triple-tap on title)
+  if(window.__dbgOn){
+    const dbg=window.KaraokeAudio;
+    const r=dbg&&dbg.getLastDetection?dbg.getLastDetection():null;
+    document.getElementById('dbgFreq').textContent=userFreq?userFreq.toFixed(1):'-';
+    document.getElementById('dbgNote').textContent=userFreq?freqToNote(userFreq):'-';
+    document.getElementById('dbgCents').textContent=(targetFreq&&userFreq)?(1200*Math.log2(userFreq/targetFreq)).toFixed(0):'-';
+    document.getElementById('dbgClarity').textContent=r&&r.clarity!=null?r.clarity.toFixed(2):'-';
+    document.getElementById('dbgRMS').textContent=dbg&&dbg.getRMS?dbg.getRMS().toFixed(3):'-';
+    if(!window.__fpsLast)window.__fpsLast={t:performance.now(),c:0,fps:0};
+    const fl=window.__fpsLast;fl.c++;
+    const dt=performance.now()-fl.t;
+    if(dt>=500){fl.fps=(fl.c*1000/dt).toFixed(0);fl.c=0;fl.t=performance.now();}
+    document.getElementById('dbgFps').textContent=fl.fps;
+  }
+
   // Draw
   drawPitch(eff,userFreq,targetFreq);
   drawParticles();
@@ -2111,8 +2168,10 @@ function endSong(){
     <div class="res-btns">
       <button class="btn-retry" id="rRetry">다시 부르기</button>
       ${recordedBlob?'<button class="btn-play" id="rPlay">녹음 재생</button>':''}
+      <button class="btn-share" id="rShare">📷 공유 카드</button>
       <button class="btn-back" id="rBack">곡 선택</button>
     </div>`;
+  document.getElementById('rShare').onclick=()=>downloadShareCard();
   document.getElementById('rRetry').onclick=()=>pickSong(curSong,practiceMode);
   document.getElementById('rBack').onclick=()=>{
     gState='select';killSynth();
@@ -2124,6 +2183,79 @@ function endSong(){
   if(recordedBlob){
     document.getElementById('rPlay').onclick=()=>{const a=new Audio(URL.createObjectURL(recordedBlob));a.play();};
   }
+}
+
+function downloadShareCard(){
+  const W=1080, H=1920; // 9:16 portrait, instagram story format
+  const c = document.createElement('canvas'); c.width=W; c.height=H;
+  const x = c.getContext('2d');
+
+  // Background gradient
+  const bg = x.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#1a1040'); bg.addColorStop(0.5,'#2a1060'); bg.addColorStop(1,'#0a0818');
+  x.fillStyle=bg; x.fillRect(0,0,W,H);
+
+  // Glow circles for vibe
+  for(let i=0;i<6;i++){
+    const r = 200+Math.random()*300;
+    const cx = Math.random()*W, cy = Math.random()*H;
+    const g = x.createRadialGradient(cx,cy,0,cx,cy,r);
+    const colors = ['rgba(255,106,176,.15)','rgba(168,85,247,.15)','rgba(255,215,0,.10)'];
+    g.addColorStop(0, colors[i%3]); g.addColorStop(1,'rgba(0,0,0,0)');
+    x.fillStyle=g; x.fillRect(0,0,W,H);
+  }
+
+  // Title
+  x.fillStyle='#ff6ab0'; x.textAlign='center';
+  x.font='bold 64px sans-serif'; x.fillText('🎤 StarVoice v4', W/2, 200);
+  x.fillStyle='rgba(255,255,255,.6)'; x.font='32px sans-serif';
+  x.fillText('나의 노래방 점수', W/2, 260);
+
+  // Song title
+  x.fillStyle='#fff'; x.font='bold 56px sans-serif';
+  const songTitle = (curSong&&curSong.title)?curSong.title:'노래';
+  x.fillText(songTitle, W/2, 380);
+
+  // Grade letter (giant)
+  const fs = totalN>0?Math.min(100,Math.round(score/Math.max(1,totalN))):0;
+  const grade = getGrade(fs);
+  const gColors = {S:'#ffd700', A:'#4caf50', B:'#2196f3', C:'#ff9800', D:'#f44336'};
+  x.fillStyle = gColors[grade]||'#fff';
+  x.font='900 480px sans-serif';
+  x.shadowColor=gColors[grade]||'#fff'; x.shadowBlur=80;
+  x.fillText(grade, W/2, 920);
+  x.shadowBlur=0;
+
+  // Score
+  x.fillStyle='#ffd700'; x.font='900 240px sans-serif';
+  x.fillText(fs+'점', W/2, 1180);
+
+  // Stars
+  const stars = getStars(fs);
+  x.fillStyle='#ffd700'; x.font='100px sans-serif';
+  x.fillText('★'.repeat(stars)+'☆'.repeat(5-stars), W/2, 1320);
+
+  // Stats
+  const pitchAcc=totalN>0?Math.round(pitchSum/totalN):0;
+  const rhythmAcc=totalN>0?Math.round(rhythmSum/totalN):0;
+  x.fillStyle='rgba(255,255,255,.85)'; x.font='44px sans-serif';
+  x.fillText('음정 '+pitchAcc+'%   |   박자 '+rhythmAcc+'%', W/2, 1460);
+  x.fillText('최고 콤보 '+(maxCombo||0), W/2, 1530);
+
+  // Footer
+  x.fillStyle='rgba(255,255,255,.4)'; x.font='32px sans-serif';
+  const date = new Date().toLocaleDateString('ko-KR');
+  x.fillText(date+' · StarVoice v4', W/2, H-100);
+
+  // Download
+  c.toBlob(blob=>{
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `StarVoice_${songTitle}_${grade}_${fs}점.png`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  }, 'image/png', 0.95);
 }
 
 // ===================== CONTROLS =====================
@@ -2166,6 +2298,28 @@ window.addEventListener('resize',resizeCanvases);
 
 // ===================== INIT =====================
 renderList();
+
+// v4: triple-tap on title toggles debug panel (hidden by default)
+(function(){
+  let taps=[],el=null;
+  function setup(){
+    el=document.querySelector('#header h1');
+    if(!el){setTimeout(setup,100);return;}
+    el.addEventListener('click',()=>{
+      const now=Date.now();
+      taps=taps.filter(t=>now-t<700);
+      taps.push(now);
+      if(taps.length>=3){
+        window.__dbgOn=!window.__dbgOn;
+        const p=document.getElementById('dbgPanel');
+        if(p)p.style.display=window.__dbgOn?'block':'none';
+        taps=[];
+        console.log('[v4] debug panel:',window.__dbgOn?'ON':'OFF');
+      }
+    });
+  }
+  setup();
+})();
 </script>
 
 <script>
