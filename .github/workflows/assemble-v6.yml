@@ -1,0 +1,32 @@
+name: Assemble v6
+on:
+  push:
+    paths:
+      - '_build/v6_parts/**'
+  workflow_dispatch:
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble parts
+        run: |
+          cat _build/v6_parts/part_aa.html \
+              _build/v6_parts/part_ab.html \
+              _build/v6_parts/part_ac.html \
+              _build/v6_parts/part_ad.html \
+              _build/v6_parts/part_ae.html \
+              _build/v6_parts/part_af.html \
+              > noraebang-v6.html
+          echo "Assembled file size: $(wc -c < noraebang-v6.html) bytes"
+          echo "Line count: $(wc -l < noraebang-v6.html)"
+      - name: Commit assembled file
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add noraebang-v6.html
+          git diff --cached --quiet || git commit -m '[AUTO] Assemble noraebang-v6.html from parts (2916 lines, 148KB)'
+          git push
