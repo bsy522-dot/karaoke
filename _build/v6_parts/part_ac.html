@@ -1,0 +1,500 @@
+    const gl = state.gl;
+    if (gl) { if (state.program) gl.deleteProgram(state.program); if (state.vao) gl.deleteVertexArray(state.vao);
+      const ext = gl.getExtension('WEBGL_lose_context'); if (ext) ext.loseContext(); }
+    state.canvas = null; state.gl = null; state.program = null; state.vao = null;
+    state.uniforms = {}; state.ready = false; state.beat = 0; state.rms = 0; state.combo = 0; state.mode = 0; state.perfectStart = -1;
+  }
+  if (typeof window !== 'undefined') window.KaraokeShader = { init, resize, setAudio, setCombo, setMode, render, destroy };
+})();
+</script>
+
+<script>
+/**
+ * KaraokeFX - VFX module for karaoke app
+ * Pure vanilla JS + Canvas 2D, no external dependencies.
+ */
+(function (global) {
+  'use strict';
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  const PALETTE = { PERFECT: '#FFD93D', GREAT: '#6BCB77', GOOD: '#4D96FF', MISS: '#FF6B6B' };
+  const CONFETTI_COLORS = ['#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#B084FF', '#FF9F45'];
+  let state = { root: null, layer: null, canvas: null, ctx: null, confettiActive: false, confettiRAF: 0, confettiParticles: [], confettiEnd: 0, resizeHandler: null };
+
+  function createEl(tag, cls, parent) { const el = document.createElement(tag); if (cls) el.className = cls; if (parent) parent.appendChild(el); return el; }
+  function createSVG(viewBox) { const svg = document.createElementNS(SVG_NS, 'svg'); svg.setAttribute('viewBox', viewBox); svg.setAttribute('xmlns', SVG_NS); return svg; }
+
+  function buildStarSVG(color) {
+    const svg = createSVG('0 0 100 100'); svg.setAttribute('class', 'fx-star-svg');
+    const pts = []; for (let i = 0; i < 16; i++) { const angle = (Math.PI * 2 * i) / 16 - Math.PI / 2; const r = i % 2 === 0 ? 48 : 20; pts.push((50 + Math.cos(angle) * r).toFixed(1) + ',' + (50 + Math.sin(angle) * r).toFixed(1)); }
+    const poly = document.createElementNS(SVG_NS, 'polygon'); poly.setAttribute('points', pts.join(' ')); poly.setAttribute('fill', color); poly.setAttribute('stroke', '#fff'); poly.setAttribute('stroke-width', '2'); svg.appendChild(poly); return svg;
+  }
+  function buildCheckSVG(color) { const svg = createSVG('0 0 100 100'); svg.setAttribute('class', 'fx-check-svg'); const path = document.createElementNS(SVG_NS, 'path'); path.setAttribute('d', 'M 20 50 L 42 72 L 80 28'); path.setAttribute('stroke', color); path.setAttribute('stroke-width', '10'); path.setAttribute('stroke-linecap', 'round'); path.setAttribute('stroke-linejoin', 'round'); path.setAttribute('fill', 'none'); svg.appendChild(path); return svg; }
+  function buildCircleSVG(color) { const svg = createSVG('0 0 100 100'); svg.setAttribute('class', 'fx-circle-svg'); const c = document.createElementNS(SVG_NS, 'circle'); c.setAttribute('cx', '50'); c.setAttribute('cy', '50'); c.setAttribute('r', '34'); c.setAttribute('stroke', color); c.setAttribute('stroke-width', '8'); c.setAttribute('fill', 'none'); svg.appendChild(c); return svg; }
+  function buildXSVG(color) { const svg = createSVG('0 0 100 100'); svg.setAttribute('class', 'fx-x-svg'); const p = document.createElementNS(SVG_NS, 'path'); p.setAttribute('d', 'M 28 28 L 72 72 M 72 28 L 28 72'); p.setAttribute('stroke', color); p.setAttribute('stroke-width', '8'); p.setAttribute('stroke-linecap', 'round'); p.setAttribute('fill', 'none'); svg.appendChild(p); return svg; }
+
+  function spawnParticleRing(x, y, color, count) {
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < count; i++) {
+      const p = createEl('span', 'fx-particle'); const angle = (Math.PI * 2 * i) / count; const dist = 60 + Math.random() * 30;
+      p.style.setProperty('--tx', (Math.cos(angle) * dist).toFixed(1) + 'px'); p.style.setProperty('--ty', (Math.sin(angle) * dist).toFixed(1) + 'px');
+      p.style.left = x + 'px'; p.style.top = y + 'px'; p.style.background = color; frag.appendChild(p);
+    }
+    state.layer.appendChild(frag);
+    setTimeout(() => { state.layer.querySelectorAll('.fx-particle').forEach(n => { if (!n._kept) n.remove(); }); }, 900);
+  }
+
+  function flashScreen() { const f = createEl('div', 'fx-screen-flash', state.layer); setTimeout(() => f.remove(), 200); }
+
+  function judge(grade, x, y) {
+    if (!state.layer) return;
+    const G = (grade || 'GOOD').toUpperCase(); const color = PALETTE[G] || PALETTE.GOOD;
+    const wrap = createEl('div', 'fx-judge fx-judge-' + G.toLowerCase(), state.layer);
+    wrap.style.left = (x || window.innerWidth / 2) + 'px'; wrap.style.top = (y || window.innerHeight / 2) + 'px';
+    let icon = null;
+    if (G === 'PERFECT') { icon = buildStarSVG(color); flashScreen(); spawnParticleRing(x, y, color, 12); }
+    else if (G === 'GREAT') { icon = buildCheckSVG(color); spawnParticleRing(x, y, color, 6); }
+    else if (G === 'GOOD') { icon = buildCircleSVG(color); spawnParticleRing(x, y, color, 4); }
+    else { icon = buildXSVG(color); }
+    wrap.appendChild(icon);
+    const txt = createEl('div', 'fx-judge-text', wrap); txt.textContent = G; txt.style.color = color;
+    setTimeout(() => wrap.remove(), 850);
+  }
+
+  function comboRing(level) {
+    if (!state.layer) return; const lvl = Math.max(1, Math.min(20, level | 0));
+    const ring = createEl('div', 'fx-combo-ring', state.layer);
+    const intensity = lvl >= 20 ? 'hi' : lvl >= 10 ? 'mid' : 'lo';
+    ring.classList.add('fx-combo-' + intensity); ring.style.setProperty('--combo-scale', (1 + lvl * 0.06).toFixed(2));
+    setTimeout(() => ring.remove(), 800);
+  }
+
+  function lyricsTick(syllableEl) {
+    if (!syllableEl) return; syllableEl.classList.remove('fx-syllable-bounce');
+    void syllableEl.offsetWidth; syllableEl.classList.add('fx-syllable-bounce');
+    setTimeout(() => syllableEl.classList.remove('fx-syllable-bounce'), 500);
+  }
+
+  function ensureCanvas() {
+    if (state.canvas) return; const c = document.createElement('canvas'); c.className = 'fx-confetti-canvas';
+    state.layer.appendChild(c); state.canvas = c; state.ctx = c.getContext('2d');
+    resizeCanvas(); state.resizeHandler = resizeCanvas; window.addEventListener('resize', state.resizeHandler);
+  }
+  function resizeCanvas() { if (!state.canvas) return; state.canvas.width = window.innerWidth; state.canvas.height = window.innerHeight; }
+
+  function spawnConfettiParticles(count) {
+    const w = state.canvas.width; state.confettiParticles = [];
+    for (let i = 0; i < count; i++) {
+      state.confettiParticles.push({
+        x: Math.random() * w, y: -20 - Math.random() * 200, w: 6 + Math.random() * 6, h: 10 + Math.random() * 8,
+        rot: Math.random() * Math.PI * 2, vr: (Math.random() - 0.5) * 0.2, vy: 2 + Math.random() * 3, vx: (Math.random() - 0.5) * 0.6,
+        phase: Math.random() * Math.PI * 2, color: CONFETTI_COLORS[i % CONFETTI_COLORS.length]
+      });
+    }
+  }
+  function drawConfetti() {
+    const ctx = state.ctx; const h = state.canvas.height; ctx.clearRect(0, 0, state.canvas.width, h);
+    for (let p of state.confettiParticles) {
+      p.phase += 0.05; p.x += p.vx + Math.sin(p.phase) * 0.6; p.y += p.vy; p.rot += p.vr;
+      if (p.y > h + 20) { p.y = -20; p.x = Math.random() * state.canvas.width; }
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillStyle = p.color; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
+    }
+  }
+  function confettiLoop() { if (!state.confettiActive) return; drawConfetti(); if (performance.now() >= state.confettiEnd) { stopConfetti(); return; } state.confettiRAF = requestAnimationFrame(confettiLoop); }
+  function stopConfetti() { state.confettiActive = false; cancelAnimationFrame(state.confettiRAF); if (state.ctx) state.ctx.clearRect(0, 0, state.canvas.width, state.canvas.height); }
+  function confetti(durationMs) { if (!state.layer) return; durationMs = durationMs || 3000; ensureCanvas(); spawnConfettiParticles(80); state.confettiActive = true; state.confettiEnd = performance.now() + durationMs; state.confettiRAF = requestAnimationFrame(confettiLoop); }
+
+  function stageLight(color, intensity) {
+    if (!state.root) return; const lvl = Math.max(0, Math.min(1, intensity == null ? 0.6 : intensity));
+    const blur = (30 + lvl * 60) | 0; const spread = (5 + lvl * 15) | 0;
+    state.root.style.boxShadow = `inset 0 0 ${blur}px ${spread}px ${color || '#FFD93D'}`;
+    state.root.style.transition = 'box-shadow 0.3s ease-out';
+  }
+  function init(rootEl) { cleanup(); state.root = rootEl || document.body; state.layer = createEl('div', 'fx-layer', state.root); }
+  function cleanup() {
+    stopConfetti(); if (state.resizeHandler) { window.removeEventListener('resize', state.resizeHandler); state.resizeHandler = null; }
+    if (state.layer && state.layer.parentNode) state.layer.parentNode.removeChild(state.layer);
+    if (state.root) state.root.style.boxShadow = '';
+    state = { root: null, layer: null, canvas: null, ctx: null, confettiActive: false, confettiRAF: 0, confettiParticles: [], confettiEnd: 0, resizeHandler: null };
+  }
+  global.KaraokeFX = { init, judge, comboRing, lyricsTick, confetti, stageLight, cleanup };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<script>
+// BGM Engine - generates accompaniment from chord progressions
+(function(global) {
+  'use strict';
+  const C3=130.81,D3=146.83,E3=164.81,F3=174.61,G3=196,A3=220,B3=246.94;
+  const C4=261.63,D4=293.66,E4=329.63,F4=349.23,G4=392,A4=440,B4=493.88;
+
+  let ctx = null;
+  let masterGain = null;
+  let playing = false;
+  let drumTimer = null;
+  let chordTimer = null;
+  let currentChords = [];
+  let chordIdx = 0;
+  let bpm = 120;
+
+  function init(audioCtx) {
+    ctx = audioCtx;
+    masterGain = ctx.createGain();
+    masterGain.gain.value = 0.12;
+    masterGain.connect(ctx.destination);
+  }
+
+  function playChord(notes, duration) {
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration * 0.9);
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start(ctx.currentTime + i * 0.02);
+      osc.stop(ctx.currentTime + duration);
+    });
+  }
+
+  function playArpeggio(notes, beatDur) {
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      const t = ctx.currentTime + i * beatDur / notes.length;
+      gain.gain.setValueAtTime(0.05, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + beatDur / notes.length * 0.8);
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start(t);
+      osc.stop(t + beatDur / notes.length);
+    });
+  }
+
+  function kick() {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.setValueAtTime(150, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+    osc.connect(gain); gain.connect(masterGain);
+    osc.start(); osc.stop(ctx.currentTime + 0.15);
+  }
+
+  function hihat() {
+    const bufSize = ctx.sampleRate * 0.05;
+    const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.1));
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.08;
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass'; hp.frequency.value = 7000;
+    src.connect(hp); hp.connect(gain); gain.connect(masterGain);
+    src.start();
+  }
+
+  const CHORD_MAPS = {
+    default: [[C3, E3, G3], [G3, B3, D4], [A3, C4, E4], [F3, A3, C4]],
+    minor: [[A3, C4, E4], [F3, A3, C4], [G3, B3, D4], [A3, C4, E4]],
+  };
+
+  function start(songBpm, chordProgression) {
+    if (!ctx) return;
+    stop();
+    bpm = songBpm || 120;
+    currentChords = chordProgression || CHORD_MAPS.default;
+    chordIdx = 0;
+    playing = true;
+    const beatDur = 60 / bpm;
+
+    function chordLoop() {
+      if (!playing) return;
+      const chord = currentChords[chordIdx % currentChords.length];
+      playArpeggio(chord, beatDur * 2);
+      chordIdx++;
+      chordTimer = setTimeout(chordLoop, beatDur * 2 * 1000);
+    }
+
+    let beatCount = 0;
+    function drumLoop() {
+      if (!playing) return;
+      if (beatCount % 4 === 0) kick();
+      if (beatCount % 2 === 0) hihat();
+      beatCount++;
+      drumTimer = setTimeout(drumLoop, beatDur * 1000);
+    }
+
+    chordLoop();
+    drumLoop();
+  }
+
+  function stop() {
+    playing = false;
+    if (chordTimer) clearTimeout(chordTimer);
+    if (drumTimer) clearTimeout(drumTimer);
+  }
+
+  function setVolume(v) {
+    if (masterGain) masterGain.gain.value = Math.max(0, Math.min(0.3, v));
+  }
+
+  global.KaraokeBGM = { init, start, stop, setVolume, CHORD_MAPS };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<script>
+// ===================== CONSTANTS =====================
+const C3=130.81,D3=146.83,E3=164.81,F3=174.61,G3=196,A3=220,B3=246.94;
+const C4=261.63,D4=293.66,E4=329.63,F4=349.23,G4=392,A4=440,B4=493.88;
+const C5=523.25,D5=587.33,E5=659.26,F5=698.46,G5=784;
+const Eb3=155.56,Bb3=233.08,Fs4=369.99,Ab3=207.65,Eb4=311.13,Bb4=466.16;
+const NOTE_NAMES=["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+function freqToNote(f){if(!f||f<=0)return"";const n=12*Math.log2(f/440)+69;const nn=Math.round(n);return NOTE_NAMES[nn%12]+(Math.floor(nn/12)-1);}
+function transpose(f,semi){return f*Math.pow(2,semi/12);}
+
+// ===================== 25 SONGS =====================
+const SONGS=[
+// --- 동요 ---
+{id:1,cat:"동요",title:"학교종이 땡땡땡",icon:"🏫",diff:"쉬움",dc:"diff-easy",bpm:120,
+melody:[
+{t:0,d:.5,f:G4,s:"학"},{t:.5,d:.5,f:G4,s:"교"},{t:1,d:.5,f:A4,s:"종"},{t:1.5,d:.5,f:A4,s:"이"},
+{t:2,d:.5,f:G4,s:"땡"},{t:2.5,d:.5,f:G4,s:"땡"},{t:3,d:1,f:E4,s:"땡"},
+{t:4,d:.5,f:G4,s:"어"},{t:4.5,d:.5,f:G4,s:"서"},{t:5,d:.5,f:E4,s:"모"},{t:5.5,d:.5,f:E4,s:"이"},
+{t:6,d:1,f:D4,s:"자"},
+{t:7,d:.5,f:G4,s:"선"},{t:7.5,d:.5,f:G4,s:"생"},{t:8,d:.5,f:A4,s:"님"},{t:8.5,d:.5,f:A4,s:"이"},
+{t:9,d:.5,f:G4,s:"우"},{t:9.5,d:.5,f:G4,s:"리"},{t:10,d:1,f:E4,s:"를"},
+{t:11,d:.5,f:G4,s:"기"},{t:11.5,d:.5,f:E4,s:"다"},{t:12,d:.5,f:D4,s:"리"},
+{t:12.5,d:.5,f:E4,s:"신"},{t:13,d:1.5,f:C4,s:"다"}
+],lyrics:[{t:0,tx:"학교 종이 땡땡땡"},{t:4,tx:"어서 모이자"},{t:7,tx:"선생님이 우리를"},{t:11,tx:"기다리신다"}],dur:15},
+
+{id:2,cat:"동요",title:"곰 세 마리",icon:"🐻",diff:"쉬움",dc:"diff-easy",bpm:110,
+melody:[
+{t:0,d:.5,f:C4,s:"곰"},{t:.5,d:.5,f:D4,s:"세"},{t:1,d:.5,f:E4,s:"마"},{t:1.5,d:.5,f:C4,s:"리"},
+{t:2,d:.5,f:C4,s:"가"},{t:2.5,d:.5,f:D4,s:"한"},{t:3,d:.5,f:E4,s:"집"},{t:3.5,d:.5,f:C4,s:"에"},
+{t:4,d:.5,f:E4,s:"있"},{t:4.5,d:.5,f:F4,s:"어"},{t:5,d:1,f:G4,s:"~"},
+{t:6,d:.5,f:E4,s:"아"},{t:6.5,d:.5,f:F4,s:"빠"},{t:7,d:1,f:G4,s:"곰"},
+{t:8,d:.3,f:G4,s:"엄"},{t:8.3,d:.3,f:A4,s:"마"},{t:8.6,d:.3,f:G4,s:"곰"},{t:8.9,d:.3,f:F4,s:"~"},
+{t:9.2,d:.5,f:E4,s:"애"},{t:9.7,d:.6,f:C4,s:"기"},
+{t:10.3,d:.7,f:D4,s:"곰"},{t:11,d:.5,f:C4,s:"아"},
+{t:11.5,d:.3,f:G3,s:"빠"},{t:11.8,d:.5,f:C4,s:"곰"},{t:12.3,d:.3,f:D4,s:"은"},
+{t:12.6,d:1,f:E4,s:"뚱"},{t:13.6,d:.5,f:E4,s:"뚱"},{t:14.1,d:.6,f:E4,s:"해"},
+{t:14.7,d:.5,f:C4,s:"엄"},{t:15.2,d:.3,f:G3,s:"마"},{t:15.5,d:.5,f:C4,s:"곰"},{t:16,d:.3,f:D4,s:"은"},
+{t:16.3,d:1,f:E4,s:"날"},{t:17.3,d:.5,f:E4,s:"씬"},{t:17.8,d:.6,f:E4,s:"해"},
+{t:18.4,d:.35,f:G4,s:"애"},{t:18.75,d:.35,f:A4,s:"기"},{t:19.1,d:.35,f:G4,s:"곰"},{t:19.45,d:.35,f:F4,s:"은"},
+{t:19.8,d:.3,f:E4,s:"너"},{t:20.1,d:.3,f:D4,s:"무"},{t:20.4,d:.3,f:E4,s:"귀"},{t:20.7,d:.5,f:C4,s:"여"},
+{t:21.2,d:.8,f:C4,s:"워"},
+{t:22,d:.5,f:D4,s:"으"},{t:22.5,d:.5,f:E4,s:"쓱"},{t:23,d:.5,f:D4,s:"으"},{t:23.5,d:1.5,f:C4,s:"쓱"}
+],lyrics:[{t:0,tx:"곰 세 마리가"},{t:2,tx:"한 집에 있어"},{t:4,tx:"아빠 곰"},{t:6,tx:"엄마 곰"},{t:8,tx:"애기 곰"},{t:10.3,tx:"아빠 곰은 뚱뚱해"},{t:14.7,tx:"엄마 곰은 날씬해"},{t:18.4,tx:"애기 곰은 너무 귀여워"},{t:22,tx:"으쓱으쓱 잘한다"}],dur:26},
+
+{id:3,cat:"동요",title:"나비야",icon:"🦋",diff:"쉬움",dc:"diff-easy",bpm:110,
+melody:[
+{t:0,d:.5,f:G4,s:"나"},{t:.5,d:.5,f:E4,s:"비"},{t:1,d:1,f:E4,s:"야"},
+{t:2,d:.5,f:F4,s:"나"},{t:2.5,d:.5,f:D4,s:"비"},{t:3,d:1,f:D4,s:"야"},
+{t:4,d:.4,f:C4,s:"이"},{t:4.4,d:.4,f:D4,s:"리"},{t:4.8,d:.4,f:E4,s:"날"},
+{t:5.2,d:.4,f:F4,s:"아"},{t:5.6,d:.4,f:G4,s:"오"},{t:6,d:.4,f:G4,s:"너"},{t:6.4,d:.6,f:G4,s:"라"},
+{t:7,d:.5,f:G4,s:"노"},{t:7.5,d:.5,f:E4,s:"랑"},{t:8,d:1,f:E4,s:"나"},
+{t:9,d:.5,f:F4,s:"비"},{t:9.5,d:.5,f:D4,s:"흰"},{t:10,d:1,f:D4,s:"나"},
+{t:11,d:.5,f:C4,s:"비"},{t:11.5,d:.5,f:E4,s:"춤"},{t:12,d:.5,f:G4,s:"을"},
+{t:12.5,d:.5,f:G4,s:"추"},{t:13,d:1.5,f:E4,s:"며"}
+],lyrics:[{t:0,tx:"나비야 나비야"},{t:4,tx:"이리 날아 오너라"},{t:7,tx:"노랑 나비 흰 나비"},{t:11,tx:"춤을 추며 오너라"}],dur:15},
+
+{id:4,cat:"동요",title:"반짝반짝 작은별",icon:"⭐",diff:"쉬움",dc:"diff-easy",bpm:100,
+melody:[
+{t:0,d:.6,f:C4,s:"반"},{t:.6,d:.6,f:C4,s:"짝"},{t:1.2,d:.6,f:G4,s:"반"},{t:1.8,d:.6,f:G4,s:"짝"},
+{t:2.4,d:.6,f:A4,s:"작"},{t:3,d:.6,f:A4,s:"은"},{t:3.6,d:1.2,f:G4,s:"별"},
+{t:4.8,d:.6,f:F4,s:"아"},{t:5.4,d:.6,f:F4,s:"름"},{t:6,d:.6,f:E4,s:"답"},{t:6.6,d:.6,f:E4,s:"게"},
+{t:7.2,d:.6,f:D4,s:"비"},{t:7.8,d:.6,f:D4,s:"치"},{t:8.4,d:1.2,f:C4,s:"네"},
+{t:9.6,d:.6,f:G4,s:"서"},{t:10.2,d:.6,f:G4,s:"쪽"},{t:10.8,d:.6,f:F4,s:"하"},{t:11.4,d:.6,f:F4,s:"늘"},
+{t:12,d:.6,f:E4,s:"에"},{t:12.6,d:.6,f:E4,s:"서"},{t:13.2,d:1.2,f:D4,s:"도"},
+{t:14.4,d:.6,f:G4,s:"동"},{t:15,d:.6,f:G4,s:"쪽"},{t:15.6,d:.6,f:F4,s:"하"},{t:16.2,d:.6,f:F4,s:"늘"},
+{t:16.8,d:.6,f:E4,s:"에"},{t:17.4,d:.6,f:E4,s:"서"},{t:18,d:1.2,f:D4,s:"도"},
+{t:19.2,d:.6,f:C4,s:"반"},{t:19.8,d:.6,f:C4,s:"짝"},{t:20.4,d:.6,f:G4,s:"반"},{t:21,d:.6,f:G4,s:"짝"},
+{t:21.6,d:.6,f:A4,s:"작"},{t:22.2,d:.6,f:A4,s:"은"},{t:22.8,d:1.2,f:G4,s:"별"},
+{t:24,d:.6,f:F4,s:"아"},{t:24.6,d:.6,f:F4,s:"름"},{t:25.2,d:.6,f:E4,s:"답"},{t:25.8,d:.6,f:E4,s:"게"},
+{t:26.4,d:.6,f:D4,s:"비"},{t:27,d:.6,f:D4,s:"치"},{t:27.6,d:1.5,f:C4,s:"네"}
+],lyrics:[{t:0,tx:"반짝 반짝 작은 별"},{t:4.8,tx:"아름답게 비치네"},{t:9.6,tx:"서쪽 하늘에서도"},{t:14.4,tx:"동쪽 하늘에서도"},{t:19.2,tx:"반짝 반짝 작은 별"},{t:24,tx:"아름답게 비치네"}],dur:30},
+
+{id:5,cat:"동요",title:"산토끼",icon:"🐰",diff:"쉬움",dc:"diff-easy",bpm:120,
+melody:[
+{t:0,d:.4,f:E4,s:"산"},{t:.4,d:.4,f:E4,s:"토"},{t:.8,d:.8,f:E4,s:"끼"},
+{t:1.6,d:.4,f:E4,s:"토"},{t:2,d:.4,f:E4,s:"끼"},{t:2.4,d:.8,f:E4,s:"야"},
+{t:3.2,d:.4,f:G4,s:"어"},{t:3.6,d:.4,f:E4,s:"디"},{t:4,d:.4,f:G4,s:"를"},
+{t:4.4,d:.4,f:E4,s:"가"},{t:4.8,d:.4,f:D4,s:"느"},{t:5.2,d:1,f:C4,s:"냐"},
+{t:6.2,d:.4,f:D4,s:"깡"},{t:6.6,d:.4,f:D4,s:"충"},{t:7,d:.4,f:D4,s:"깡"},
+{t:7.4,d:.4,f:D4,s:"충"},{t:7.8,d:.4,f:E4,s:"뛰"},{t:8.2,d:.4,f:D4,s:"면"},
+{t:8.6,d:.4,f:E4,s:"서"},{t:9,d:.4,f:G4,s:"어"},{t:9.4,d:.4,f:E4,s:"디"},{t:9.8,d:.4,f:D4,s:"를"},
+{t:10.2,d:.4,f:E4,s:"가"},{t:10.6,d:1.2,f:C4,s:"느냐"}
+],lyrics:[{t:0,tx:"산토끼 토끼야"},{t:3.2,tx:"어디를 가느냐"},{t:6.2,tx:"깡충깡충 뛰면서"},{t:9,tx:"어디를 가느냐"}],dur:13},
+
+// --- K-POP/어린이 ---
+{id:6,cat:"어린이 인기",title:"아기상어",icon:"🦈",diff:"쉬움",dc:"diff-easy",bpm:115,
+melody:[
+{t:0,d:.3,f:C4,s:"아"},{t:.3,d:.3,f:D4,s:"기"},{t:.6,d:.4,f:E4,s:"상"},{t:1,d:.3,f:E4,s:"어"},
+{t:1.3,d:.3,f:E4,s:"뚜"},{t:1.6,d:.3,f:E4,s:"루"},{t:1.9,d:.3,f:E4,s:"루"},{t:2.2,d:.3,f:E4,s:"뚜"},
+{t:2.5,d:.5,f:E4,s:"루"},
+{t:3,d:.3,f:C4,s:"아"},{t:3.3,d:.3,f:D4,s:"기"},{t:3.6,d:.4,f:E4,s:"상"},{t:4,d:.3,f:E4,s:"어"},
+{t:4.3,d:.3,f:E4,s:"뚜"},{t:4.6,d:.3,f:E4,s:"루"},{t:4.9,d:.3,f:E4,s:"루"},{t:5.2,d:.3,f:E4,s:"뚜"},
+{t:5.5,d:.5,f:E4,s:"루"},
+{t:6,d:.3,f:C4,s:"귀"},{t:6.3,d:.3,f:D4,s:"여"},{t:6.6,d:.3,f:E4,s:"운"},
+{t:6.9,d:.3,f:E4,s:"뚜"},{t:7.2,d:.3,f:E4,s:"루"},{t:7.5,d:.3,f:E4,s:"루"},{t:7.8,d:.3,f:E4,s:"뚜"},
+{t:8.1,d:.5,f:E4,s:"루"},
+{t:8.6,d:.4,f:E4,s:"아"},{t:9,d:.4,f:F4,s:"기"},{t:9.4,d:.4,f:G4,s:"상"},{t:9.8,d:1,f:G4,s:"어"}
+],lyrics:[{t:0,tx:"아기상어 뚜루루뚜루"},{t:3,tx:"아기상어 뚜루루뚜루"},{t:6,tx:"귀여운 뚜루루뚜루"},{t:8.6,tx:"아기상어!"}],dur:12},
+
+{id:7,cat:"어린이 인기",title:"뽀로로 노래",icon:"🐧",diff:"보통",dc:"diff-medium",bpm:130,
+melody:[
+{t:0,d:.4,f:G4,s:"뽀"},{t:.4,d:.4,f:G4,s:"뽀"},{t:.8,d:.4,f:A4,s:"뽀"},{t:1.2,d:.4,f:G4,s:"뽀"},
+{t:1.6,d:.8,f:E4,s:"로"},{t:2.4,d:.8,f:E4,s:"로"},
+{t:3.2,d:.4,f:G4,s:"노"},{t:3.6,d:.4,f:A4,s:"래"},{t:4,d:.4,f:G4,s:"하"},{t:4.4,d:.4,f:E4,s:"는"},
+{t:4.8,d:.4,f:D4,s:"뽀"},{t:5.2,d:.8,f:C4,s:"로"},{t:6,d:.8,f:C4,s:"로"},
+{t:6.8,d:.4,f:E4,s:"놀"},{t:7.2,d:.4,f:G4,s:"자"},{t:7.6,d:.4,f:A4,s:"함"},
+{t:8,d:.4,f:G4,s:"께"},{t:8.4,d:.4,f:E4,s:"놀"},{t:8.8,d:1,f:D4,s:"자"},
+{t:9.8,d:.4,f:C4,s:"뽀"},{t:10.2,d:.4,f:D4,s:"로"},{t:10.6,d:.4,f:E4,s:"로"},{t:11,d:.4,f:D4,s:"랑"},
+{t:11.4,d:1.5,f:C4,s:"~"}
+],lyrics:[{t:0,tx:"뽀뽀뽀 뽀로로"},{t:3.2,tx:"노래하는 뽀로로"},{t:6.8,tx:"놀자 함께 놀자"},{t:9.8,tx:"뽀로로랑~"}],dur:14},
+
+{id:8,cat:"어린이 인기",title:"상어가족",icon:"🌊",diff:"보통",dc:"diff-medium",bpm:120,
+melody:[
+{t:0,d:.3,f:C4,s:"엄"},{t:.3,d:.3,f:D4,s:"마"},{t:.6,d:.4,f:E4,s:"상"},{t:1,d:.3,f:E4,s:"어"},
+{t:1.3,d:.3,f:E4,s:"뚜"},{t:1.6,d:.3,f:E4,s:"루"},{t:1.9,d:.3,f:E4,s:"루"},{t:2.2,d:.3,f:E4,s:"뚜"},
+{t:2.5,d:.5,f:E4,s:"루"},
+{t:3,d:.3,f:C4,s:"엄"},{t:3.3,d:.3,f:D4,s:"마"},{t:3.6,d:.4,f:E4,s:"상"},{t:4,d:.3,f:E4,s:"어"},
+{t:4.3,d:.3,f:E4,s:"뚜"},{t:4.6,d:.3,f:E4,s:"루"},{t:4.9,d:.3,f:E4,s:"루"},{t:5.2,d:.3,f:E4,s:"뚜"},
+{t:5.5,d:.5,f:E4,s:"루"},
+{t:6,d:.3,f:C4,s:"아"},{t:6.3,d:.3,f:D4,s:"름"},{t:6.6,d:.3,f:E4,s:"다"},
+{t:6.9,d:.3,f:E4,s:"운"},{t:7.2,d:.3,f:E4,s:"뚜"},{t:7.5,d:.3,f:E4,s:"루"},{t:7.8,d:.3,f:E4,s:"루"},
+{t:8.1,d:.5,f:E4,s:"뚜루"},
+{t:8.6,d:.4,f:E4,s:"엄"},{t:9,d:.4,f:F4,s:"마"},{t:9.4,d:.4,f:G4,s:"상"},{t:9.8,d:1,f:G4,s:"어"}
+],lyrics:[{t:0,tx:"엄마상어 뚜루루뚜루"},{t:3,tx:"엄마상어 뚜루루뚜루"},{t:6,tx:"아름다운 뚜루루뚜루"},{t:8.6,tx:"엄마상어!"}],dur:12},
+
+// --- 트로트/가요 ---
+{id:9,cat:"가요/민요",title:"아리랑",icon:"🏔️",diff:"보통",dc:"diff-medium",bpm:80,
+melody:[
+{t:0,d:.75,f:A3,s:"아"},{t:.75,d:.75,f:C4,s:"리"},{t:1.5,d:1,f:D4,s:"랑"},
+{t:2.5,d:.75,f:E4,s:"아"},{t:3.25,d:.75,f:D4,s:"리"},{t:4,d:1,f:C4,s:"랑"},
+{t:5,d:.5,f:A3,s:"아"},{t:5.5,d:.5,f:C4,s:"라"},{t:6,d:.75,f:A3,s:"리"},{t:6.75,d:1,f:G3,s:"요"},
+{t:8,d:.6,f:E4,s:"아"},{t:8.6,d:.6,f:D4,s:"리"},{t:9.2,d:.6,f:C4,s:"랑"},
+{t:9.8,d:.6,f:A3,s:"고"},{t:10.4,d:.6,f:C4,s:"개"},{t:11,d:.5,f:C4,s:"로"},
+{t:11.5,d:.75,f:D4,s:"넘"},{t:12.25,d:.75,f:C4,s:"어"},{t:13,d:1.5,f:A3,s:"간다"},
+{t:15,d:.5,f:A3,s:"나"},{t:15.5,d:.5,f:C4,s:"를"},{t:16,d:.75,f:D4,s:"버"},{t:16.75,d:.75,f:E4,s:"리"},
+{t:17.5,d:.6,f:D4,s:"고"},{t:18.1,d:.6,f:C4,s:"가"},{t:18.7,d:.6,f:A3,s:"시"},
+{t:19.3,d:.7,f:C4,s:"는"},{t:20,d:.5,f:C4,s:"님"},
+{t:20.5,d:.5,f:D4,s:"은"},{t:21,d:.5,f:E4,s:"십"},{t:21.5,d:.75,f:D4,s:"리"},{t:22.25,d:.75,f:C4,s:"도"},
+{t:23,d:.5,f:A3,s:"못"},{t:23.5,d:.75,f:C4,s:"가"},{t:24.25,d:.75,f:A3,s:"서"},
+{t:25,d:1.5,f:A3,s:"발병난다"}
+],lyrics:[{t:0,tx:"아리랑"},{t:2.5,tx:"아리랑"},{t:5,tx:"아라리요"},{t:8,tx:"아리랑 고개로"},{t:11.5,tx:"넘어간다"},{t:15,tx:"나를 버리고"},{t:17.5,tx:"가시는 님은"},{t:20.5,tx:"십리도 못가서"},{t:23,tx:"발병난다"}],dur:28},
+
+{id:10,cat:"가요/민요",title:"도라지",icon:"🌸",diff:"보통",dc:"diff-medium",bpm:90,
+melody:[
+{t:0,d:.5,f:E4,s:"도"},{t:.5,d:.5,f:E4,s:"라"},{t:1,d:1,f:E4,s:"지"},
+{t:2,d:.5,f:E4,s:"도"},{t:2.5,d:.5,f:E4,s:"라"},{t:3,d:1,f:E4,s:"지"},
+{t:4,d:.5,f:E4,s:"도"},{t:4.5,d:.5,f:D4,s:"라"},{t:5,d:1,f:E4,s:"지"},
+{t:6,d:.5,f:G4,s:"심"},{t:6.5,d:.5,f:A4,s:"심"},{t:7,d:.5,f:G4,s:"산"},
+{t:7.5,d:.5,f:E4,s:"천"},{t:8,d:1.2,f:D4,s:"에"},
+{t:9.2,d:.5,f:E4,s:"백"},{t:9.7,d:.5,f:G4,s:"도"},{t:10.2,d:.5,f:A4,s:"라"},
+{t:10.7,d:1,f:G4,s:"지"},
+{t:11.7,d:.5,f:A4,s:"한"},{t:12.2,d:.5,f:B4,s:"두"},{t:12.7,d:.5,f:A4,s:"뿌"},
+{t:13.2,d:.5,f:G4,s:"리"},{t:13.7,d:.5,f:E4,s:"만"},{t:14.2,d:.5,f:D4,s:"캐"},
+{t:14.7,d:.5,f:E4,s:"도"},{t:15.2,d:1.5,f:E4,s:"~"},
+{t:16.7,d:.5,f:D4,s:"대"},{t:17.2,d:.5,f:E4,s:"바"},{t:17.7,d:.5,f:G4,s:"구"},{t:18.2,d:.5,f:A4,s:"니"},
+{t:18.7,d:.5,f:G4,s:"반"},{t:19.2,d:.5,f:E4,s:"시"},{t:19.7,d:.5,f:D4,s:"기"},
+{t:20.2,d:1.5,f:E4,s:"만"}
+],lyrics:[{t:0,tx:"도라지 도라지"},{t:4,tx:"도라지"},{t:6,tx:"심심산천에"},{t:9.2,tx:"백도라지"},{t:11.7,tx:"한두 뿌리만 캐도"},{t:16.7,tx:"대바구니 반시기만"}],dur:23},
+
+{id:11,cat:"가요/민요",title:"밀양아리랑",icon:"🌾",diff:"어려움",dc:"diff-hard",bpm:88,
+melody:[
+{t:0,d:.7,f:A3,s:"날"},{t:.7,d:.7,f:C4,s:"좀"},{t:1.4,d:.7,f:D4,s:"보"},
+{t:2.1,d:.7,f:E4,s:"소"},{t:2.8,d:1,f:D4,s:"~"},
+{t:3.8,d:.7,f:E4,s:"날"},{t:4.5,d:.7,f:D4,s:"좀"},{t:5.2,d:1,f:C4,s:"보소"},
+{t:6.2,d:.7,f:A3,s:"날"},{t:6.9,d:.7,f:C4,s:"좀"},{t:7.6,d:1.2,f:D4,s:"보소"},
+{t:8.8,d:.5,f:E4,s:"동"},{t:9.3,d:.5,f:E4,s:"지"},{t:9.8,d:.5,f:D4,s:"섣"},
+{t:10.3,d:.5,f:C4,s:"달"},{t:10.8,d:1,f:A3,s:"에"},
+{t:11.8,d:.7,f:A3,s:"봄"},{t:12.5,d:.7,f:C4,s:"꽃"},{t:13.2,d:.7,f:D4,s:"피"},
+{t:13.9,d:1,f:E4,s:"면"},
+{t:14.9,d:.5,f:E4,s:"날"},{t:15.4,d:.5,f:D4,s:"좀"},{t:15.9,d:1.5,f:C4,s:"보소"},
+{t:17.4,d:.3,f:A4,s:"아"},{t:17.7,d:.5,f:A4,s:"리"},{t:18.2,d:.5,f:G4,s:"아"},
+{t:18.7,d:.3,f:A4,s:"리"},{t:19,d:.8,f:G4,s:"랑"},
+{t:19.8,d:.3,f:E4,s:"쓰"},{t:20.1,d:.3,f:E4,s:"리"},{t:20.4,d:.5,f:D4,s:"쓰"},
+{t:20.9,d:.5,f:E4,s:"리"},{t:21.4,d:.8,f:G4,s:"랑"},
+{t:22.2,d:.5,f:A4,s:"아"},{t:22.7,d:.5,f:G4,s:"라"},{t:23.2,d:.5,f:E4,s:"리"},
+{t:23.7,d:1.5,f:D4,s:"가"},
+{t:25.2,d:.5,f:E4,s:"낳"},{t:25.7,d:.5,f:D4,s:"네"},{t:26.2,d:.5,f:C4,s:"줘"},
+{t:26.7,d:.5,f:A3,s:"라"},{t:27.2,d:1.5,f:A3,s:"~"}
+],lyrics:[{t:0,tx:"날 좀 보소"},{t:3.8,tx:"날 좀 보소"},{t:6.2,tx:"날 좀 보소"},{t:8.8,tx:"동지섣달에"},{t:11.8,tx:"봄꽃 피면"},{t:14.9,tx:"날 좀 보소"},{t:17.4,tx:"아리아리랑"},{t:19.8,tx:"쓰리쓰리랑"},{t:22.2,tx:"아라리가 났네"}],dur:30},
+
+// --- 팝 번안 ---
+{id:12,cat:"세계명곡",title:"생일 축하 노래",icon:"🎂",diff:"쉬움",dc:"diff-easy",bpm:100,
+melody:[
+{t:0,d:.5,f:G4,s:"생"},{t:.5,d:.5,f:G4,s:"일"},
+{t:1,d:.8,f:A4,s:"축"},{t:1.8,d:.8,f:G4,s:"하"},
+{t:2.6,d:.8,f:C5,s:"합"},{t:3.4,d:1.2,f:B4,s:"니다"},
+{t:4.6,d:.5,f:G4,s:"생"},{t:5.1,d:.5,f:G4,s:"일"},
+{t:5.6,d:.8,f:A4,s:"축"},{t:6.4,d:.8,f:G4,s:"하"},
+{t:7.2,d:.8,f:D5,s:"합"},{t:8,d:1.2,f:C5,s:"니다"},
+{t:9.2,d:.5,f:G4,s:"사"},{t:9.7,d:.5,f:G4,s:"랑"},
+{t:10.2,d:.8,f:G5,s:"하"},{t:11,d:.8,f:E5,s:"는"},
+{t:11.8,d:.8,f:C5,s:"우"},{t:12.6,d:.6,f:B4,s:"리"},
+{t:13.2,d:1,f:A4,s:"~"},
+{t:14.2,d:.5,f:F5,s:"생"},{t:14.7,d:.5,f:F5,s:"일"},
+{t:15.2,d:.8,f:E5,s:"축"},{t:16,d:.8,f:C5,s:"하"},
+{t:16.8,d:.8,f:D5,s:"합"},{t:17.6,d:1.5,f:C5,s:"니다"}
+],lyrics:[{t:0,tx:"생일 축하합니다"},{t:4.6,tx:"생일 축하합니다"},{t:9.2,tx:"사랑하는 우리"},{t:14.2,tx:"생일 축하합니다"}],dur:20},
+
+{id:13,cat:"세계명곡",title:"징글벨",icon:"🎄",diff:"보통",dc:"diff-medium",bpm:130,
+melody:[
+{t:0,d:.4,f:E4,s:"징"},{t:.4,d:.4,f:E4,s:"글"},{t:.8,d:.8,f:E4,s:"벨"},
+{t:1.6,d:.4,f:E4,s:"징"},{t:2,d:.4,f:E4,s:"글"},{t:2.4,d:.8,f:E4,s:"벨"},
+{t:3.2,d:.4,f:E4,s:"징"},{t:3.6,d:.4,f:G4,s:"글"},{t:4,d:.4,f:C4,s:"벨"},
+{t:4.4,d:.4,f:D4,s:"즐"},{t:4.8,d:1.2,f:E4,s:"겁"},
+{t:6,d:.4,f:F4,s:"다"},{t:6.4,d:.4,f:F4,s:"~"},
+{t:6.8,d:.4,f:F4,s:"징"},{t:7.2,d:.4,f:F4,s:"글"},
+{t:7.6,d:.4,f:F4,s:"벨"},{t:8,d:.4,f:E4,s:"징"},
+{t:8.4,d:.4,f:E4,s:"글"},{t:8.8,d:.4,f:E4,s:"벨"},
+{t:9.2,d:.4,f:E4,s:"노"},{t:9.6,d:.4,f:E4,s:"래"},
+{t:10,d:.4,f:G4,s:"부"},{t:10.4,d:.4,f:G4,s:"르"},
+{t:10.8,d:.4,f:F4,s:"며"},{t:11.2,d:.4,f:D4,s:"달"},
+{t:11.6,d:1.2,f:C4,s:"리자"}
+],lyrics:[{t:0,tx:"징글벨 징글벨"},{t:3.2,tx:"징글벨 즐겁다"},{t:6,tx:"징글벨 징글벨"},{t:9.2,tx:"노래 부르며 달리자"}],dur:14},
+
+{id:14,cat:"세계명곡",title:"올드 맥도날드",icon:"🐄",diff:"보통",dc:"diff-medium",bpm:120,
+melody:[
+{t:0,d:.4,f:C4,s:"올"},{t:.4,d:.4,f:C4,s:"드"},{t:.8,d:.4,f:C4,s:"맥"},
+{t:1.2,d:.4,f:G3,s:"도"},{t:1.6,d:.4,f:A3,s:"날"},{t:2,d:.4,f:A3,s:"드"},
+{t:2.4,d:.8,f:G3,s:"~"},
+{t:3.2,d:.4,f:E4,s:"아"},{t:3.6,d:.4,f:E4,s:"저"},{t:4,d:.4,f:D4,s:"씨"},
+{t:4.4,d:.4,f:D4,s:"에"},{t:4.8,d:.8,f:C4,s:"겐"},
+{t:5.6,d:.4,f:G3,s:"농"},{t:6,d:.8,f:G3,s:"장"},
+{t:6.8,d:.4,f:C4,s:"이"},{t:7.2,d:.4,f:C4,s:"아"},{t:7.6,d:.4,f:C4,s:"이"},
+{t:8,d:.4,f:G3,s:"아"},{t:8.4,d:.4,f:A3,s:"이"},{t:8.8,d:.4,f:A3,s:"오"},
+{t:9.2,d:.8,f:G3,s:"~"},
+{t:10,d:.4,f:E4,s:"이"},{t:10.4,d:.4,f:E4,s:"곳"},{t:10.8,d:.4,f:D4,s:"저"},
+{t:11.2,d:.4,f:D4,s:"곳"},{t:11.6,d:.8,f:C4,s:"에"},
+{t:12.4,d:.3,f:G4,s:"음"},{t:12.7,d:.3,f:G4,s:"메"},{t:13,d:.5,f:G4,s:"~"}
+],lyrics:[{t:0,tx:"올드 맥도날드"},{t:3.2,tx:"아저씨에겐"},{t:5.6,tx:"농장이 있어"},{t:10,tx:"이곳저곳에 음메~"}],dur:14.5},
+
+{id:15,cat:"세계명곡",title:"작은별 (ABC송)",icon:"🔤",diff:"쉬움",dc:"diff-easy",bpm:100,
+melody:[
+{t:0,d:.5,f:C4,s:"A"},{t:.5,d:.5,f:C4,s:"B"},{t:1,d:.5,f:G4,s:"C"},{t:1.5,d:.5,f:G4,s:"D"},
+{t:2,d:.5,f:A4,s:"E"},{t:2.5,d:.5,f:A4,s:"F"},{t:3,d:1,f:G4,s:"G"},
+{t:4,d:.5,f:F4,s:"H"},{t:4.5,d:.5,f:F4,s:"I"},{t:5,d:.5,f:E4,s:"J"},{t:5.5,d:.5,f:E4,s:"K"},
+{t:6,d:.5,f:D4,s:"L"},{t:6.5,d:.5,f:D4,s:"M"},{t:7,d:1,f:C4,s:"N"},
+{t:8,d:.5,f:G4,s:"O"},{t:8.5,d:.5,f:G4,s:"P"},{t:9,d:.5,f:F4,s:"Q"},{t:9.5,d:.5,f:F4,s:"R"},
+{t:10,d:.5,f:E4,s:"S"},{t:10.5,d:.5,f:E4,s:"T"},{t:11,d:1,f:D4,s:"U"},
+{t:12,d:.5,f:G4,s:"V"},{t:12.5,d:.5,f:G4,s:"W"},{t:13,d:.75,f:F4,s:"X"},
+{t:13.75,d:.75,f:E4,s:"Y"},{t:14.5,d:1,f:D4,s:"Z"},
+{t:15.5,d:.5,f:C4,s:"이"},{t:16,d:.5,f:C4,s:"제"},{t:16.5,d:.5,f:G4,s:"다"},{t:17,d:.5,f:G4,s:"알"},
+{t:17.5,d:.5,f:A4,s:"았"},{t:18,d:.5,f:A4,s:"으"},{t:18.5,d:1,f:G4,s:"니"},
+{t:19.5,d:.5,f:F4,s:"다"},{t:20,d:.5,f:F4,s:"음"},{t:20.5,d:.5,f:E4,s:"에"},{t:21,d:.5,f:E4,s:"또"},
+{t:21.5,d:.5,f:D4,s:"같"},{t:22,d:.5,f:D4,s:"이"},{t:22.5,d:1.5,f:C4,s:"~"}
+],lyrics:[{t:0,tx:"A B C D E F G"},{t:4,tx:"H I J K L M N"},{t:8,tx:"O P Q R S T U"},{t:12,tx:"V W X Y Z"},{t:15.5,tx:"이제 다 알았으니"},{t:19.5,tx:"다음에 또 같이~"}],dur:25},
+
+// ===== NEW SONGS (16-25) =====
+
+{id:16,cat:"동요",title:"고향의 봄",icon:"🌷",diff:"쉬움",dc:"diff-easy",bpm:100,
