@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v6 — AI 노래방",
+  "name": "StarVoice v7 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 35곡, BGM 반주, 리버브+에코, 워밍업, 업적, 통계, 실시간 음정 감지",
+  "description": "AI 음정 분석 K-노래방. 45곡, BGM 반주, 리버브+에코+코러스, 일일 챌린지, 재생 큐, 업적 20개, 통계, 실시간 음정 감지",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
