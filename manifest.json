@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v7 — AI 노래방",
+  "name": "StarVoice v8 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 45곡, BGM 반주, 리버브+에코+코러스, 일일 챌린지, 재생 큐, 업적 20개, 통계, 실시간 음정 감지",
+  "description": "AI 음정 분석 K-노래방. 55곡, BGM 반주, 보컬가이드, 음역테스트, 연습플래너, 랭킹, 공유카드, 노래팁 12가지, 리버브+에코+코러스, 일일 챌린지, 재생 큐, 30개 업적, 가사 외우기, 계절 테마",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -14,5 +14,9 @@
   ],
   "categories": ["entertainment", "music", "games"],
   "lang": "ko",
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "55곡 노래방"},
+    {"name": "연습 플래너", "url": "./noraebang-v6.html#planner", "description": "연습 기록 관리"}
+  ]
 }

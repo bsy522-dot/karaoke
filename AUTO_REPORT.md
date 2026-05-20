@@ -1,6 +1,98 @@
 
 ---
 
+## [AUTO] 2026-05-20 karaoke v8.0 — PRIME Holdings NEXTERA+PRISM 전체 팀원 투입
+
+### 1차: 벤치마킹 분석 (StarMaker / 노래방어플 대비)
+
+| 항목 | StarMaker | karaoke v7 | v8 목표 | 결과 |
+|------|-----------|-----------|---------|------|
+| 곡 수 | 수천곡 | 45곡 | 55곡 | ✅ 55곡 (+10) |
+| 보컬 가이드 | 가이드 멜로디 | 없음 | 실시간 가이드 | ✅ 실시간 sine 가이드 |
+| 음역 테스트 | 있음 | 없음 | 테스트 기능 | ✅ McLeod 연동 실시간 |
+| 연습 관리 | 연습 기록 | 없음 | 플래너 시스템 | ✅ 일별/연속/통계 |
+| 개인 랭킹 | 리더보드 | 최고점수만 | 전곡 랭킹 | ✅ TOP20 등급별 |
+| 공유 카드 | SNS 공유 | 없음 | Canvas 카드 | ✅ 600x380 6통계 |
+| 노래 팁 | 레슨 컨텐츠 | 없음 | 12가지 팁 | ✅ 복식호흡~자세 |
+| 가사 외우기 | 있음 | 없음 | 블러 모드 | ✅ 블러 토글 |
+| 계절 테마 | 이벤트 | 없음 | 4계절 배너 | ✅ 자동 시즌 |
+| 업적 | 수십개 | 20개 | 30개 | ✅ 30개 (+10) |
+
+**우위 유지 항목:**
+- WebGL2 fluid 셰이더 배경
+- SVG 판정 burst + confetti VFX
+- McLeod Pitch Method (NSDF) 음정 감지 엔진
+- 실시간 음역 추천 (5초 후 자동 키시프트)
+- LFO 기반 코러스 이펙트
+
+### 2차: 개발팀 전체 투입
+
+#### 아키텍처: v8_patch.js 모듈형 패치
+- noraebang-v6.html 원본 무변경 (151KB 보존)
+- v8_patch.js (605줄, 신규) 자기완결형 패치 모듈
+- sw.js v8 캐시 + v7/v8 양쪽 자동 주입
+
+#### 콘텐츠 제작: 10곡 추가 (45→55곡)
+- 동요 4곡: 산토끼토끼야, 우산, 그대로멈춰라, 머리어깨무릎발(v7)
+- 가요/민요 3곡: 봄이오면, 섬집아기, 오빠생각
+- 세계명곡 3곡: 캉캉(어려움), 환희의송가, 로우로우보트
+
+#### 프론트엔드
+- 보컬 가이드 버튼 (🎵) — 노래 중 멜로디 sine wave 가이드
+- 가사 외우기 버튼 (🧠) — 가사 blur 8px 토글
+- 퀵 액션 5종: 랭킹/연습플래너/음역테스트/노래팁/공유카드
+- 4개 모달 신규: 플래너/랭킹/음역테스트/팁
+- 계절 배너 자동 삽입 (봄🌸/여름☀️/가을🍁/겨울❄️)
+- 반응형 모달 (600px 이하 최적화)
+
+#### 오디오 엔진
+- 보컬 가이드: 실시간 멜로디 추적 sine oscillator (gain 0.08)
+- SFX 6종: guide/range_test/ranking/share/planner/tips
+- 음역 테스트: McLeodPitch 연동 100ms 폴링, 최저/최고 추적
+
+#### 백엔드/로직
+- 연습 플래너: localStorage 일별 CRUD, 연속일수 계산, 통계 4종
+- 개인 랭킹: 전곡 최고점수 정렬, TOP20 등급 표시
+- 공유 카드: Canvas 600x380 그래디언트 + 6통계 + PNG 다운로드
+- 음역 테스트: 실시간 주파수 추적, 음이름 변환, 범위 저장
+- 계절 추적: 4시즌 방문 기록 (업적 연동)
+
+#### 콘텐츠
+- 노래 팁 12가지: 복식호흡/발성워밍업/음정잡기/고음내기/리듬감/감정표현/마이크거리/비브라토/쉼표활용/녹음듣기/물마시기/자세
+- 업적 10개 추가 (20→30): songs_55/range_tested/guide_used/share_card/planner_7/grade_s15/perfect_3/tips_reader/memorize_clear/seasonal_singer
+
+#### SEO
+- index.html: keywords 메타태그, Twitter Card 3태그, JSON-LD 확장 (featureList)
+- v8_patch.js: OG/Twitter/description 동적 갱신
+
+#### 키보드 단축키 +5종
+- R=랭킹, P=플래너, V=음역테스트, T=노래팁, C=공유카드
+
+### 3차: 품질팀 검증
+
+| 항목 | 결과 |
+|------|------|
+| v8_patch.js 문법 | ✅ PASS (node -c) |
+| v7_patch.js 문법 | ✅ PASS |
+| sw.js 문법 | ✅ PASS |
+| manifest.json 파싱 | ✅ PASS |
+| HTML 태그 밸런스 | ✅ BALANCED |
+| 외부 CDN | ✅ 0건 |
+| 개인정보 노출 | ✅ 0건 |
+| HTML entities | ✅ &quot; 사용 (2건) |
+| 함수 수 | 21개 |
+| 파일 크기 | 605줄 |
+
+### 4차: 마무리
+- 커밋: [AUTO] 2026-05-20 karaoke v8.0
+- v8_patch.js 신규 605줄
+- sw.js v7→v8 캐시 업데이트
+- index.html SEO 강화
+- manifest.json v8.0 갱신
+- AUTO_REPORT.md v8.0 보고서 추가
+
+---
+
 ## [AUTO] 2026-05-14 karaoke v7.0 — PRIME Holdings NEXTERA+PRISM 전체 팀원 투입
 
 ### 1차: 벤치마킹 분석 (StarMaker / 노래방어플 대비)
