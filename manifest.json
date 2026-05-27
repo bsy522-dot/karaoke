@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v8 — AI 노래방",
+  "name": "StarVoice v9 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 55곡, BGM 반주, 보컬가이드, 음역테스트, 연습플래너, 랭킹, 공유카드, 노래팁 12가지, 리버브+에코+코러스, 일일 챌린지, 재생 큐, 30개 업적, 가사 외우기, 계절 테마",
+  "description": "AI 음정 분석 K-노래방. 65곡, 듀엣 모드, 보이스 EQ 8종, 음정 트레이닝, 보컬 다이어리, 장르 라디오, 연습 통계 대시보드, 워밍업 빌더, 난이도 차트, BGM 반주, 보컬가이드, 음역테스트, 연습플래너, 랭킹, 공유카드, 노래팁 12가지, 리버브+에코+코러스, 일일 챌린지, 재생 큐, 42개 업적, 가사 외우기, 계절 테마",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -16,7 +16,7 @@
   "lang": "ko",
   "prefer_related_applications": false,
   "shortcuts": [
-    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "55곡 노래방"},
-    {"name": "연습 플래너", "url": "./noraebang-v6.html#planner", "description": "연습 기록 관리"}
+    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "65곡 노래방"},
+    {"name": "음정 트레이닝", "url": "./noraebang-v6.html#pitch-training", "description": "음정 듣기 퀴즈"}
   ]
 }
