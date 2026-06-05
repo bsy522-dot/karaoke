@@ -1,0 +1,35 @@
+name: Pitch Guard
+
+# 노래방 음정 검출 회귀 방지 게이트 (2차 감지막)
+# noraebang-v*.html 또는 테스트가 바뀌면, 음정 정확도를 측정해 기준 미만이면 빨간불.
+
+on:
+  push:
+    paths:
+      - 'noraebang-v*.html'
+      - 'tests/pitch_guard.mjs'
+  pull_request:
+    paths:
+      - 'noraebang-v*.html'
+      - 'tests/pitch_guard.mjs'
+  workflow_dispatch:
+
+jobs:
+  pitch-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: 음정 검출 회귀 게이트
+        shell: bash
+        run: |
+          shopt -s nullglob
+          files=(noraebang-v*.html)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "노래방 HTML 없음 — skip"
+            exit 0
+          fi
+          echo "검사 대상: ${files[*]}"
+          node tests/pitch_guard.mjs "${files[@]}"

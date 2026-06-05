@@ -23,6 +23,11 @@ jobs:
               > noraebang-v6.html
           echo "Assembled file size: $(wc -c < noraebang-v6.html) bytes"
           echo "Line count: $(wc -l < noraebang-v6.html)"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: 음정 회귀 게이트 (실패 시 커밋/배포 차단)
+        run: node tests/pitch_guard.mjs noraebang-v6.html
       - name: Commit assembled file
         run: |
           git config user.name 'github-actions[bot]'

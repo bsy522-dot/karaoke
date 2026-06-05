@@ -1,0 +1,29 @@
+#!/bin/sh
+# 노래방 음정 회귀 방지 — push 전 게이트 (1차 차단막)
+# 음정 검출 정확도가 기준 미만이면 push를 거부한다.
+# ⚠️ --no-verify 우회는 옥타브 점프 버그의 재배포를 의미한다. 하지 말 것.
+
+echo "[pitch-guard] 음정 검출 정확도 검사 중..."
+
+HTMLS=$(ls noraebang-v*.html 2>/dev/null)
+if [ -z "$HTMLS" ]; then
+  echo "[pitch-guard] noraebang-v*.html 없음 — skip"
+  exit 0
+fi
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "[pitch-guard] ⚠️ node 미설치 — 게이트 건너뜀(검증 불가). node 설치 권장."
+  exit 0
+fi
+
+node tests/pitch_guard.mjs $HTMLS
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "🚫 push 차단: 음정 검출에 옥타브 점프 버그가 있습니다."
+  echo "   수정법: _build/OCTAVE_FIX.md (pickPeak → globalMax*0.9 임계 첫 피크)"
+  echo "   재현:   node tests/pitch_guard.mjs noraebang-v6.html"
+  exit 1
+fi
+
+echo "[pitch-guard] ✅ 통과"
+exit 0

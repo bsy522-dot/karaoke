@@ -434,7 +434,7 @@ function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webki
 async function startMic(){
   try{
     initAudio();
-    micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+    micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
     const src=audioCtx.createMediaStreamSource(micStream);
     analyser=audioCtx.createAnalyser();analyser.fftSize=BUF;
     src.connect(analyser);micOn=true;
