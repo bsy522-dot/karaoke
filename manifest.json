@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v11 — AI 노래방",
+  "name": "StarVoice v12 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 85곡, 히스토리, 음역맵Canvas, AI추천, 녹음스튜디오, 호흡운동8종, 피치그래프Canvas, 보컬이펙트, 즐겨찾기컬렉션, 캘린더, 파티모드, 보컬코칭8기법, 보컬배틀, 분석리포트, 플레이리스트, 일일도전, 듀엣, EQ8종, 음정훈련, 보컬다이어리, 장르라디오, 연습통계, 워밍업빌더, 난이도차트, 퀴즈72문, 66개 업적",
+  "description": "AI 음정 분석 K-노래방. 95곡, 보컬아카데미12강, 듀엣하모니AI, 가사외우기, 공연리뷰Canvas, 음악이론12강, 속도조절연습, 워밍업루틴6종, 챌린지랭킹, 음색분석Canvas, 진도트래커Canvas, 히스토리, 음역맵, AI추천, 녹음스튜디오, 호흡운동8종, 피치그래프, 보컬이펙트, 즐겨찾기, 캘린더, 파티모드, 보컬코칭8기법, 보컬배틀, 분석리포트, 퀴즈87문, 78개 업적",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -16,9 +16,11 @@
   "lang": "ko",
   "prefer_related_applications": false,
   "shortcuts": [
-    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "85곡 노래방"},
-    {"name": "보컬 코칭", "url": "./noraebang-v6.html#vocal-coaching", "description": "8가지 발성 기법"},
-    {"name": "호흡 운동", "url": "./noraebang-v6.html#breathing", "description": "8종 호흡 트레이닝"},
-    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "72문 노래 퀴즈"}
+    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "95곡 노래방"},
+    {"name": "보컬 아카데미", "url": "./noraebang-v6.html#vocal-academy", "description": "12강 보컬 트레이닝"},
+    {"name": "음악이론 교실", "url": "./noraebang-v6.html#music-theory", "description": "12강 음악 이론"},
+    {"name": "듀엣 하모니", "url": "./noraebang-v6.html#duet", "description": "AI 듀엣 파트너"},
+    {"name": "챌린지 랭킹", "url": "./noraebang-v6.html#challenge", "description": "주간 챌린지 도전"},
+    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "87문 노래 퀴즈"}
   ]
 }
