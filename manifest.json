@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v11 — AI 노래방",
+  "name": "StarVoice v12 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 85곡, 히스토리, 음역맵Canvas, AI추천, 녹음스튜디오, 호흡운동8종, 피치그래프Canvas, 보컬이펙트, 즐겨찾기컬렉션, 캘린더, 파티모드, 보컬코칭8기법, 보컬배틀, 분석리포트, 플레이리스트, 일일도전, 듀엣, EQ8종, 음정훈련, 보컬다이어리, 장르라디오, 연습통계, 워밍업빌더, 난이도차트, 퀴즈72문, 66개 업적",
+  "description": "AI 음정 분석 K-노래방. 95곡, 보컬레슨12단계, 비브라토감지Canvas, MV테마8종, 음정추이Canvas, 테크닉도감12종, 난이도맵Canvas, 듀엣챌린지6종, 리포트카드Canvas, 일일팁30, 퀴즈87문, 78개 업적",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -16,9 +16,9 @@
   "lang": "ko",
   "prefer_related_applications": false,
   "shortcuts": [
-    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "85곡 노래방"},
-    {"name": "보컬 코칭", "url": "./noraebang-v6.html#vocal-coaching", "description": "8가지 발성 기법"},
-    {"name": "호흡 운동", "url": "./noraebang-v6.html#breathing", "description": "8종 호흡 트레이닝"},
-    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "72문 노래 퀴즈"}
+    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "95곡 노래방"},
+    {"name": "보컬 레슨", "url": "./noraebang-v6.html#vocal-lessons", "description": "12단계 보컬 커리큘럼"},
+    {"name": "비브라토 감지", "url": "./noraebang-v6.html#vibrato", "description": "실시간 비브라토 분석"},
+    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "87문 노래 퀴즈"}
   ]
 }
