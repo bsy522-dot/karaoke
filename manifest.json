@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v12 — AI 노래방",
+  "name": "StarVoice v13 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 95곡, 보컬레슨12단계, 비브라토감지Canvas, MV테마8종, 음정추이Canvas, 테크닉도감12종, 난이도맵Canvas, 듀엣챌린지6종, 리포트카드Canvas, 일일팁30, 퀴즈87문, 78개 업적",
+  "description": "AI 음정 분석 K-노래방. 105곡, 보이스이펙트8종, 음역대측정기Canvas, 구간연습AB반복, 보컬워밍업8단계타이머, 노래랭킹시스템, 음감트레이닝3종, 콘서트모드Canvas, 플레이리스트빌더, 보컬레슨12, 비브라토감지, 퀴즈102문, 90개 업적",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -16,9 +16,11 @@
   "lang": "ko",
   "prefer_related_applications": false,
   "shortcuts": [
-    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "95곡 노래방"},
-    {"name": "보컬 레슨", "url": "./noraebang-v6.html#vocal-lessons", "description": "12단계 보컬 커리큘럼"},
-    {"name": "비브라토 감지", "url": "./noraebang-v6.html#vibrato", "description": "실시간 비브라토 분석"},
-    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "87문 노래 퀴즈"}
+    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "105곡 노래방"},
+    {"name": "보이스 이펙트", "url": "./noraebang-v6.html#voice-effects", "description": "8종 보이스 이펙트"},
+    {"name": "음역대 측정", "url": "./noraebang-v6.html#range-test", "description": "음역대 측정기"},
+    {"name": "음감 트레이닝", "url": "./noraebang-v6.html#pitch-training", "description": "3종 음감 미니게임"},
+    {"name": "콘서트 모드", "url": "./noraebang-v6.html#concert", "description": "가상 콘서트"},
+    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "102문 노래 퀴즈"}
   ]
 }
