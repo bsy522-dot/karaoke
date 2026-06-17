@@ -1,5 +1,5 @@
-const CACHE_NAME = 'starvoice-v12';
-const ASSETS = ['./', './index.html', './noraebang-v6.html', './v7_patch.js', './v8_patch.js', './v9_patch.js', './v10_patch.js', './v11_patch.js', './v12_patch.js', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
+const CACHE_NAME = 'starvoice-v13';
+const ASSETS = ['./', './index.html', './noraebang-v6.html', './v7_patch.js', './v8_patch.js', './v9_patch.js', './v10_patch.js', './v11_patch.js', './v12_patch.js', './v13_patch.js', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => e.waitUntil(
   caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())
@@ -28,7 +28,7 @@ self.addEventListener('fetch', e => {
         if (response && response.headers.get('content-type')?.includes('text/html')) {
           const text = await response.text();
           if (text.includes('noraebang') || text.includes('StarVoice')) {
-            const injected = text.replace('</body>', '<script src="./v7_patch.js"><\/script>\n<script src="./v8_patch.js"><\/script>\n<script src="./v9_patch.js"><\/script>\n<script src="./v10_patch.js"><\/script>\n<script src="./v11_patch.js"><\/script>\n<script src="./v12_patch.js"><\/script>\n</body>');
+            const injected = text.replace('</body>', '<script src="./v7_patch.js"><\/script>\n<script src="./v8_patch.js"><\/script>\n<script src="./v9_patch.js"><\/script>\n<script src="./v10_patch.js"><\/script>\n<script src="./v11_patch.js"><\/script>\n<script src="./v12_patch.js"><\/script>\n<script src="./v13_patch.js"><\/script>\n</body>');
             return new Response(injected, {
               status: response.status,
               statusText: response.statusText,
