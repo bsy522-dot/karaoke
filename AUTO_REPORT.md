@@ -1,3 +1,76 @@
+# [AUTO] 2026-06-27 karaoke v15.0 보고서
+
+## Phase 1: 벤치마킹 (StarMaker / Smule 대비)
+
+| # | 경쟁사 기능 | StarMaker | Smule | v14 | v15 해결 |
+|---|-----------|-----------|-------|-----|---------|
+| 1 | 듀엣 하모니 매칭/분석 | O (듀엣 매칭) | O (듀엣 유료) | X | ✅ 12쌍 듀엣 하모니 매처 Canvas 시각화 (1st/2nd 파트 분석) |
+| 2 | 음색/보이스 분석 | O (AI 음색 분석) | O (3축) | X | ✅ 6축 Radar Canvas (밝기/따뜻함/호흡감/공명/선명도/파워) |
+| 3 | 가창력 성장 추이 차트 | O (성장 그래프) | O (타임라인) | X | ✅ Canvas Line Chart 그라디언트 + 최고/최저/평균 통계 |
+| 4 | 발음 교정/클리닉 | O (발음 가이드) | X | X | ✅ 12종 한국어 발음 유형별 팁/예문 클리닉 |
+| 5 | 멀티플레이어 파티 모드 | O (그룹 대결) | O (듀엣) | X | ✅ 4인 로테이션 파티 모드 + 메달 랭킹 (금/은/동) |
+| 6 | 리믹스/BPM/키 조절 스튜디오 | O (리믹스) | O | X | ✅ Canvas 파형 + BPM(40-200)/키(-6~+6) 슬라이더 + 6프리셋 |
+| 7 | 일일/주간/월간 챌린지 시스템 | O (데일리) | O (위클리) | X | ✅ 30일 보컬 챌린지 Canvas 달력 + 30미션 + 완료 추적 |
+| 8 | 음악 성향/감성 테스트 | O (성향 분석) | X | X | ✅ 10문항 4유형 감성테스트 (Energizer/Artisan/Peacemaker/Idealist) |
+| 9 | 곡 125개 이상 | O (수천곡) | O | 115곡 | ✅ 125곡 (+10곡: Dynamite/첫눈처럼/사랑은늘도망가/Celebrity/드라마/LoveLee/HypeBoy/SuperShy/마지막처럼/그날에나는) |
+| 10 | 업적/퀴즈 확대 | O (100+) | O | 102업적/117퀴즈 | ✅ 114업적/132퀴즈 |
+
+## Phase 2: 개발 내역
+
+### v15_patch.js (신규, ~750줄, 자기완결형 IIFE 패치 모듈)
+1. **듀엣 하모니 매처 Canvas**: 12쌍 듀엣 조합 (BTS+아이유, 악뮤, NewJeans 등), Canvas 560x300 2파트 하모니 시각화, 파트별 음역/난이도 분석, 듀엣 시도 추적
+2. **음색 분석기 6축 Radar Canvas**: 밝기/따뜻함/호흡감/공명/선명도/파워 6축 420x420 Canvas, 음색 유형 7종 분류 (맑은/따뜻한/허스키/파워/감성/투명/깊은), 음색별 추천곡, 분석 기록 보관
+3. **가창력 성장 차트 Canvas Line**: 600x340 Canvas 라인차트, 그라디언트 필, 데이터포인트 도트, 최고/최저/평균/총기록 통계, endSong 자동 기록
+4. **발음 클리닉 12종**: 받침연음/경음화/구개음화/비음화/격음화/모음조화/장단음/이중모음/연음법칙/사이시옷/외래어/두음법칙, 유형별 규칙/팁/예문 제공
+5. **파티 모드 4인**: 2~4인 플레이어 등록, 라운드별 점수 입력, 총점 자동 합산, 금/은/동 메달 랭킹, 파티 횟수 통계
+6. **리믹스 스튜디오 Canvas**: 560x200 Canvas 파형 시각화, BPM 슬라이더(40-200), 키 조절(-6~+6), 6프리셋(원본/슬로우잼/나이트코어/어쿠스틱/EDM리믹스/재즈라운지), 세션 카운트
+7. **30일 보컬 챌린지 Canvas 달력**: 560x320 Canvas 30일 그리드, 일별 미션 30종 (호흡연습/고음도전/감정표현 등), 완료 체크, 총완료일/연속일/완료율 통계
+8. **음악 감성 테스트**: 10문항 4지선다, 4유형 결과 (Energizer/Artisan/Peacemaker/Idealist), 유형별 설명/추천장르/추천곡, 테스트 횟수 통계
+
+### 추가 컨텐츠
+- **10곡 추가 (115→125)**: Dynamite(BTS)/첫눈처럼너에게오겠다(에일리)/사랑은늘도망가(임영웅)/Celebrity(아이유)/드라마(아이유)/Love Lee(악뮤)/Hype Boy(NewJeans)/Super Shy(NewJeans)/마지막처럼(BLACKPINK)/그날에나는(김필)
+- **퀴즈 +15문 (117→132)**: 듀엣정의/음색밝기/가창력향상/발음연음법칙/파티모드인원/리믹스BPM/챌린지기간/EAPI테스트/하모니3도/음색파워축/성장차트/경음화/리믹스프리셋/파티메달/보컬챌린지미션
+- **업적 +12개 (102→114)**: duet_try/duet_master/timbre_analyze/timbre_all/growth_record/pronun_study/party_host/party_3times/remix_session/challenge_start/challenge_15/sentiment_test
+- **SFX 12종**: duetMatch15/timbreAnalyze/growthRecord/pronunTip/partyStart/partyMedal/remixApply/challengeCheck/sentimentResult/achieve15/featureOpen15/navClick15
+- **키보드 단축키 +8종**: Shift+1(듀엣)/2(음색)/3(성장)/4(발음)/5(파티)/6(리믹스)/7(챌린지)/8(감성)
+- **하단 스크롤 네비바 8종 확장**
+
+### 파일 변경
+| 파일 | 변경 | 설명 |
+|------|------|------|
+| v15_patch.js | **신규** | ~750줄 자기완결형 IIFE |
+| sw.js | v14→v15 | starvoice-v15 캐시, v15_patch.js PRECACHE+주입 |
+| index.html | v15 SEO 갱신 | title/desc/keywords/OG/Twitter/JSON-LD + v15스크립트 |
+| manifest.json | v15 갱신 | 125곡 설명, shortcuts 8종 |
+| noraebang-v6.html | v15 타이틀 | title v15 + v15_patch.js 스크립트 태그 |
+
+## Phase 3: 품질 검증
+
+| 항목 | 결과 |
+|------|------|
+| JS 문법 (node -c v15_patch.js) | ✅ PASS |
+| JS 유효성 (Function constructor) | ✅ PASS |
+| 외부 CDN | ✅ 0건 |
+| 개인정보 노출 | ✅ 0건 (가사 내 &quot;phone&quot;만 존재) |
+| JSON (manifest.json) | ✅ VALID |
+| SW 캐시명 | ✅ starvoice-v15 |
+| SW 스크립트 주입 | ✅ v15_patch.js 포함 |
+| index.html v15 참조 | ✅ 확인 |
+| noraebang-v6.html v15 참조 | ✅ 확인 |
+
+## v14 vs v15 비교
+
+| 항목 | v14 | v15 |
+|------|-----|-----|
+| 총 곡 수 | 115곡 | **125곡** |
+| 퀴즈 문항 | 117문 | **132문** |
+| 업적 수 | 102개 | **114개** |
+| 주요 신기능 | 보이스변환/점수분석/보컬코치/장르휠/노래일기/호흡트레이너/키파인더/아카이브 | **듀엣하모니/음색분석/가창력성장/발음클리닉/파티모드/리믹스스튜디오/보컬챌린지/감성테스트** |
+| Canvas 시각화 | ~13종 | **~21종** (+8) |
+| 패치 파일 | 8개 (v7-v14) | **9개 (v7-v15)** |
+
+---
+
 # [AUTO] 2026-06-17 karaoke v13.0 보고서
 
 ## Phase 1: 벤치마킹 (StarMaker / Smule / SMULE 대비)
