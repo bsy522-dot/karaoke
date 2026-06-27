@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v14 — AI 노래방",
+  "name": "StarVoice v15 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 115곡, 보이스변환8종, 5축점수분석레이더Canvas, 실시간보컬코치12팁, 장르디스커버리휠Canvas, 노래일기+스트릭, 호흡컨트롤트레이너Canvas6패턴, 키파인더Canvas, 퍼포먼스아카이브, 보이스이펙트8종, 음역대측정기, 구간연습AB반복, 보컬워밍업8단계, 랭킹시스템, 음감트레이닝3종, 콘서트모드, 플레이리스트, 퀴즈117문, 102개 업적",
+  "description": "AI 음정 분석 K-노래방. 125곡, 음색DNA프로파일러6축Canvas, 리듬아케이드Canvas6종, 듀엣AI파트너8종, 발성도장12종, 가사챌린지, 스테이지코치12팁, 보컬히트맵Canvas, 노래추천AI, 보이스변환8종, 5축점수분석레이더Canvas, 보컬코치12팁, 장르디스커버리휠Canvas, 노래일기+스트릭, 호흡트레이너Canvas6패턴, 키파인더Canvas, 퍼포먼스아카이브, 보이스이펙트8종, 음역대측정기, 구간연습, 워밍업8단계, 랭킹, 음감트레이닝3종, 콘서트모드, 플레이리스트, 보컬레슨12, 비브라토감지, 퀴즈132문, 114개 업적",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -16,13 +16,13 @@
   "lang": "ko",
   "prefer_related_applications": false,
   "shortcuts": [
-    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "115곡 노래방"},
-    {"name": "보이스 변환", "url": "./noraebang-v6.html#voice-transform", "description": "8종 보이스 변환"},
-    {"name": "점수 분석", "url": "./noraebang-v6.html#score-breakdown", "description": "5축 점수 분석 레이더"},
-    {"name": "보컬 코치", "url": "./noraebang-v6.html#vocal-coach", "description": "실시간 보컬 코칭"},
-    {"name": "장르 휠", "url": "./noraebang-v6.html#discovery-wheel", "description": "장르 디스커버리 휠"},
-    {"name": "호흡 트레이너", "url": "./noraebang-v6.html#breath-trainer", "description": "호흡 컨트롤 트레이너"},
-    {"name": "키 파인더", "url": "./noraebang-v6.html#key-finder", "description": "최적 키 추천"},
-    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "117문 노래 퀴즈"}
+    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "125곡 노래방"},
+    {"name": "음색 DNA", "url": "./noraebang-v6.html#voice-dna", "description": "음색 DNA 프로파일러 6축"},
+    {"name": "리듬 아케이드", "url": "./noraebang-v6.html#rhythm-arcade", "description": "리듬 트레이닝 아케이드 6종"},
+    {"name": "듀엣 AI", "url": "./noraebang-v6.html#duet-ai", "description": "듀엣 AI 파트너 8종"},
+    {"name": "발성 도장", "url": "./noraebang-v6.html#vocal-dojo", "description": "발성 테크닉 도장 12종"},
+    {"name": "가사 챌린지", "url": "./noraebang-v6.html#lyrics-challenge", "description": "가사 암기 챌린지"},
+    {"name": "스테이지 코치", "url": "./noraebang-v6.html#stage-coach", "description": "스테이지 프레즌스 코치"},
+    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "132문 노래 퀴즈"}
   ]
 }
