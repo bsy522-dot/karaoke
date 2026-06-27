@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v14 — AI 노래방",
+  "name": "StarVoice v15 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 115곡, 보이스변환8종, 5축점수분석레이더Canvas, 실시간보컬코치12팁, 장르디스커버리휠Canvas, 노래일기+스트릭, 호흡컨트롤트레이너Canvas6패턴, 키파인더Canvas, 퍼포먼스아카이브, 보이스이펙트8종, 음역대측정기, 구간연습AB반복, 보컬워밍업8단계, 랭킹시스템, 음감트레이닝3종, 콘서트모드, 플레이리스트, 퀴즈117문, 102개 업적",
+  "description": "AI 음정 분석 K-노래방. 125곡, 듀엣하모니매처Canvas12종, 음색분석기6축RadarCanvas, 가창력성장차트CanvasLine, 발음클리닉12종, 파티모드4인, 리믹스스튜디오CanvasBPM키, 30일보컬챌린지Canvas달력, 음악감성테스트10문4유형, 보이스변환8종, 5축점수분석레이더Canvas, 실시간보컬코치12팁, 장르디스커버리휠Canvas, 노래일기+스트릭, 호흡컨트롤트레이너Canvas6패턴, 키파인더Canvas, 퍼포먼스아카이브, 퀴즈132문, 114개 업적",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -16,13 +16,13 @@
   "lang": "ko",
   "prefer_related_applications": false,
   "shortcuts": [
-    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "115곡 노래방"},
-    {"name": "보이스 변환", "url": "./noraebang-v6.html#voice-transform", "description": "8종 보이스 변환"},
-    {"name": "점수 분석", "url": "./noraebang-v6.html#score-breakdown", "description": "5축 점수 분석 레이더"},
-    {"name": "보컬 코치", "url": "./noraebang-v6.html#vocal-coach", "description": "실시간 보컬 코칭"},
-    {"name": "장르 휠", "url": "./noraebang-v6.html#discovery-wheel", "description": "장르 디스커버리 휠"},
-    {"name": "호흡 트레이너", "url": "./noraebang-v6.html#breath-trainer", "description": "호흡 컨트롤 트레이너"},
-    {"name": "키 파인더", "url": "./noraebang-v6.html#key-finder", "description": "최적 키 추천"},
-    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "117문 노래 퀴즈"}
+    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "125곡 노래방"},
+    {"name": "듀엣 하모니", "url": "./noraebang-v6.html#duet-harmony", "description": "듀엣 하모니 매처"},
+    {"name": "음색 분석", "url": "./noraebang-v6.html#timbre-analyzer", "description": "6축 음색 분석기"},
+    {"name": "가창력 성장", "url": "./noraebang-v6.html#vocal-growth", "description": "가창력 성장 차트"},
+    {"name": "파티 모드", "url": "./noraebang-v6.html#party-mode", "description": "4인 파티 모드"},
+    {"name": "리믹스 스튜디오", "url": "./noraebang-v6.html#remix-studio", "description": "리믹스 스튜디오"},
+    {"name": "보컬 챌린지", "url": "./noraebang-v6.html#vocal-challenge", "description": "30일 보컬 챌린지"},
+    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "132문 노래 퀴즈"}
   ]
 }
