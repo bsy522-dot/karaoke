@@ -1,3 +1,87 @@
+# [AUTO] 2026-07-02 karaoke v16.0 보고서
+
+## Phase 1: 벤치마킹 (StarMaker / Smule 대비)
+
+| # | 경쟁사 기능 | StarMaker | Smule | v15 | v16 해결 |
+|---|-----------|-----------|-------|-----|---------|
+| 1 | 음정 장기 추적/분석 | ✅ | ✅ | ❌ | ✅ 음정마스터리트래커Canvas |
+| 2 | 보컬 배틀/대전 | ✅ | ✅ | ❌ | ✅ 보컬배틀토너먼트8인AI |
+| 3 | 이퀄라이저/음향 시각화 | ✅ | ✅ | ❌ | ✅ 보이스EQ시각화8밴드Canvas |
+| 4 | 일일/주간 미션 | ✅ | ✅ | ❌ | ✅ 일일주간챌린지7종 |
+| 5 | 싱어 성장/레벨 시스템 | ✅ | ✅ | ❌ | ✅ 싱어성장일지Canvas11레벨 |
+| 6 | 음악 이론 학습 | ✅ | ❌ | ❌ | ✅ 음악이론미니튜터12종 |
+| 7 | 공유 스코어카드 | ✅ | ✅ | ❌ | ✅ 스코어카드생성기CanvasPNG |
+| 8 | 보컬 스타일 비교 | ✅ | ❌ | ❌ | ✅ 보컬스타일비교6축Canvas |
+| 9 | 곡 대폭 추가 | ✅ | ✅ | 125곡 | ✅ 135곡 (+10곡) |
+| 10 | 퀴즈/업적 확대 | ✅ | ❌ | 132/114 | ✅ 147퀴즈/126업적 |
+
+## Phase 2: 개발 (전체 팀 투입)
+
+### v16_patch.js 신규 (854줄 ~58KB, 자기완결형 IIFE 패치 모듈)
+
+**프론트엔드 (UI/UX)**
+- v16 모달 헬퍼 (다크 그라디언트 테마, 반응형, 터치/클릭 닫기)
+- 하단 스크롤 네비바 8버튼 (블루 테마, v15 네비바 위 배치)
+- 키보드 단축키 Shift+Q/W/E/C/X/T/S/A 8종
+
+**콘텐츠 제작 (+10곡: 125→135)**
+- 126: 사랑인가 봐 (멜로망스, ballad)
+- 127: OMG (NewJeans, pop)
+- 128: 퀘카 ((G)I-DLE, dance)
+- 129: 비가 오는 날엔 (비스트, ballad)
+- 130: 나의 작은 영웅 (이선희, ballad)
+- 131: Drama (aespa, dance)
+- 132: Hype Boy (NewJeans, pop)
+- 133: 밤양갱 (비비, pop)
+- 134: 고민중독 (QWER, rock)
+- 135: 정이라고 하자 (이무진, ballad)
+
+**게임 로직 / 백엔드**
+- 음정 마스터리 트래커: 장기 음정 정확도 라인차트 + 장르별 평균 바차트
+- 보컬 배틀 토너먼트: 8인 AI 라이벌, 3라운드 대전, 전적 기록
+- 일일/주간 챌린지: 4종 일일 + 3종 주간, 진행률 프로그레스바
+- 싱어 성장 일지: 11레벨 진화 트리, XP 시스템, 칭호 부여
+- 음악 이론 미니 튜터: 4카테고리 12레슨, 학습 추적
+
+**오디오 엔진**
+- SFX 12종: pitchMastery, battleStart, battleWin, battleLose, eqAdjust, challengeNew, challengeDone, growthLvl, theoryLearn, scorecard, styleCompare, achieve16
+- LFO 모듈레이션 (growthLvl), 노이즈 버스트 (challengeDone), 주파수 램프 (battleWin)
+
+**비주얼/Canvas**
+- 음정 마스터리: 560x320 라인차트 + 장르별 바차트
+- 보컬 배틀: 520x300 토너먼트 그리드 + 라운드별 HP바
+- 보이스 EQ: 520x260 8밴드 바 + 커브 라인 + 슬라이더
+- 싱어 성장: 500x280 레벨 트리 11노드 + XP 프로그레스바
+- 스코어카드: 600x380 금테두리 + 6통계 카드 + PNG 다운로드
+- 보컬 스타일: 460x400 6축 레이더 + 2스타일 동시 비교
+
+**퀴즈 v16 +15문 (132→147)**
+- 장음계 간격, I-V-vi-IV 진행, BPM 계산, OMG 아티스트, 마이너 코드, pp 의미, 강박, 복식호흡, 밤양갱, 배틀 전략, 3도 하모니, 프레이징, 고민중독, EQ 대역, v16 곡수
+
+**업적 +12개 (114→126)**
+- pitch_view, battle_view, battle_win, battle_5wins, eq_view, challenge_view, growth_view, theory_view, theory_half, scorecard_view, style_view, v16_explorer
+
+### 파일 변경 목록
+- `v16_patch.js`: 신규 생성 (854줄)
+- `index.html`: v16.0 SEO 전면 갱신 + v16 스크립트 태그
+- `sw.js`: v15→v16 (starvoice-v16 캐시, v16_patch.js PRECACHE + 자동주입)
+- `manifest.json`: v16.0 설명 + shortcuts 8종
+
+## Phase 3: 품질 검증
+
+| 항목 | 결과 |
+|------|------|
+| JS 문법 검사 (node -c) | ✅ PASS |
+| 괄호 균형 () | ✅ 837/837 |
+| 괄호 균형 {} | ✅ 253/253 |
+| 괄호 균형 [] | ✅ 154/154 |
+| 외부 CDN 참조 | ✅ 0건 |
+| 개인정보 노출 | ✅ 0건 |
+| SW JSON 검증 | ✅ PASS |
+| Manifest JSON 검증 | ✅ PASS |
+
+---
+
 # [AUTO] 2026-06-17 karaoke v13.0 보고서
 
 ## Phase 1: 벤치마킹 (StarMaker / Smule / SMULE 대비)
