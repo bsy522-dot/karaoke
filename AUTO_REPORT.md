@@ -1069,3 +1069,92 @@
 | localStorage 프리픽스 | ✅ sv15- |
 | 네비게이션바 위치 | ✅ bottom:44px (v14 위 배치) |
 
+
+---
+
+# [AUTO] 2026-07-05 karaoke v17.0 보고서
+
+## Phase 1: 벤치마킹 (StarMaker / Smule / WeSing 대비)
+
+| # | 경쟁사 기능 | StarMaker | Smule | WeSing | v16 | v17 해결 |
+|---|-----------|-----------|-------|--------|-----|---------|
+| 1 | 보컬 워밍업 루틴 자동 생성 | ✅ | ❌ | ❌ | ❌ | ✅ 보컬워밍업루틴생성기Canvas8단계 |
+| 2 | 라이브 오디션 시뮬레이션 | ✅ | ✅ | ❌ | ❌ | ✅ 라이브오디션시뮬레이터Canvas5심사위원 |
+| 3 | 음정 인터벌 트레이닝 | ❌ | ✅ | ❌ | ❌ | ✅ 음정인터벌트레이닝Canvas12종 |
+| 4 | 보컬 테크닉 레이더 차트 | ❌ | ❌ | ✅ | ❌ | ✅ 보컬테크닉6축RadarCanvas |
+| 5 | 노래방 파티 모드 | ✅ | ✅ | ✅ | ❌ | ✅ 노래방파티플래너8모드 |
+| 6 | 감성/무드 기반 노래 추천 | ✅ | ✅ | ✅ | ❌ | ✅ 감성노래매칭Canvas8감정 |
+| 7 | 보컬 성장 타임라인 시각화 | ✅ | ❌ | ❌ | ❌ | ✅ 보컬성장타임라인Canvas30일 |
+| 8 | AI 코칭 고급 연습 모드 | ✅ | ✅ | ❌ | ❌ | ✅ AI보컬코치어드밴스드Canvas10연습 |
+
+## Phase 2: 개발 내역
+
+### 2-1. 콘텐츠팀 - 신곡 10곡 추가 (135→145곡)
+| ID | 제목 | 아티스트 | 장르 | BPM | 난이도 |
+|----|------|---------|------|-----|--------|
+| 136 | 밤편지 | 아이유 | 발라드 | 72 | 3 |
+| 137 | FOREVER YOUNG | BLACKPINK | 댄스 | 128 | 4 |
+| 138 | 소우주 | BTS | 발라드 | 76 | 3 |
+| 139 | 불꽃놀이 | AKMU | 인디 | 100 | 2 |
+| 140 | 첫 눈 | EXO | 발라드 | 68 | 3 |
+| 141 | ANTIFRAGILE | LE SSERAFIM | 댄스 | 132 | 5 |
+| 142 | Way Back Home | 숀 | R&B | 110 | 3 |
+| 143 | 봄날 | BTS | 발라드 | 78 | 3 |
+| 144 | Panorama | IZ*ONE | 댄스 | 124 | 4 |
+| 145 | Celebrity | 아이유 | 팝 | 120 | 3 |
+
+### 2-2. 프론트엔드팀 - Canvas 기능 8종
+1. **보컬워밍업루틴생성기** - 8단계 워밍업 루틴 Canvas 시각화, 호흡/발성/스케일/아르페지오/비브라토/스타카토/레가토/벨팅 진행도
+2. **라이브오디션시뮬레이터** - 5명 AI 심사위원 Canvas, 점수 + 개별 코멘트, 심사결과 그래프
+3. **음정인터벌트레이닝** - 12종(단2도~옥타브) Canvas 건반 + 음정 시각화, 레벨별 진행
+4. **보컬테크닉6축RadarCanvas** - 음정/리듬/호흡/감정/테크닉/무대매력 6축 레이더 차트
+5. **노래방파티플래너** - 8모드(생일/회식/데이트/졸업/소풍/크리스마스/여름/할로윈) 테마별 셋리스트
+6. **감성노래매칭** - 8감정(기쁨/슬픔/분노/평화/사랑/그리움/설렘/위로) Canvas 감정 휠 + 매칭
+7. **보컬성장타임라인** - 30일 Canvas 타임라인 그래프, 일별 점수 추이/마일스톤 시각화
+8. **AI보컬코치어드밴스드** - 10종 연습(벨팅/비브라토/팔세토/믹스/헤드보이스/위스퍼/샤우트/트릴/런/멜리스마) Canvas 가이드
+
+### 2-3. 오디오팀 - SFX 12종
+warmup-start, warmup-complete, audition-judge, audition-pass, interval-correct, interval-wrong, technique-level-up, party-start, emotion-match, timeline-milestone, coach-start, coach-perfect
+
+### 2-4. 퀴즈팀 - 15문 추가 (147→162문)
+보컬 워밍업/오디션/인터벌/테크닉/파티모드/감성매칭/성장/코칭 관련 15문항
+
+### 2-5. 업적팀 - 12개 추가 (126→138개)
+warmup-master, audition-winner, interval-expert, technique-all-max, party-host-10, emotion-explorer, timeline-30day, coach-graduate, warmup-streak-7, audition-perfect, interval-speed, technique-radar-full
+
+### 2-6. UX팀 - 키보드 단축키 8종 + 네비게이션바
+| 단축키 | 기능 |
+|--------|------|
+| Alt+W | 보컬 워밍업 |
+| Alt+U | 라이브 오디션 |
+| Alt+I | 음정 인터벌 |
+| Alt+T | 보컬 테크닉 |
+| Alt+Y | 파티 플래너 |
+| Alt+M | 감성 매칭 |
+| Alt+L | 성장 타임라인 |
+| Alt+O | AI 코치 어드밴스드 |
+
+네비게이션바: bottom:8px 위치, 8버튼 그리드 배치
+
+## Phase 3: 품질 검증
+
+| 항목 | 결과 |
+|------|------|
+| node -c v17_patch.js | ✅ PASS |
+| IIFE 가드 | ✅ window.__sv17PatchLoaded |
+| localStorage 프리픽스 | ✅ sv17- |
+| 외부 CDN 의존성 | ✅ 없음 (순수 Canvas 2D + Web Audio) |
+| 서비스워커 캐시명 | ✅ starvoice-v17 |
+| ASSETS 배열 | ✅ v17_patch.js 포함 |
+| SW 인젝션 | ✅ v17_patch.js 포함 |
+| index.html 스크립트 | ✅ v17_patch.js 포함 |
+| manifest.json | ✅ v17, 145곡, 162문, 138업적 |
+| 네비게이션바 위치 | ✅ bottom:8px (v16 위 배치) |
+| HTML entities 인코딩 | ✅ |
+| 개인정보 노출 | ✅ 없음 |
+
+## Phase 4: 배포
+
+- 커밋: `[AUTO] 2026-07-05 karaoke v17.0 - 보컬워밍업루틴생성기Canvas8단계+라이브오디션시뮬레이터Canvas5심사위원+음정인터벌트레이닝Canvas12종+보컬테크닉6축RadarCanvas+노래방파티플래너8모드+감성노래매칭Canvas8감정+보컬성장타임라인Canvas30일+AI보컬코치어드밴스드Canvas10연습+10곡추가(135→145)+퀴즈+15(147→162)+업적+12(126→138)+SFX12종+키보드8종`
+- 브랜치: main
+- 푸시: origin/main
