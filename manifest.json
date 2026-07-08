@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v17 — AI 노래방",
+  "name": "StarVoice v18 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 145곡, 보컬워밍업루틴생성기Canvas8단계, 라이브오디션시뮬레이터Canvas5심사위원, 음정인터벌트레이닝Canvas12종, 보컬테크닉6축RadarCanvas, 노래방파티플래너8모드, 감성노래매칭Canvas8감정, 보컬성장타임라인Canvas30일, AI보컬코치어드밴스드Canvas10연습, 음정마스터리트래커Canvas, 보컬배틀토너먼트Canvas8인AI, 보이스이퀘라이저8밴드Canvas, 일일주간챌린지7종, 싱어성장일지Canvas11레벨, 음악이론미니튜터12종, 스코어카드생성기CanvasPNG, 보컬스타일비교6축Canvas, 음색DNA프로파일러6축Canvas, 리듬아케이드Canvas6종, 듀엣AI파트너8종, 발성도장12종, 가사챌린지, 스테이지코치12팁, 보컬히트맵Canvas, 노래추천AI, 보이스변환8종, 5축점수분석레이더Canvas, 보컬코치12팁, 장르디스커버리휠Canvas, 노래일기+스트릭, 호흡트레이너Canvas6패턴, 키파인더Canvas, 퍼포먼스아카이브, 보이스이펙트8종, 음역대측정기, 구간연습, 워밍업8단계, 랭킹, 음감트레이닝3종, 콘서트모드, 플레이리스트, 보컬레슨12, 비브라토감지, 퀴즈162문, 138개 업적",
+  "description": "AI 음정 분석 K-노래방. 155곡, 보컬워밍업루틴생성기Canvas8단계, 라이브오디션시뮬레이터Canvas5심사위원, 음정인터벌트레이닝Canvas12종, 보컬테크닉6축RadarCanvas, 노래방파티플래너8모드, 감성노래매칭Canvas8감정, 보컬성장타임라인Canvas30일, AI보컬코치어드밴스드Canvas10연습, 음정마스터리트래커Canvas, 보컬배틀토너먼트Canvas8인AI, 보이스이퀘라이저8밴드Canvas, 일일주간챌린지7종, 싱어성장일지Canvas11레벨, 음악이론미니튜터12종, 스코어카드생성기CanvasPNG, 보컬스타일비교6축Canvas, 음색DNA프로파일러6축Canvas, 리듬아케이드Canvas6종, 듀엣AI파트너8종, 발성도장12종, 가사챌린지, 스테이지코치12팁, 보컬히트맵Canvas, 노래추천AI, 보이스변환8종, 5축점수분석레이더Canvas, 보컬코치12팁, 장르디스커버리휠Canvas, 노래일기+스트릭, 호흡트레이너Canvas6패턴, 키파인더Canvas, 퍼포먼스아카이브, 보이스이펙트8종, 음역대측정기, 구간연습, 워밍업8단계, 랭킹, 음감트레이닝3종, 콘서트모드, 플레이리스트, 보컬레슨12, 비브라토감지, 음역확장트레이너Canvas8운동, 보컬밸런스체커6축Canvas, 싱어스타일챌린지Canvas8아티스트, DJ셋리스트매니저Canvas, 마이크테크닉가이드Canvas8팁, 보컬컨디션체크리스트Canvas12항목, 장르마스터리트리Canvas10장르, 라이브스테이지스코어카드CanvasPNG, 퀴즈177문, 150개 업적",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -16,13 +16,21 @@
   "lang": "ko",
   "prefer_related_applications": false,
   "shortcuts": [
-    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "145곡 노래방"},
+    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "155곡 노래방"},
     {"name": "보컬 워밍업", "url": "./noraebang-v6.html#vocal-warmup", "description": "보컬 워밍업 루틴 8단계"},
     {"name": "라이브 오디션", "url": "./noraebang-v6.html#live-audition", "description": "라이브 오디션 시뮬레이터 5심사위원"},
     {"name": "음정 인터벌", "url": "./noraebang-v6.html#interval-training", "description": "음정 인터벌 트레이닝 12종"},
     {"name": "보컬 배틀", "url": "./noraebang-v6.html#vocal-battle", "description": "보컬 배틀 토너먼트 8인"},
     {"name": "감성 매칭", "url": "./noraebang-v6.html#emotion-match", "description": "감성 노래 매칭 8감정"},
     {"name": "성장 타임라인", "url": "./noraebang-v6.html#growth-timeline", "description": "보컬 성장 타임라인 30일"},
-    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "162문 노래 퀴즈"}
+    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "177문 노래 퀴즈"},
+    {"name": "음역 확장", "url": "./noraebang-v6.html#range-expander", "description": "음역 확장 트레이너 8운동"},
+    {"name": "보컬 밸런스", "url": "./noraebang-v6.html#balance-checker", "description": "보컬 밸런스 체커 6축"},
+    {"name": "스타일 챌린지", "url": "./noraebang-v6.html#style-challenge", "description": "싱어 스타일 챌린지 8아티스트"},
+    {"name": "DJ 셋리스트", "url": "./noraebang-v6.html#dj-setlist", "description": "DJ 셋리스트 매니저"},
+    {"name": "마이크 가이드", "url": "./noraebang-v6.html#mic-guide", "description": "마이크 테크닉 가이드 8팁"},
+    {"name": "보컬 컨디션", "url": "./noraebang-v6.html#condition-check", "description": "보컬 컨디션 체크리스트 12항목"},
+    {"name": "장르 마스터리", "url": "./noraebang-v6.html#genre-tree", "description": "장르 마스터리 트리 10장르"},
+    {"name": "스테이지 스코어", "url": "./noraebang-v6.html#stage-scorecard", "description": "라이브 스테이지 스코어카드 PNG"}
   ]
 }

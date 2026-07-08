@@ -1158,3 +1158,116 @@ warmup-master, audition-winner, interval-expert, technique-all-max, party-host-1
 - 커밋: `[AUTO] 2026-07-05 karaoke v17.0 - 보컬워밍업루틴생성기Canvas8단계+라이브오디션시뮬레이터Canvas5심사위원+음정인터벌트레이닝Canvas12종+보컬테크닉6축RadarCanvas+노래방파티플래너8모드+감성노래매칭Canvas8감정+보컬성장타임라인Canvas30일+AI보컬코치어드밴스드Canvas10연습+10곡추가(135→145)+퀴즈+15(147→162)+업적+12(126→138)+SFX12종+키보드8종`
 - 브랜치: main
 - 푸시: origin/main
+
+---
+
+# [AUTO] 2026-07-08 karaoke v18.0 보고서
+
+## Phase 1: 벤치마킹 (StarMaker / Smule 대비)
+
+| # | 경쟁사 기능 | StarMaker | Smule | v17 | v18 해결 |
+|---|-----------|-----------|-------|-----|---------|
+| 1 | 음역 확장/발성 훈련 | ✅ | ✅ | ❌ | ✅ 음역확장트레이너Canvas8운동 |
+| 2 | 보컬 밸런스 분석 | ✅ | ❌ | ❌ | ✅ 보컬밸런스체커6축Canvas |
+| 3 | 가수 스타일 모방 | ✅ | ✅ | ❌ | ✅ 싱어스타일챌린지Canvas8아티스트 |
+| 4 | 셋리스트/DJ 큐 관리 | ✅ | ✅ | ❌ | ✅ DJ셋리스트매니저Canvas |
+| 5 | 마이크 테크닉 교육 | ✅ | ❌ | ❌ | ✅ 마이크테크닉가이드Canvas8팁 |
+| 6 | 보컬 컨디션 체크 | ✅ | ✅ | ❌ | ✅ 보컬컨디션체크리스트Canvas12항목 |
+| 7 | 장르별 숙련도 트리 | ✅ | ❌ | ❌ | ✅ 장르마스터리트리Canvas10장르 |
+| 8 | 무대 스코어카드 | ✅ | ✅ | ❌ | ✅ 라이브스테이지스코어카드CanvasPNG |
+| 9 | 곡 추가 | ✅ | ✅ | 145곡 | ✅ 155곡 (+10곡) |
+| 10 | 퀴즈/업적 확대 | ✅ | ❌ | 162/138 | ✅ 177퀴즈/150업적 |
+
+## Phase 2: 개발 (전체 팀 투입)
+
+### v18_patch.js 신규 (790줄, 자기완결형 IIFE 패치 모듈)
+
+**프론트엔드 (UI/UX)**
+- v18 모달 헬퍼 (다크 그라디언트 테마, 반응형, 터치/클릭 닫기)
+- 하단 스크롤 네비바 8버튼 (그린-에메랄드 테마, v17 네비바 위 배치)
+- 키보드 단축키 Shift+A/S/D/F/G/H/J/K 8종
+
+**콘텐츠 제작 (+10곡: 145→155)**
+- 146: APT. (로제&브루노마스, pop, 104bpm, F)
+- 147: Whiplash (aespa, dance, 130bpm, Am)
+- 148: Magnetic (ILLIT, pop, 110bpm, G)
+- 149: 해요 말고 해 (임영웅, ballad, 78bpm, C)
+- 150: Supernova (aespa, dance, 138bpm, Bm)
+- 151: 첫 눈 (EXO, ballad, 72bpm, D)
+- 152: HEYA (IVE, dance, 125bpm, Em)
+- 153: 그때 그 순간 그대로 (WSG원더, ballad, 80bpm, F)
+- 154: MANIAC (Stray Kids, dance, 128bpm, Cm)
+- 155: 사랑은 늘 도망가 (임영웅, ballad, 74bpm, A)
+
+**게임 로직 / 백엔드**
+- 음역 확장 트레이너: 피아노건반Canvas + 8가지 저/고음 확장 운동, 진행률 추적
+- 보컬 밸런스 체커: 6축 레이더 (호흡/발성시작/공명/지지/마무리/자세) 분석
+- 싱어 스타일 챌린지: 8명 K-pop 아티스트 (IU/나얼/GD/Ailee/정국/태연/이하이/임영웅) 모방 챌린지
+- DJ 셋리스트 매니저: 드래그 추가, 셔플/랜덤/삭제, BPM 전환 분석
+- 마이크 테크닉 가이드: 8팁 일러스트 + 마스터리 추적
+- 보컬 컨디션 체크리스트: 12항목, 3카테고리(신체/환경/정신), 컨디션 점수 계산
+- 장르 마스터리 트리: 10장르, XP/레벨 시스템, 진행률 시각화
+- 라이브 스테이지 스코어카드: 6항목 점수입력 + PNG 다운로드
+
+**오디오 엔진**
+- SFX 12종: rangeUp, rangeDone, balanceCheck, styleLock, djTransition, micTip, conditionGood, conditionBad, genreMaster, stageScore, cardGenerate, achieve18
+- 주파수 램프 (rangeUp), 화음 스택 (rangeDone), 노이즈 모듈레이션 (balanceCheck)
+
+**비주얼/Canvas**
+1. **음역확장트레이너** - 600x380 피아노건반 시각화, 8가지 운동 진행률 프로그레스바
+2. **보컬밸런스체커** - 540x460 6축 레이더차트 (호흡/발성시작/공명/지지/마무리/자세)
+3. **싱어스타일챌린지** - 600x400 8아티스트 카드 그리드, 별점/성적 추적
+4. **DJ셋리스트매니저** - 600x380 셋리스트 테이블 + BPM 전환 분석
+5. **마이크테크닉가이드** - 580x380 8팁 시각 가이드, 마스터리 프로그레스
+6. **보컬컨디션체크리스트** - 580x420 12항목 체크박스 + 컨디션 점수 계산
+7. **장르마스터리트리** - 600x420 10장르 트리 노드, XP바 + 레벨
+8. **라이브스테이지스코어카드** - 600x400 6항목 슬라이더 + PNG 생성/다운로드
+
+### 2-3. 오디오팀 - SFX 12종
+rangeUp, rangeDone, balanceCheck, styleLock, djTransition, micTip, conditionGood, conditionBad, genreMaster, stageScore, cardGenerate, achieve18
+
+### 2-4. 퀴즈팀 - 15문 추가 (162→177문)
+음역확장/보컬밸런스/싱어스타일/DJ셋리스트/마이크테크닉/보컬컨디션/장르마스터리/스테이지스코어카드 관련 15문항
+
+### 2-5. 업적팀 - 12개 추가 (138→150개)
+range-explorer, range-master, balance-analyzer, style-mimic-3, style-all-clear, dj-10-sets, mic-guru, condition-streak-7, genre-3-master, genre-all-unlock, stage-scorer, achieve-v18-all
+
+### 2-6. UX팀 - 키보드 단축키 8종 + 네비게이션바
+| 단축키 | 기능 |
+|--------|------|
+| Shift+A | 음역 확장 트레이너 |
+| Shift+S | 보컬 밸런스 체커 |
+| Shift+D | 싱어 스타일 챌린지 |
+| Shift+F | DJ 셋리스트 매니저 |
+| Shift+G | 마이크 테크닉 가이드 |
+| Shift+H | 보컬 컨디션 체크리스트 |
+| Shift+J | 장르 마스터리 트리 |
+| Shift+K | 라이브 스테이지 스코어카드 |
+
+네비게이션바: bottom:8px 위치, 8버튼 그리드 배치 (그린-에메랄드 테마)
+
+## Phase 3: 품질 검증
+
+| 항목 | 결과 |
+|------|------|
+| node --check v18_patch.js | ✅ PASS |
+| IIFE 가드 | ✅ window.__sv18PatchLoaded |
+| localStorage 프리픽스 | ✅ sv18- |
+| 외부 CDN 의존성 | ✅ 없음 (순수 Canvas 2D + Web Audio) |
+| 괄호 밸런스 | ✅ Parens:0 Braces:0 Brackets:0 |
+| 서비스워커 캐시명 | ✅ starvoice-v18 |
+| ASSETS 배열 | ✅ v18_patch.js 포함 |
+| SW 인젝션 | ✅ v18_patch.js 포함 |
+| index.html 스크립트 | ✅ v18_patch.js 포함 |
+| manifest.json | ✅ v18, 155곡, 177문, 150업적, 16 shortcuts |
+| 네비게이션바 위치 | ✅ bottom:8px (v17 위 배치) |
+| HTML entities 인코딩 | ✅ |
+| 개인정보 노출 | ✅ 없음 |
+| JSON 파싱 (manifest) | ✅ PASS |
+| sw.js 구문 검사 | ✅ PASS |
+
+## Phase 4: 배포
+
+- 커밋: `[AUTO] 2026-07-08 karaoke v18.0 - 음역확장트레이너Canvas8운동+보컬밸런스체커6축Canvas+싱어스타일챌린지Canvas8아티스트+DJ셋리스트매니저Canvas+마이크테크닉가이드Canvas8팁+보컬컨디션체크리스트Canvas12항목+장르마스터리트리Canvas10장르+라이브스테이지스코어카드CanvasPNG+10곡추가(145→155)+퀴즈+15(162→177)+업적+12(138→150)+SFX12종+키보드8종`
+- 브랜치: main
+- 푸시: origin/main
