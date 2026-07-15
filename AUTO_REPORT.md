@@ -1337,3 +1337,95 @@ range-explorer, range-master, balance-analyzer, style-mimic-3, style-all-clear, 
 - sw.js: v18→v19 (starvoice-v19 캐시, v19_patch.js PRECACHE+자동주입)
 - manifest.json: v19 설명+shortcuts 8종 추가 (총24종)
 - 곡: 155→165 (+10), 퀴즈: 177→192 (+15), 업적: 150→162 (+12)
+
+---
+
+# [AUTO] 2026-07-15 karaoke v20.0 보고서
+
+## Phase 1: 벤치마킹 (StarMaker / Smule / 노래방어플 대비)
+
+| # | 경쟁사 기능 | StarMaker | Smule | v19 | v20 해결 |
+|---|-----------|-----------|-------|-----|---------|
+| 1 | 음색 분석 + 유사 가수 매칭 | ✅ | ✅ | ❌ | ✅ 보컬톤매칭시스템Canvas 8가수 6축Radar |
+| 2 | 실시간 보컬 이펙트 체인 | ✅ | ✅ | ❌ | ✅ 라이브이펙트체인Canvas 8종 시그널파형 |
+| 3 | 가수 발성법 비교/학습 | ✅ | ❌ | ❌ | ✅ 가수별테크닉분석기Canvas 10가수 듀얼Radar |
+| 4 | 주간 챌린지 시스템 | ✅ | ✅ | ❌ | ✅ 주간보컬챌린지Canvas 7일 7미션 |
+| 5 | 성대 피로 경고 시스템 | ❌ | ❌ | ❌ | ✅ 보컬피로도모니터Canvas 5지표 경고 |
+| 6 | 장기 음역 확장 추적 | ✅ | ❌ | ❌ | ✅ 음역대히스토리맵Canvas 30일 추이라인 |
+| 7 | 곡별 종합 메트릭 스코어 | ✅ | ✅ | ❌ | ✅ 곡완성도스코어카드Canvas 5축Radar PNG |
+| 8 | 체계적 연습 계획 수립 | ✅ | ❌ | ❌ | ✅ 보컬연습플래너Canvas 4주 스택바 |
+
+## Phase 2: 개발 (전체 팀 투입)
+
+### v20_patch.js 신규 (~700줄, 자기완결형 IIFE 패치 모듈)
+
+**프론트엔드 (UI/UX)**
+- v20 그라디언트 테마 섹션 8종 (핑크/블루/그린/앰버/레드/시안/퍼플/시안)
+- 기존 네비바에 8버튼 append (하단 네비바 신규생성 없음 - UI불가침 규칙 준수)
+- 키보드 단축키 Shift+T/L/A/W/F/G/C/N 8종
+- 반응형 Canvas (max-width:100%, border-radius)
+
+**콘텐츠 제작 (+10곡: 165→175)**
+- 166: APT. (ROSE & Bruno Mars, pop)
+- 167: Supernova (aespa, dance)
+- 168: 해야 HEYA (IVE, dance)
+- 169: 소나기 (이클립스, ballad)
+- 170: SPOT! (ZICO ft. JENNIE, hiphop)
+- 171: Welcome to the Show (DAY6, rock)
+- 172: 첫 만남은 계획대로 되지 않아 (TWS, pop)
+- 173: Magnetic (ILLIT, pop)
+- 174: 고민중독 (QWER, rock)
+- 175: Love Lee (AKMU, pop)
+
+**오디오 엔진 (SFX 12종 Web Audio API)**
+- toneScan, effectChain, techCompare, challengeStart, fatigueWarn, rangeExpand
+- scorecardGen, plannerSave, quizCorrect20, quizWrong20, achieve20, navClick20
+- 이펙트체인: 주파수 상승→하강 커브, 피로도경고: 하강톤, 음역확장: 상승 glide
+
+**백엔드/로직**
+- localStorage sv20- 프리픽스 8종 데이터 관리
+- 보컬 톤 유사도 알고리즘 (6축 절대차 평균)
+- 이펙트 체인 시그널 파형 실시간 계산 (Reverb/Delay/Chorus/Compressor/Harmonizer)
+- 피로도 5지표 종합 경고 시스템 (양호/보통/주의/위험)
+- 음역대 30일 추이 영역 차트 (최고음/최저음 듀얼 라인)
+
+**비주얼/이미지**
+- 8종 Canvas: 580x360 Radar, 600x380 시그널체인, 580x360 듀얼Radar, 560x340 미션카드, 560x320 피로바, 600x380 추이라인, 580x360 스코어카드, 600x380 스택바
+- CSS 그라디언트 배경 8종, roundRect, arc, 방사형 그라디언트
+- PNG 다운로드 (스코어카드)
+- 이펙트 ON/OFF 시각 피드백, 아티스트 선택 하이라이트
+
+**퀴즈 +15문 (192→207)**
+- 컴프레서, 어택, 팝 필터, 보컬 프라이, MR, 립 트릴
+- 크레센도, 킬링파트, 패시지오, 코러스 이펙트, 아카펠라
+- 마스크 공명, 박자 정확도, 레가토, 스케일 연습
+
+**업적 +12종 (162→174)**
+- tone_matcher, effect_chain_pro, technique_analyst, weekly_champion
+- fatigue_manager, range_explorer, completeness_ace, practice_planner
+- quiz_v20_master, song_175, v20_explorer, v20_complete
+
+## Phase 3: 품질 검증
+
+| 항목 | 결과 |
+|------|------|
+| JS 문법 (node -c) | ✅ PASS |
+| 괄호 밸런스 () | ✅ 1024/1024 |
+| 괄호 밸런스 {} | ✅ 244/244 |
+| 괄호 밸런스 [] | ✅ 267/267 |
+| CDN 외부 참조 | ✅ 0건 |
+| 개인정보 노출 | ✅ 0건 |
+| 하단 고정 네비바 | ✅ 미생성 (UI불가침 규칙 준수) |
+| SW.js 문법 | ✅ PASS |
+| manifest.json 유효성 | ✅ VALID |
+
+## Phase 4: 배포
+
+- v20_patch.js: 신규 (~700줄)
+- index.html: v20 SEO 전면 갱신 (title/desc/keywords/OG/Twitter/JSON-LD) + v20 스크립트태그
+- sw.js: v19→v20 (starvoice-v20 캐시, v20_patch.js PRECACHE+자동주입)
+- manifest.json: v20 설명, shortcuts 8종 추가 (총32종)
+- AUTO_REPORT.md: v20 보고서 추가
+- 총 곡수: 165→175 (+10곡)
+- 총 퀴즈: 192→207 (+15문)
+- 총 업적: 162→174 (+12종)
