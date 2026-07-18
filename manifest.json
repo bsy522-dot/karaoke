@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v20 — AI 노래방",
+  "name": "StarVoice v21 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 175곡, 보컬톤매칭시스템Canvas8가수6축Radar, 라이브이펙트체인Canvas8종시그널파형, 가수별테크닉분석기Canvas10가수듀얼Radar, 주간보컬챌린지Canvas7일7미션, 보컬피로도모니터Canvas5지표경고시스템, 음역대히스토리맵Canvas30일추이라인, 곡완성도스코어카드Canvas5축RadarPNG, 보컬연습플래너Canvas4주스택바, 호흡패턴분석기Canvas8종, 비브라토파형분석기Canvas, 난이도프로그레션맵Canvas5단계, 싱어프로필카드CanvasPNG, 듀엣하모니매칭Canvas8인터벌, 분위기사운드스케이프Canvas8무드, 보컬다이나믹레인지미터Canvas6단계, 올타임베스트리플레이Canvas, 퀴즈207문, 174개 업적",
+  "description": "AI 음정 분석 K-노래방. 185곡, 음정교정피드백Canvas12반음편차히트맵, 보컬스태미나트레이너Canvas10단계지구력, 장르별발성법가이드Canvas10장르6축Radar, AI곡추천매칭엔진Canvas4축매칭, 보컬하모닉스분석기Canvas8배음스펙트럼, 주간랭킹시뮬레이터Canvas10명AI싱어, 감정표현매트릭스Canvas8감정6테크닉히트맵, 라이브무대시뮬레이터Canvas6스테이지관객반응, 보컬톤매칭시스템Canvas8가수6축Radar, 라이브이펙트체인Canvas8종시그널파형, 가수별테크닉분석기Canvas10가수듀얼Radar, 주간보컬챌린지Canvas7일7미션, 퀴즈222문, 186개 업적",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -16,7 +16,7 @@
   "lang": "ko",
   "prefer_related_applications": false,
   "shortcuts": [
-    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "165곡 노래방"},
+    {"name": "노래방 시작", "url": "./noraebang-v6.html", "description": "185곡 노래방"},
     {"name": "호흡 패턴", "url": "./noraebang-v6.html#breath-pattern", "description": "호흡 패턴 분석기 8종"},
     {"name": "비브라토 분석", "url": "./noraebang-v6.html#vibrato-analyzer", "description": "비브라토 파형 분석기"},
     {"name": "난이도 맵", "url": "./noraebang-v6.html#difficulty-map", "description": "곡별 난이도 프로그레션 맵"},
@@ -31,7 +31,7 @@
     {"name": "보컬 배틀", "url": "./noraebang-v6.html#vocal-battle", "description": "보컬 배틀 토너먼트 8인"},
     {"name": "감성 매칭", "url": "./noraebang-v6.html#emotion-match", "description": "감성 노래 매칭 8감정"},
     {"name": "성장 타임라인", "url": "./noraebang-v6.html#growth-timeline", "description": "보컬 성장 타임라인 30일"},
-    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "192문 노래 퀴즈"},
+    {"name": "노래 퀴즈", "url": "./noraebang-v6.html#quiz", "description": "222문 노래 퀴즈"},
     {"name": "음역 확장", "url": "./noraebang-v6.html#range-expander", "description": "음역 확장 트레이너 8운동"},
     {"name": "보컬 밸런스", "url": "./noraebang-v6.html#balance-checker", "description": "보컬 밸런스 체커 6축"},
     {"name": "스타일 챌린지", "url": "./noraebang-v6.html#style-challenge", "description": "싱어 스타일 챌린지 8아티스트"},
@@ -47,6 +47,14 @@
     {"name": "피로도 모니터", "url": "./noraebang-v6.html#fatigue-monitor", "description": "보컬 피로도 모니터 5지표"},
     {"name": "음역 히스토리", "url": "./noraebang-v6.html#range-history", "description": "음역대 히스토리 맵 30일"},
     {"name": "완성도 스코어", "url": "./noraebang-v6.html#scorecard", "description": "곡 완성도 스코어카드 PNG"},
-    {"name": "연습 플래너", "url": "./noraebang-v6.html#practice-planner", "description": "보컬 연습 플래너 4주"}
+    {"name": "연습 플래너", "url": "./noraebang-v6.html#practice-planner", "description": "보컬 연습 플래너 4주"},
+    {"name": "음정 교정", "url": "./noraebang-v6.html#pitch-correction", "description": "음정교정 피드백 시스템 12반음"},
+    {"name": "스태미나 훈련", "url": "./noraebang-v6.html#stamina-trainer", "description": "보컬 스태미나 트레이너 10단계"},
+    {"name": "장르 발성법", "url": "./noraebang-v6.html#genre-guide", "description": "장르별 발성법 가이드 10장르 Radar"},
+    {"name": "AI 곡추천", "url": "./noraebang-v6.html#song-recommend", "description": "AI 곡추천 매칭엔진 4축"},
+    {"name": "하모닉스 분석", "url": "./noraebang-v6.html#harmonics", "description": "보컬 하모닉스 분석기 8배음"},
+    {"name": "주간 랭킹", "url": "./noraebang-v6.html#ranking", "description": "주간 랭킹 시뮬레이터 10명 AI"},
+    {"name": "감정 매트릭스", "url": "./noraebang-v6.html#emotion-matrix", "description": "감정표현 매트릭스 8감정 6테크닉"},
+    {"name": "무대 시뮬", "url": "./noraebang-v6.html#stage-sim", "description": "라이브 무대 시뮬레이터 6스테이지"}
   ]
 }

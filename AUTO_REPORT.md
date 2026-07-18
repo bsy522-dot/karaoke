@@ -1429,3 +1429,70 @@ range-explorer, range-master, balance-analyzer, style-mimic-3, style-all-clear, 
 - 총 곡수: 165→175 (+10곡)
 - 총 퀴즈: 192→207 (+15문)
 - 총 업적: 162→174 (+12종)
+
+---
+
+# [AUTO] 2026-07-18 karaoke v21.0 보고서
+
+## Phase 1: 벤치마킹 (StarMaker / Smule / 노래방어플 대비)
+
+| # | 경쟁사 기능 | StarMaker | Smule | v20 | v21 해결 |
+|---|---|---|---|---|---|
+| 1 | 실시간 음정 교정 피드백 | ✅ | ✅ | ❌ | ✅ 12반음 편차 히트맵+Flat/Sharp 경향분석+교정 권고 |
+| 2 | 보컬 스태미나/지구력 훈련 | ✅ | ❌ | ❌ | ✅ 10단계 지구력 훈련+세션 히스토리 라인차트+성장 추적 |
+| 3 | 장르별 발성법 가이드 | ✅ | ✅ | ❌ | ✅ 10장르 6축 Radar(발성법/호흡/비브라토/감정/음색/리듬) |
+| 4 | AI 기반 곡 추천 시스템 | ✅ | ✅ | ❌ | ✅ 음역/장르/기분/난이도 4축 매칭 TOP 5 추천 |
+| 5 | 배음 스펙트럼 분석 | ❌ | ❌ | ❌ | ✅ 8배음 스펙트럼 바차트+밝기/따뜻함+가수유형 매칭 |
+| 6 | 랭킹/리더보드 시뮬 | ✅ | ✅ | ❌ | ✅ 10명 AI 싱어 랭킹 경쟁+점수 누적+순위 변동 |
+| 7 | 감정 표현 매트릭스 | ❌ | ❌ | ❌ | ✅ 8감정x6테크닉 히트맵+S~D등급+클릭 연습 |
+| 8 | 라이브 무대 시뮬레이션 | ✅ | ❌ | ❌ | ✅ 6스테이지(버스킹→스타디움)+관객반응+앙코르 |
+
+## Phase 2: 개발팀 투입 내역
+
+### 프론트엔드
+- v21_patch.js 신규 IIFE 모듈 (자기완결형, ~700줄)
+- 8개 Canvas 인터랙티브 시각화 위젯
+- 반응형 디자인 (width:100%, max-width 제한)
+- 그라디언트 배경, 보라/분홍 테마 일관성 유지
+
+### 백엔드/로직
+- localStorage 영속 데이터 관리 (sv21- 네임스페이스)
+- AI 곡추천 매칭 알고리즘 (4축 가중치 점수 계산)
+- 랭킹 시뮬레이션 엔진 (10 AI 싱어 경쟁)
+- 감정 매트릭스 히트맵 클릭 인터랙션
+
+### 콘텐츠 제작
+- 10곡 추가 (175→185): Whiplash(aespa), Supernatural(NewJeans), POWER(G-DRAGON), Candy(NCT DREAM), Ditto(NewJeans), Drama(aespa), 사건의 지평선(윤하), Seven(정국), Super Shy(NewJeans), 이브프시케(LE SSERAFIM)
+- 15문 퀴즈 추가 (207→222): 벨칸토/디크레센도/팔세토/키변경/믹스보이스/디에싱/브릿지/멜리스마/서포트/StarMaker/포르타멘토/모음순화/릴리즈/소프라노알토/어피지오
+- 12업적 추가 (174→186)
+
+### 오디오 엔진
+- SFX 12종 Web Audio API: pitchScan/pitchCorrect/staminaUp/staminaComplete/genreSelect/songRecommend/harmonicScan/rankUpdate/emotionMatch/stageCheer/quizCorrect21/quizWrong21/achieve21/navClick21
+- 주파수 엔벨로프 및 exponentialRamp 효과
+
+### 비주얼
+- CSS 그라디언트 섹션 배경 8종
+- Canvas 2D 히트맵, Radar 차트, 바차트, 라인차트, 프로그레스바
+- 색상 스케일: 보라-분홍 그라디언트 일관 적용
+
+## Phase 3: 품질팀 검증
+
+| 항목 | 결과 |
+|---|---|
+| JS 구문 검증 (node -c) | ✅ PASS |
+| 괄호 균형 | ✅ ALL BALANCED (765/256/167) |
+| 외부 CDN 참조 | ✅ 0건 |
+| 개인정보 노출 | ✅ 0건 |
+| 하단 고정 네비바 | ✅ 미생성 (UI불가침 규칙 준수) |
+| 기존 네비바 클릭 가능 | ✅ 기존 bottomNav에 append만 수행 |
+| SW 캐시 갱신 | ✅ starvoice-v21, v21_patch.js PRECACHE |
+| Manifest 갱신 | ✅ v21 설명+shortcuts 8종 추가 (총40종) |
+| SEO 메타태그 | ✅ v21 전면 갱신 (title/desc/keywords/OG/Twitter/JSON-LD) |
+
+## Phase 4: 마무리
+
+- v21_patch.js: 신규 (~700줄, 자기완결형 IIFE 패치 모듈)
+- index.html: v21.0 SEO 전면 갱신 + v21 스크립트태그
+- sw.js: v20→v21 (starvoice-v21 캐시, v21_patch.js PRECACHE+자동주입)
+- manifest.json: v21.0 설명+shortcuts 8종 추가 (총40종)
+- AUTO_REPORT.md: v21.0 리포트 추가
