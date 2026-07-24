@@ -1577,3 +1577,70 @@ range-explorer, range-master, balance-analyzer, style-mimic-3, style-all-clear, 
 - sw.js: v21→v22 (starvoice-v22 캐시, v22_patch.js PRECACHE+자동주입)
 - manifest.json: v22.0 설명+shortcuts 8종 추가 (총48종)
 - AUTO_REPORT.md: v22.0 리포트 추가
+
+---
+
+# [AUTO] 2026-07-24 karaoke v23.0 보고서
+
+## Phase 1: 벤치마킹 (StarMaker / Smule 대비)
+
+| # | 경쟁사 기능 | StarMaker | Smule | v22 | v23 해결 |
+|---|-----------|-----------|-------|-----|---------|
+| 1 | 음역대 시각화/매핑 | ✅ | ✅ | ❌ | ✅ 보컬음역매퍼Canvas12x4노트그리드 |
+| 2 | 키 변환/트랜스포즈 | ✅ | ✅ | ❌ | ✅ 키트랜스포저Canvas원형키다이어그램 |
+| 3 | 듀엣 호환성 분석 | ✅ | ✅ | ❌ | ✅ 듀엣케미스트리Canvas10AI가수6축Radar |
+| 4 | 연습 이력 추적/비교 | ✅ | ✅ | ❌ | ✅ 퍼포먼스리플레이Canvas20세션라인차트 |
+| 5 | 보컬 회복/관리 | ✅ | ❌ | ❌ | ✅ 보컬리커버리Canvas8회복법진행추적 |
+| 6 | 음악이론 학습 | ❌ | ❌ | ❌ | ✅ 음악이론드릴Canvas5카테고리30문바차트 |
+| 7 | 셋리스트 최적화 | ✅ | ✅ | ❌ | ✅ 셋리스트옵티마이저Canvas6축밸런스Radar |
+| 8 | 음성 유형 분류 | ✅ | ❌ | ❌ | ✅ 보이스분류기Canvas8음성유형6축Radar |
+
+## Phase 2: 개발 상세
+
+### 2-1. 신규 곡 10곡 (195→205)
+- 뜨거운 안녕 (안녕 OST), 고백 (델리스파이스), 끝사랑 (김범수), 내 손을 잡아 (아이유), 거짓말이야 (하하), Dynamite (BTS), 한 페이지가 될 수 있게 (DAY6), 우리의 꿈 (코요태), 전화번호 (지누션), Blinding Lights (The Weeknd)
+
+### 2-2. Canvas 기능 8종 (모두 Canvas 2D, self-contained)
+1. **보컬 음역 매퍼** (620x400): 12×4 노트 그리드, 편안/가능/한계 3단계 존 시각화, 클릭 토글
+2. **키 트랜스포저** (580x360): 원형 12키 다이어그램, 화살표 표시 반음 이동, ±6 범위
+3. **듀엣 케미스트리** (620x400): 10 AI 가수 선택, 6축 듀얼 Radar, 호환성 % 계산
+4. **퍼포먼스 리플레이** (600x380): 20세션 라인 차트, 5탭(음정/리듬/감정/테크닉/총합), 세션 추가/초기화
+5. **보컬 리커버리** (580x360): 8 회복 방법, 진행도 추적, 프로그레스 바
+6. **음악이론 드릴** (620x400): 5카테고리(음정/리듬/조표/화성/음형), 30문 히스토리 바 차트
+7. **셋리스트 옵티마이저** (600x380): 곡 추가/삭제, 6축(다양성/난이도/에너지/시간/장르/키) 밸런스 Radar
+8. **보이스 분류기** (580x360): 8 음성 유형(소프라노→베이스+카운터테너+메조), 6축 Radar 비교
+
+### 2-3. 퀴즈 +15 (237→252), 업적 +12 (198→210), SFX 16종, 키보드 9종
+- 퀴즈: 음역/음성유형/키변환/듀엣/회복/음악이론/셋리스트 관련
+- 업적: 각 Canvas 기능별 달성 업적 12개
+- SFX: AudioContext 기반 16종 효과음 (zone/transpose/chemistry 등)
+- 키보드: Shift+Z/X/C/V/B/N/M/,/.
+
+### 2-4. localStorage
+- 접두사 `sv23-` 사용, 7개 키 (range-map, theory-scores, recovery-progress, setlist, replay-sessions, theory-history, voice-type)
+
+### 2-5. 네비게이션
+- 기존 nav 바에 9개 버튼 APPEND (UI 불가침 규칙 준수)
+- 새 position:fixed bottom bar 생성 없음
+
+## Phase 3: 품질 검증
+
+| 항목 | 결과 |
+|-----|------|
+| `node -c v23_patch.js` | ✅ 구문 오류 없음 |
+| 외부 CDN 링크 | ✅ 없음 |
+| 개인정보 노출 | ✅ 없음 |
+| 하단 고정 네비바 신설 | ✅ 없음 |
+| HTML entities 따옴표 | ✅ 준수 |
+| manifest.json 유효성 | ✅ valid JSON |
+| sw.js 구문 검사 | ✅ 통과 |
+| IIFE 가드 패턴 | ✅ window.__v23KaraokeLoaded |
+| Canvas self-contained | ✅ 8종 모두 자기완결 |
+
+## Phase 4: 파일 변경 요약
+
+- v23_patch.js: 신규 (~850줄, 자기완결형 IIFE 패치 모듈)
+- index.html: v23.0 SEO 전면 갱신 + v23 스크립트태그
+- sw.js: v22→v23 (starvoice-v23 캐시, v23_patch.js PRECACHE+자동주입)
+- manifest.json: v23.0 설명+shortcuts 8종 추가 (총56종)
+- AUTO_REPORT.md: v23.0 리포트 추가

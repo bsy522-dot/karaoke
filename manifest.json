@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v22 — AI 노래방",
+  "name": "StarVoice v23 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 195곡, 보컬워밍업루틴v2Canvas12종운동, 호흡컨트롤마스터Canvas6종패턴시각화, 프레이즈메이커Canvas10기법히트맵, 믹싱이퀄라이저Canvas10밴드6프리셋, 관객반응예측기Canvas8유형6축Radar, 보컬스타일DNA분석기Canvas12특성도넛차트, 노래난이도적응트레이너Canvas5x8그리드, 멜로디메모리게임Canvas8음시퀀스, 퀴즈237문, 198개 업적",
+  "description": "AI 음정 분석 K-노래방. 205곡, 보컬음역매퍼Canvas12x4노트그리드, 키트랜스포저Canvas원형키다이어그램, 듀엣케미스트리Canvas10AI가수6축Radar, 퍼포먼스리플레이Canvas20세션라인차트, 보컬리커버리Canvas8회복법, 음악이론드릴Canvas5카테고리30문바차트, 셋리스트옵티마이저Canvas6축밸런스Radar, 보이스분류기Canvas8음성유형6축Radar, 퀴즈252문, 210개 업적",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -63,6 +63,14 @@
     {"name": "관객 예측", "url": "./noraebang-v6.html#audience-predict", "description": "관객 반응 예측기 8유형 Radar"},
     {"name": "스타일 DNA", "url": "./noraebang-v6.html#style-dna", "description": "보컬 스타일 DNA 12특성 도넛차트"},
     {"name": "난이도 트레이너", "url": "./noraebang-v6.html#difficulty-trainer", "description": "노래 난이도 적응 트레이너 5x8"},
-    {"name": "멜로디 메모리", "url": "./noraebang-v6.html#melody-memory", "description": "멜로디 메모리 게임 8음 시퀀스"}
+    {"name": "멜로디 메모리", "url": "./noraebang-v6.html#melody-memory", "description": "멜로디 메모리 게임 8음 시퀀스"},
+    {"name": "음역 매퍼", "url": "./noraebang-v6.html#vocal-range-mapper", "description": "보컬 음역 매퍼 12x4 노트그리드"},
+    {"name": "키 트랜스포저", "url": "./noraebang-v6.html#key-transposer", "description": "키 트랜스포저 원형 키다이어그램"},
+    {"name": "듀엣 케미", "url": "./noraebang-v6.html#duet-chemistry", "description": "듀엣 케미스트리 10AI가수 6축Radar"},
+    {"name": "퍼포먼스 리플레이", "url": "./noraebang-v6.html#performance-replay", "description": "퍼포먼스 리플레이 20세션 라인차트"},
+    {"name": "보컬 리커버리", "url": "./noraebang-v6.html#vocal-recovery", "description": "보컬 리커버리 8회복법 진행추적"},
+    {"name": "음악이론 드릴", "url": "./noraebang-v6.html#theory-drill", "description": "음악이론 드릴 5카테고리 30문 바차트"},
+    {"name": "셋리스트 옵티마이저", "url": "./noraebang-v6.html#setlist-optimizer", "description": "셋리스트 옵티마이저 6축 밸런스Radar"},
+    {"name": "보이스 분류기", "url": "./noraebang-v6.html#voice-classifier", "description": "보이스 분류기 8음성유형 6축Radar"}
   ]
 }
