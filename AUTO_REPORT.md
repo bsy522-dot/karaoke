@@ -1644,3 +1644,83 @@ range-explorer, range-master, balance-analyzer, style-mimic-3, style-all-clear, 
 - sw.js: v22→v23 (starvoice-v23 캐시, v23_patch.js PRECACHE+자동주입)
 - manifest.json: v23.0 설명+shortcuts 8종 추가 (총56종)
 - AUTO_REPORT.md: v23.0 리포트 추가
+
+---
+
+# [AUTO] 2026-07-27 karaoke v24.0 보고서
+
+## Phase 1: 벤치마킹 (StarMaker / Smule / 노래방어플 대비)
+
+| # | 경쟁사 기능 | StarMaker | Smule | v23 | v24 해결 |
+|---|-----------|-----------|-------|-----|---------|
+| 1 | 보컬 파워/성량 측정 시각화 | ✅ | ✅ | ❌ | ✅ 보컬파워미터Canvas12운동바차트 |
+| 2 | 구조화된 스킬 성장경로 | ✅ Pro | ✅ | ❌ | ✅ 가창력발전로드맵Canvas10마일스톤 |
+| 3 | 듀엣 음성유형 호환성 매칭 | ✅ | ✅ | ❌ | ✅ 듀엣호환매트릭스Canvas8x8히트맵 |
+| 4 | 세션간 보컬 일관성 분석 | ✅ | ✅ Analytics | ❌ | ✅ 보컬이퀄리티분석기Canvas6축Radar |
+| 5 | 실시간 다중지표 피드백 | ✅ 실시간 | ✅ | ❌ | ✅ 라이브피드백대시보드Canvas8게이지 |
+| 6 | 노래 목표 설정/추적 시스템 | ✅ | ✅ Goals | ❌ | ✅ 노래목표추적기Canvas8도넛게이지 |
+| 7 | 웜업/쿨다운 타이머 루틴 | ✅ | ❌ | ❌ | ✅ 보컬웜쿨다운가이드Canvas12운동타이머 |
+| 8 | 프로필 비교 (vs AI/레전드) | ✅ Leaderboard | ✅ | ❌ | ✅ 싱어프로필비교기Canvas듀얼Radar |
+| 9 | 곡 추가 | ✅ | ✅ | 205곡 | ✅ 215곡 (+10곡) |
+| 10 | 퀴즈/업적 확대 | ✅ | ❌ | 252/210 | ✅ 267퀴즈/222업적 |
+
+## Phase 2: 개발 (전체 팀 투입)
+
+### 2-1. 신규 곡 10곡 (205→215)
+- 206: 사건의 지평선 (윤하, rock)
+- 207: Magnetic (ILLIT, dance)
+- 208: Love Lee (AKMU, pop)
+- 209: 고민중독 (QWER, rock)
+- 210: Sticky (KISS OF LIFE, dance)
+- 211: 비의 랩소디 (임재현, ballad)
+- 212: HEYA (IVE, dance)
+- 213: Crazy (LE SSERAFIM, dance)
+- 214: 나는 아픈 건 딱 질색이니까 (BTS, pop)
+- 215: 봄날 (BTS, ballad)
+
+### 2-2. Canvas 기능 8종 (모두 Canvas 2D, self-contained)
+1. **보컬 파워 미터** (620x400): 12종 보컬운동(벨팅/팔세토/믹스보이스 등) 수평 바차트, 클릭 훈련, S~D등급
+2. **가창력 발전 로드맵** (600x380): 입문→신 10마일스톤 수직 프로그레션, XP바, 현재레벨 하이라이트
+3. **듀엣 호환성 매트릭스** (620x400): 8음성유형 8x8 히트맵, 호환성점수 컬러코딩, 클릭 상세, 행열 하이라이트
+4. **보컬 이퀄리티 분석기** (600x380): 6메트릭 Radar차트 현재/이상 오버레이, S~D등급, 10세션 히스토리 라인
+5. **라이브 피드백 대시보드** (620x380): 8메트릭 수직게이지+펄스효과, 중앙원 종합점수, S~D등급, setInterval 라이브모드
+6. **노래 목표 추적기** (600x380): 8목표 원형도넛게이지 4x2그리드, 달성률%, 클릭 진행 시뮬
+7. **보컬 웜쿨다운 가이드** (620x400): 웜업6종+쿨다운6종 탭전환, 실시간 카운트다운 타이머, 루틴 진행바
+8. **싱어 프로필 비교기** (620x400): 8AI가수 vs 유저 듀얼 6축Radar, 갭분석 바차트
+
+### 2-3. 퀴즈 +15 (252→267), 업적 +12 (210→222), SFX 16종, 키보드 9종
+- 퀴즈: 보컬파워/로드맵/듀엣호환/일관성/라이브피드백/목표추적/웜쿨다운/프로필비교/벨팅/믹스보이스/보컬휴식/호흡지지/프레이징/무대프레즌스/마이크테크닉
+- 업적: power_master/roadmap_milestone/duet_expert/equality_analyzer/feedback_dashboard/goal_achiever/warmcool_routine/profile_comparer/quiz_v24_master/song_215/v24_explorer/v24_complete
+- SFX: AudioContext 기반 16종 효과음 (powerTrain/roadmapUp/matrixClick/equalityScan/feedbackPulse/goalProgress/goalComplete/warmTick/coolTick/routineDone/profileCompare/quizCorrect24/quizWrong24/achieve24/navClick24 등)
+- 키보드: Shift+1~8 (8섹션) + Shift+0 (전체)
+
+### 2-4. localStorage
+- 접두사 `sv24-` 사용, 키: power-levels, roadmap-progress, equality-history, goal-progress, warmup-progress, cooldown-progress, profile-data 등
+
+### 2-5. 네비게이션
+- 기존 nav 바에 9개 버튼 APPEND (UI 불가침 규칙 준수)
+- 새 position:fixed bottom bar 생성 없음
+
+## Phase 3: 품질 검증
+
+| 항목 | 결과 |
+|-----|------|
+| `node -c v24_patch.js` | ✅ 구문 오류 없음 (974줄) |
+| 외부 CDN 링크 | ✅ 없음 (0건) |
+| 개인정보 노출 | ✅ 없음 (0건) |
+| 하단 고정 네비바 신설 | ✅ 없음 (0건) |
+| HTML entities 따옴표 | ✅ 준수 |
+| manifest.json 유효성 | ✅ valid JSON (64 shortcuts) |
+| sw.js 구문 검사 | ✅ 통과 |
+| IIFE 가드 패턴 | ✅ window.__v24KaraokeLoaded |
+| Canvas self-contained | ✅ 8종 모두 자기완결 |
+| 곡 ID 중복 | ✅ 없음 (206-215 고유) |
+| 노트/가사/duration 배열 | ✅ 모두 16요소 |
+
+## Phase 4: 파일 변경 요약
+
+- v24_patch.js: 신규 (974줄, 자기완결형 IIFE 패치 모듈)
+- index.html: v24.0 SEO 전면 갱신 (title/desc/keywords/OG/Twitter/JSON-LD) + v24 스크립트태그
+- sw.js: v23→v24 (starvoice-v24 캐시, v24_patch.js PRECACHE+자동주입)
+- manifest.json: v24.0 설명+shortcuts 8종 추가 (총64종)
+- AUTO_REPORT.md: v24.0 리포트 추가

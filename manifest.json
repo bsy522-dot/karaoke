@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v23 — AI 노래방",
+  "name": "StarVoice v24 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 205곡, 보컬음역매퍼Canvas12x4노트그리드, 키트랜스포저Canvas원형키다이어그램, 듀엣케미스트리Canvas10AI가수6축Radar, 퍼포먼스리플레이Canvas20세션라인차트, 보컬리커버리Canvas8회복법, 음악이론드릴Canvas5카테고리30문바차트, 셋리스트옵티마이저Canvas6축밸런스Radar, 보이스분류기Canvas8음성유형6축Radar, 퀴즈252문, 210개 업적",
+  "description": "AI 음정 분석 K-노래방. 215곡, 보컬파워미터Canvas12운동바차트, 가창력발전로드맵Canvas10마일스톤, 듀엣호환매트릭스Canvas8x8히트맵, 보컬이퀄리티Canvas6축Radar, 라이브피드백대시보드Canvas8게이지, 노래목표추적기Canvas8도넛, 보컬웜쿨다운Canvas12운동타이머, 싱어프로필비교기Canvas듀얼Radar, 퀴즈267문, 222개 업적",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -71,6 +71,14 @@
     {"name": "보컬 리커버리", "url": "./noraebang-v6.html#vocal-recovery", "description": "보컬 리커버리 8회복법 진행추적"},
     {"name": "음악이론 드릴", "url": "./noraebang-v6.html#theory-drill", "description": "음악이론 드릴 5카테고리 30문 바차트"},
     {"name": "셋리스트 옵티마이저", "url": "./noraebang-v6.html#setlist-optimizer", "description": "셋리스트 옵티마이저 6축 밸런스Radar"},
-    {"name": "보이스 분류기", "url": "./noraebang-v6.html#voice-classifier", "description": "보이스 분류기 8음성유형 6축Radar"}
+    {"name": "보이스 분류기", "url": "./noraebang-v6.html#voice-classifier", "description": "보이스 분류기 8음성유형 6축Radar"},
+    {"name": "보컬 파워미터", "url": "./noraebang-v6.html#sv24-vocal-power", "description": "보컬 파워 미터 12운동 바차트"},
+    {"name": "가창력 로드맵", "url": "./noraebang-v6.html#sv24-roadmap", "description": "가창력 발전 로드맵 10마일스톤"},
+    {"name": "듀엣 호환매트릭스", "url": "./noraebang-v6.html#sv24-duet-matrix", "description": "듀엣 호환성 매트릭스 8x8 히트맵"},
+    {"name": "보컬 이퀄리티", "url": "./noraebang-v6.html#sv24-equality", "description": "보컬 이퀄리티 분석기 6축 Radar"},
+    {"name": "라이브 피드백", "url": "./noraebang-v6.html#sv24-live-feedback", "description": "라이브 피드백 대시보드 8게이지"},
+    {"name": "목표 추적기", "url": "./noraebang-v6.html#sv24-goal-tracker", "description": "노래 목표 추적기 8도넛 게이지"},
+    {"name": "웜쿨다운 가이드", "url": "./noraebang-v6.html#sv24-warmcool", "description": "보컬 웜쿨다운 가이드 12운동 타이머"},
+    {"name": "싱어 비교기", "url": "./noraebang-v6.html#sv24-profile-compare", "description": "싱어 프로필 비교기 듀얼 Radar"}
   ]
 }
