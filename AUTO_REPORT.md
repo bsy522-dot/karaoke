@@ -1724,3 +1724,90 @@ range-explorer, range-master, balance-analyzer, style-mimic-3, style-all-clear, 
 - sw.js: v23→v24 (starvoice-v24 캐시, v24_patch.js PRECACHE+자동주입)
 - manifest.json: v24.0 설명+shortcuts 8종 추가 (총64종)
 - AUTO_REPORT.md: v24.0 리포트 추가
+
+---
+
+# [AUTO] 2026-07-30 karaoke v25.0 보고서
+
+## Phase 1: 벤치마킹 (StarMaker / Smule / 노래방어플 대비)
+
+| # | 경쟁사 기능 | StarMaker | Smule | v24 | v25 해결 |
+|---|-----------|-----------|-------|-----|---------|
+| 1 | 음정 분포 시각화 | ✅ | ❌ | ❌ | ✅ 피치분포히스토그램Canvas12음바차트 |
+| 2 | 감정 흐름 편집 | ✅ | ✅ | ❌ | ✅ 감정아크디자이너Canvas8감정드래그커브 |
+| 3 | 보컬 레벨/XP 시스템 | ✅ | ✅ | ❌ | ✅ 보컬스태미나레벨Canvas10레벨XP |
+| 4 | AI 듀엣 코칭 | ✅ | ✅ | ❌ | ✅ AI듀엣코칭시뮬Canvas10AI가수6축Radar |
+| 5 | 분위기/무드 설정 | ✅ | ✅ | ❌ | ✅ 노래방분위기컨트롤러Canvas8분위기 |
+| 6 | 보컬 훈련 스케줄러 | ✅ | ❌ | ❌ | ✅ 보컬트레이닝스케줄러Canvas7일x8운동 |
+| 7 | 장르별 탐험/진도 | ✅ | ✅ | ❌ | ✅ 장르탐험매트릭스Canvas10x6히트맵 |
+| 8 | 종합 보컬 리포트 | ✅ | ✅ | ❌ | ✅ 종합보컬리포트Canvas8축Radar게이지 |
+| 9 | 곡 대폭 추가 | ✅ | ✅ | 215곡 | ✅ 225곡 (+10곡) |
+| 10 | 퀴즈/업적 확대 | ✅ | ❌ | 267/222 | ✅ 282퀴즈/234업적 |
+
+## Phase 2: 개발 (전체 팀 투입)
+
+### v25_patch.js 신규 (~974줄, 자기완결형 IIFE 패치 모듈)
+
+**프론트엔드 (UI/UX)**
+- v25 모달 헬퍼 (다크 그라디언트 테마, 반응형, 터치/클릭 닫기)
+- 기존 하단 네비에 8버튼 추가 (신규 고정바 없음)
+- 키보드 단축키 Shift+Q/W/E/R/T/Y/U/I/0 (9종)
+
+**콘텐츠 제작 (+10곡: 215→225)**
+- 216: Welcome to the Show (DAY6, rock)
+- 217: Supernatural (NewJeans, dance)
+- 218: Whiplash (aespa, dance)
+- 219: POWER (G-DRAGON, hiphop)
+- 220: Timeless (The Weeknd & Playboi Carti, pop)
+- 221: 소나기 (이클립스/ECLIPSE, ballad)
+- 222: APT. (로제 & Bruno Mars, pop)
+- 223: 아이돌 (YOASOBI, jpop)
+- 224: 한 페이지가 될 수 있게 (DAY6, rock)
+- 225: SPOT! (ZICO feat. JENNIE, hiphop)
+
+**Canvas 인터랙티브 기능 (8종)**
+1. 피치분포히스토그램 — 12음(C~B) 피치클래스 출현빈도 Canvas 바차트, 곡별 선택, 컬러그래디언트
+2. 감정아크디자이너 — 8감정(기쁨/슬픔/분노/평온/설렘/그리움/희망/공포) Canvas 드래그커브, 곡 타임라인 감정 설계
+3. 보컬스태미나레벨시스템 — 10레벨 XP 프로그레션 Canvas, 곡 완주/고득점으로 XP 획득, 레벨업 SFX
+4. AI듀엣코칭시뮬레이터 — 10명 AI가수(IU/BTS정국/태양 등) 6축 Radar Canvas, 파트분배+코칭팁
+5. 노래방분위기컨트롤러 — 8분위기(로맨틱/파티/감성 등) Canvas 그리드, 분위기별 배경색+조명효과 미리보기
+6. 보컬트레이닝스케줄러 — 7일x8운동(호흡/발성/음역 등) Canvas 주간표, 완료체크+진행률
+7. 장르탐험매트릭스 — 10장르x6레벨 히트맵 Canvas, 장르별 곡 완주 진도 시각화
+8. 종합보컬리포트 — 8축(음정/리듬/호흡/표현/음역/지구력/테크닉/감정) Radar+게이지 Canvas 종합평가
+
+**SFX 엔진 (16종)**
+- Web Audio API OscillatorNode + GainNode
+- 피치히스토: barRise/barComplete/noteHighlight/histoReset
+- 감정아크: emotionDrag/arcComplete/emotionSwitch/arcReset
+- 스태미나: xpGain/levelUp/staminaFull/staminaDrain
+- 분위기: moodSwitch/ambianceSet/moodPreview/ambianceReset
+
+**퀴즈 (+15문: 267→282)**
+- v25 신기능 Canvas 8종 관련 15문항 (4지선다)
+
+**업적 (+12: 222→234)**
+- v25 Canvas 기능 마스터리 업적 12종
+
+## Phase 3: 품질 검증
+
+| 항목 | 결과 |
+|------|------|
+| v25_patch.js 구문 검사 (node -c) | ✅ 통과 |
+| 외부 CDN 링크 | ✅ 없음 (0건) |
+| 개인정보 노출 | ✅ 없음 (0건) |
+| 하단 고정 네비바 신설 | ✅ 없음 (0건) |
+| HTML entities 따옴표 | ✅ 준수 |
+| manifest.json 유효성 | ✅ valid JSON (72 shortcuts) |
+| sw.js 구문 검사 | ✅ 통과 |
+| IIFE 가드 패턴 | ✅ window.__v25KaraokeLoaded |
+| Canvas self-contained | ✅ 8종 모두 자기완결 |
+| 곡 ID 중복 | ✅ 없음 (216-225 고유) |
+| 노트/가사/duration 배열 | ✅ 모두 16요소 |
+
+## Phase 4: 파일 변경 요약
+
+- v25_patch.js: 신규 (~974줄, 자기완결형 IIFE 패치 모듈)
+- index.html: v25.0 SEO 전면 갱신 (title/desc/keywords/OG/Twitter/JSON-LD) + v25 스크립트태그
+- sw.js: v24→v25 (starvoice-v25 캐시, v25_patch.js PRECACHE+자동주입)
+- manifest.json: v25.0 설명+shortcuts 8종 추가 (총72종)
+- AUTO_REPORT.md: v25.0 리포트 추가

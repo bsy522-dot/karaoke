@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v24 — AI 노래방",
+  "name": "StarVoice v25 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 215곡, 보컬파워미터Canvas12운동바차트, 가창력발전로드맵Canvas10마일스톤, 듀엣호환매트릭스Canvas8x8히트맵, 보컬이퀄리티Canvas6축Radar, 라이브피드백대시보드Canvas8게이지, 노래목표추적기Canvas8도넛, 보컬웜쿨다운Canvas12운동타이머, 싱어프로필비교기Canvas듀얼Radar, 퀴즈267문, 222개 업적",
+  "description": "AI 음정 분석 K-노래방. 225곡, 피치분포히스토그램Canvas12음바차트, 감정아크디자이너Canvas8감정드래그커브, 보컬스태미나레벨Canvas10레벨XP, AI듀엣코칭시뮬Canvas10AI가수6축Radar, 노래방분위기컨트롤러Canvas8분위기, 보컬트레이닝스케줄러Canvas7일x8운동, 장르탐험매트릭스Canvas10x6히트맵, 종합보컬리포트Canvas8축Radar게이지, 퀴즈282문, 234개 업적",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -79,6 +79,14 @@
     {"name": "라이브 피드백", "url": "./noraebang-v6.html#sv24-live-feedback", "description": "라이브 피드백 대시보드 8게이지"},
     {"name": "목표 추적기", "url": "./noraebang-v6.html#sv24-goal-tracker", "description": "노래 목표 추적기 8도넛 게이지"},
     {"name": "웜쿨다운 가이드", "url": "./noraebang-v6.html#sv24-warmcool", "description": "보컬 웜쿨다운 가이드 12운동 타이머"},
-    {"name": "싱어 비교기", "url": "./noraebang-v6.html#sv24-profile-compare", "description": "싱어 프로필 비교기 듀얼 Radar"}
+    {"name": "싱어 비교기", "url": "./noraebang-v6.html#sv24-profile-compare", "description": "싱어 프로필 비교기 듀얼 Radar"},
+    {"name": "피치 히스토그램", "url": "./noraebang-v6.html#sv25-pitch-histo", "description": "피치 분포 히스토그램 12음 바차트"},
+    {"name": "감정 아크", "url": "./noraebang-v6.html#sv25-emotion-arc", "description": "감정 아크 디자이너 8감정 드래그커브"},
+    {"name": "스태미나 레벨", "url": "./noraebang-v6.html#sv25-stamina-level", "description": "보컬 스태미나 레벨 10레벨 XP"},
+    {"name": "AI듀엣 코칭", "url": "./noraebang-v6.html#sv25-duet-coach", "description": "AI 듀엣 코칭 시뮬 10AI가수 6축Radar"},
+    {"name": "분위기 컨트롤", "url": "./noraebang-v6.html#sv25-ambiance", "description": "노래방 분위기 컨트롤러 8분위기"},
+    {"name": "트레이닝 스케줄", "url": "./noraebang-v6.html#sv25-training-sched", "description": "보컬 트레이닝 스케줄러 7일x8운동"},
+    {"name": "장르 매트릭스", "url": "./noraebang-v6.html#sv25-genre-matrix", "description": "장르 탐험 매트릭스 10x6 히트맵"},
+    {"name": "종합 리포트", "url": "./noraebang-v6.html#sv25-vocal-report", "description": "종합 보컬 리포트 8축 Radar 게이지"}
   ]
 }
