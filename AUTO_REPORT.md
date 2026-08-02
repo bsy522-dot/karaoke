@@ -1811,3 +1811,66 @@ range-explorer, range-master, balance-analyzer, style-mimic-3, style-all-clear, 
 - sw.js: v24→v25 (starvoice-v25 캐시, v25_patch.js PRECACHE+자동주입)
 - manifest.json: v25.0 설명+shortcuts 8종 추가 (총72종)
 - AUTO_REPORT.md: v25.0 리포트 추가
+
+---
+
+# [AUTO] 2026-08-02 karaoke v26.0 보고서
+
+## Phase 1: 벤치마킹 (StarMaker / Smule 대비)
+
+| # | 경쟁사 기능 | StarMaker | Smule | v25 | v26 해결 |
+|---|---|---|---|---|---|
+| 1 | 실시간 주파수 스펙트럼 | ✅ | ✅ | ❌ | ✅ 32밴드 스펙트럼 분석기 Canvas |
+| 2 | 곡별 마스터리 진행도 | ✅ | ✅ | ❌ | ✅ 10장르 트리맵 시각화 Canvas |
+| 3 | 보컬 성장 돌파점 분석 | ✅ | ❌ | ❌ | ✅ 6축 브레이크스루 Radar Canvas |
+| 4 | 다양한 노래방 모드 | ✅ | ✅ | ❌ | ✅ 8종 모드 셀렉터 그리드 Canvas |
+| 5 | 연령대별 음역 시뮬 | ❌ | ❌ | ❌ | ✅ 6연령대 4축 바차트 Canvas |
+| 6 | AI 오디션 심사 | ✅ | ❌ | ❌ | ✅ 5심사위원 6항목 히트맵 Canvas |
+| 7 | 발성 자세 가이드 | ❌ | ✅ | ❌ | ✅ 8포지션 6축 Radar Canvas |
+| 8 | 보컬 커리어 로드맵 | ✅ | ❌ | ❌ | ✅ 5단계 커리어 패스 Canvas |
+
+## Phase 2: 개발 (v26.0 변경사항)
+
+### 콘텐츠
+- **10곡 추가** (225→235곡): APT.(ROSÉ&BrunoMars)/Magnetic(ILLIT)/Sticky(KISSOFLIFE)/해야(IVE)/Accendio(IVE)/이름(이영지)/Love119(RIIZE)/Supernova(aespa)/눈물의여왕(헤이즈)/SmallGirl(오마이걸)
+- **퀴즈 15문** (282→297): 포먼트/트리맵/브레이크/에코/성대노화/톤평가/횡격막/데뷔/스펙트로그램/하울링/레지스터/S등급/FFT/립트릴/듀엣모드
+- **업적 12개** (234→246): spectrum_analyst/mastery_hunter/breakthrough_star/mode_explorer/age_vocalist/audition_survivor/posture_master/career_dreamer/quiz_v26_master/song_235/v26_explorer/v26_complete
+
+### Canvas 기능 8종
+1. **보컬 주파수 스펙트럼 분석기** Canvas 640x400: 32밴드 주파수 바차트, 피크 마커, 저/중/고/초고음역 4존 구분, 호버 상세 정보
+2. **곡별 마스터리 트리맵** Canvas 640x400: 10장르 면적비율 트리맵, 마스터리% 색상투명도, 호버 드릴다운 통계
+3. **보컬 브레이크스루 포인트 분석기** Canvas 620x400: 6축 Radar (음정안정/흉두성전환/호흡지속/비브라토/감정표현/고음확장), 현재/목표 비교, 클릭 훈련
+4. **노래방 모드 셀렉터** Canvas 620x400: 8종 모드 (솔로/듀엣/배틀/파티/콘서트/챌린지/레슨/릴레이) 4x2 그리드, 난이도/소셜/채점 스탯
+5. **보컬 에이징 시뮬레이터** Canvas 620x400: 6연령대 (10대~60대+) 4축 (파워/지구력/비브라토/유연성) 그룹바차트, 음역 범위 표시
+6. **AI 오디션 심사 매트릭스** Canvas 640x400: 5심사위원 (유희열/박진영/이선희/양현석/이효리) × 6항목 (음정/리듬/감정/테크닉/무대매너/잠재력) 히트맵, 합격 판정
+7. **발성 포지션 가이드** Canvas 620x400: 8포지션 6축 Radar (호흡안정/발성파워/비브라토/무대자유/표현력/지구력), 버튼 전환 비교
+8. **보컬 커리어 패스** Canvas 640x400: 5단계 (입문자→아마추어→세미프로→프로→슈퍼스타) 수직 로드맵, 스킬 해금, XP 프로그레스바
+
+### 오디오/UI
+- SFX 16종: spectrumScan/spectrumPeak/masteryUp/masteryComplete/breakthroughHit/breakthroughLevel/modeSelect/modeActivate/agingScan/agingResult/auditionJudge/auditionPass/postureGuide/postureCorrect/careerAdvance/navClick26
+- 키보드 단축키: Shift+A/S/D/F/G/H/J/K/0 (9종)
+- 네비 버튼: 기존 bottomNav에 9버튼 append (하단 네비바 신규생성 없음 - UI불가침 규칙 준수)
+- 버튼 색상: 에메랄드 그래디언트 (#059669→#10b981)
+
+## Phase 3: 품질 검증
+
+| 검증 항목 | 결과 |
+|---|---|
+| v26_patch.js 구문 검사 | ✅ PASS (1202줄) |
+| 외부 CDN 참조 | ✅ 0건 |
+| 개인정보 노출 | ✅ 0건 |
+| 하단 고정 네비바 신규생성 | ✅ 0건 (기존 nav 검색만) |
+| manifest.json 유효성 | ✅ valid JSON (80 shortcuts) |
+| sw.js 구문 검사 | ✅ 통과 |
+| IIFE 가드 패턴 | ✅ window.__v26KaraokeLoaded |
+| Canvas self-contained | ✅ 8종 모두 자기완결 |
+| 곡 ID 중복 | ✅ 없음 (226-235 고유) |
+| 노트/가사/duration 배열 | ✅ 모두 16요소 |
+
+## Phase 4: 파일 변경 요약
+
+- v26_patch.js: 신규 (1202줄, 자기완결형 IIFE 패치 모듈)
+- index.html: v26.0 SEO 전면 갱신 (title/desc/keywords/OG/Twitter/JSON-LD) + v26 스크립트태그
+- sw.js: v25→v26 (starvoice-v26 캐시, v26_patch.js PRECACHE+자동주입)
+- manifest.json: v26.0 설명+shortcuts 8종 추가 (총80종)
+- AUTO_REPORT.md: v26.0 리포트 추가
