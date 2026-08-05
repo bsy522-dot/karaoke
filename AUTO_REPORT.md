@@ -1,3 +1,99 @@
+# [AUTO] 2026-08-05 karaoke v27.0 보고서
+
+## Phase 1: 벤치마킹 (StarMaker / Smule 대비)
+
+| # | 경쟁사 기능 | StarMaker | Smule | v26 | v27 해결 |
+|---|-----------|-----------|-------|-----|---------|
+| 1 | 음정 분포 히트맵 | ✅ | ❌ | ❌ | ✅ 음정히트맵Canvas12音5옥타브 |
+| 2 | 곡 난이도 매칭 추천 | ✅ | ✅ | ❌ | ✅ 난이도매칭Canvas8축Radar |
+| 3 | 배음/하모닉스 시각화 | ✅ | ❌ | ❌ | ✅ 배음분석Canvas8배음바차트 |
+| 4 | 파티 스코어보드 | ✅ | ✅ | ❌ | ✅ 파티스코어보드Canvas10인랭킹 |
+| 5 | 감정 색상 팔레트 매칭 | ❌ | ❌ | ❌ | ✅ 감정팔레트Canvas10감정그리드 |
+| 6 | 에너지 커브 분석 | ✅ | ❌ | ❌ | ✅ 에너지커브Canvas16구간3축라인 |
+| 7 | 딕션/발음 분석 | ✅ | ❌ | ❌ | ✅ 딕션분석Canvas8자음5모음 |
+| 8 | 종합 성장 대시보드 | ✅ | ✅ | ❌ | ✅ 성장대시보드Canvas8KPI반원게이지 |
+| 9 | 곡 대폭 추가 | ✅ | ✅ | 235곡 | ✅ 245곡 (+10곡) |
+| 10 | 퀴즈/업적 확대 | ✅ | ❌ | 297/246 | ✅ 312퀴즈/258업적 |
+
+## Phase 2: 개발 (전체 팀 투입)
+
+### v27_patch.js 신규 (1133줄, 자기완결형 IIFE 패치 모듈)
+
+**프론트엔드 (UI/UX)**
+- v27 모달 헬퍼 (다크 그라디언트 테마, 반응형, 터치/클릭 닫기)
+- 하단 스크롤 네비바 8버튼 (퍼플 테마, 기존 nav 검색 후 append)
+- 키보드 단축키 Shift+Q/W/E/R/T/Y/U/I/0 9종
+
+**콘텐츠 제작 (+10곡: 235→245)**
+- 236: Ditto (NewJeans, pop)
+- 237: Seven (정국, pop)
+- 238: SPOT! (ZICO feat. JENNIE, hiphop)
+- 239: OMG (NewJeans, pop)
+- 240: ETA (NewJeans, dance)
+- 241: 우리들의 블루스 (임영웅, trot)
+- 242: Drama (aespa, pop)
+- 243: 이브 프시케 그리고 푸른수염의 아내 (LE SSERAFIM, dance)
+- 244: 사건의 지평선 (윤하, rock)
+- 245: FEARLESS (LE SSERAFIM, dance)
+
+**퀴즈 제작 (+15문: 297→312)**
+- NewJeans Ditto/OMG/ETA 관련 3문
+- 정국 Seven, ZICO SPOT! 관련 2문
+- 임영웅 우리들의 블루스, aespa Drama 관련 2문
+- LE SSERAFIM 관련 2문, 윤하 사건의 지평선 1문
+- 음정히트맵/배음분석/딕션분석/에너지커브/성장대시보드 기능 5문
+
+**업적 제작 (+12종: 246→258)**
+- 음정히트맵 관련 2종 (첫분석/5옥타브올그린)
+- 난이도매칭 관련 1종 (10곡매칭)
+- 배음분석 관련 1종 (8배음확인)
+- 파티스코어보드 관련 2종 (첫파티/3인초대)
+- 감정팔레트 관련 1종 (10감정모두선택)
+- 에너지커브 관련 1종 (16구간분석)
+- 딕션분석 관련 2종 (첫딕션/올그린)
+- 성장대시보드 관련 2종 (첫확인/8KPI모두50이상)
+
+**SFX 사운드 (16종)**
+- intonScan, intonHit, diffMatch, diffResult
+- overtoneRing, overtonePeak, partyCheer, partyScore
+- emotionPick, emotionGlow, energyPulse, energyPeak
+- dictionCheck, dictionPass, dashboardOpen, navClick27
+
+**Canvas 시각화 (8종)**
+1. 음정 히트맵: 12음×5옥타브 그리드, 색상 강도 매핑 (640×400)
+2. 난이도 매칭: 8축 Radar (음정/리듬/고음/감정/속도/호흡/테크닉/체력) (620×400)
+3. 배음 분석기: 8배음 수직 바차트 + 기본주파수 표시 (620×400)
+4. 파티 스코어보드: 10인 랭킹 테이블 + 점수바 (640×400)
+5. 감정 팔레트: 10감정 색상 그리드 + 클릭 상세보기 (620×400)
+6. 에너지 커브: 16구간 3축(볼륨/피치/에너지) 라인차트 (640×400)
+7. 딕션 분석: 8자음 수평바 + 5모음 하단바 (620×400)
+8. 성장 대시보드: 8KPI 반원 게이지 (음정/리듬/감정/고음/호흡/테크닉/표현/체력) (620×400)
+
+## Phase 3: 품질 검증
+
+| 검증 항목 | 결과 |
+|-----------|------|
+| v27_patch.js 구문 검사 (node --check) | ✅ 통과 |
+| 외부 CDN 참조 | ✅ 0건 |
+| 개인정보 노출 | ✅ 0건 |
+| 하단 고정 네비바 신규생성 | ✅ 0건 (기존 nav 검색만) |
+| manifest.json 유효성 | ✅ valid JSON (88 shortcuts) |
+| sw.js 구문 검사 | ✅ 통과 |
+| IIFE 가드 패턴 | ✅ window.__v27KaraokeLoaded |
+| Canvas self-contained | ✅ 8종 모두 자기완결 |
+| 곡 ID 중복 | ✅ 없음 (236-245 고유) |
+| 노트/가사/duration 배열 | ✅ 모두 16요소 |
+
+## Phase 4: 파일 변경 요약
+
+- v27_patch.js: 신규 (1133줄, 자기완결형 IIFE 패치 모듈)
+- index.html: v27.0 SEO 전면 갱신 (title/desc/keywords/OG/Twitter/JSON-LD) + v27 스크립트태그
+- sw.js: v26→v27 (starvoice-v27 캐시, v27_patch.js PRECACHE+자동주입)
+- manifest.json: v27.0 설명+shortcuts 8종 추가 (총88종)
+- AUTO_REPORT.md: v27.0 리포트 추가
+
+---
+
 # [AUTO] 2026-07-02 karaoke v16.0 보고서
 
 ## Phase 1: 벤치마킹 (StarMaker / Smule 대비)
