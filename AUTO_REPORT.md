@@ -1970,3 +1970,97 @@ range-explorer, range-master, balance-analyzer, style-mimic-3, style-all-clear, 
 - sw.js: v25→v26 (starvoice-v26 캐시, v26_patch.js PRECACHE+자동주입)
 - manifest.json: v26.0 설명+shortcuts 8종 추가 (총80종)
 - AUTO_REPORT.md: v26.0 리포트 추가
+
+---
+
+## v28.0 — 2026-08-08
+
+### Stage 1: 벤치마킹 (10%)
+
+**경쟁사 분석**: StarMaker, Smule, 노래방어플
+
+| 기능 | StarMaker | Smule | 노래방어플 | StarVoice v28 |
+|------|-----------|-------|-----------|---------------|
+| 팀버/음색 분석 | ✕ | 기본 톤매칭 | ✕ | ✅ 8밴드 스펙트로그램 히트맵 |
+| 키 전조 도구 | ✕ | ±3반음 | ✕ | ✅ 12키 원형 다이어그램+적합도 |
+| 호흡 훈련 | ✕ | ✕ | ✕ | ✅ 6운동 반원게이지+20세션 트렌드 |
+| 비브라토 분석 | 기본감지 | ✕ | ✕ | ✅ 6타입 Radar+파형 시각화 |
+| 장르 마스터리 | 인기장르 | ✕ | ✕ | ✅ 10장르 도넛차트+마스터리바 |
+| 프레이즈 분석 | ✕ | ✕ | ✕ | ✅ 8구간 정확도바+호흡 타임라인 |
+| 무대 프레즌스 | ✕ | ✕ | ✕ | ✅ 8요소 적층바+관객 게이지 |
+| 보컬 DNA | ✕ | ✕ | ✕ | ✅ 8KPI 반원게이지+가중 종합 |
+| 곡 수 | 50M+ (라이선스) | 10M+ (소셜) | 1000+ (MR) | 255곡 (내장 악보) |
+
+**v28 차별화 포인트**:
+- 팀버 스펙트로그램: 8개 주파수 대역(Sub-Bass~Brilliance)을 히트맵으로 시각화 — 경쟁사에 없는 음색 분석
+- 키 모듈레이터: 12키 원형 다이어그램으로 최적 키 시각화 — Smule의 단순 반음 조절 대비 압도적
+- 호흡 용량: 6가지 호흡 운동과 20세션 추적 — 경쟁사 전무한 보컬 기초 훈련
+- 비브라토 정밀: 6가지 비브라토 타입 Radar + 실시간 파형 — StarMaker 기본 감지 대비 심층
+- 장르 마스터리: 10장르 도넛차트 — 장르별 성장 시각화 경쟁사 부재
+- 프레이즈/무대/DNA: 완전 독자 기능 — 경쟁사 대응 기능 없음
+
+### Stage 2: 개발 (50%)
+
+**v28_patch.js (1050줄, 자기완결형 IIFE)**
+
+#### 신규 곡 10곡 (246~255번):
+1. Supernova — aespa (BPM128, Bb키, ★4.2)
+2. Magnetic — ILLIT (BPM116, G키, ★3.5)
+3. 해야 (HEYA) — IVE (BPM130, A키, ★3.8)
+4. Welcome to the Show — DAY6 (BPM140, D키, ★4.0)
+5. Love Lee — AKMU (BPM98, C키, ★3.2)
+6. Power — G-DRAGON (BPM132, Eb키, ★4.5)
+7. 소나기 — ECLIPSE (BPM85, F키, ★3.0)
+8. Super Shy — NewJeans (BPM150, Ab키, ★3.6)
+9. 꽃 (FLOWER) — JISOO (BPM120, E키, ★3.4)
+10. Fighting (파이팅 해야지) — BSS (BPM122, Bb키, ★3.3)
+
+#### Canvas 시각화 8종:
+1. **팀버 스펙트로그램** (`__sv28TimbreSpectrogram`): 640×400, 8개 주파수 대역(Sub-Bass~Brilliance) 히트맵, 10세션 시간축, 색상 그라디언트
+2. **키 모듈레이터** (`__sv28KeyModulator`): 620×400, 12키 원형 다이어그램 + 5단계 적합도 바 차트
+3. **호흡 용량** (`__sv28BreathCapacity`): 620×400, 6가지 호흡 운동 반원게이지 + 20세션 트렌드 라인
+4. **비브라토 정밀** (`__sv28VibratoPrecision`): 620×400, 6타입 Radar 차트 + 파형 시각화
+5. **장르 마스터리** (`__sv28GenreMastery`): 640×400, 10장르 도넛차트 + 마스터리 수평바
+6. **프레이즈 분석** (`__sv28PhraseBreakdown`): 620×400, 8구간 정확도 수직바 + 호흡 포인트 타임라인
+7. **무대 프레즌스** (`__sv28StagePresence`): 620×400, 8요소 수평 적층바 + 관객 반응 반원게이지
+8. **보컬 DNA** (`__sv28VocalDNA`): 620×400, 8KPI 반원게이지(4×2 그리드) + 가중 종합 등급 S~D
+
+#### SFX 16종:
+timbreScan, timbreHit, keyMod, keyShift, breathIn, breathOut, vibratoWave, vibratoPeak, genreUnlock, genreMaster, phraseBreak, phraseScore, stageLit, stageCheer, dnaReveal, navClick28
+
+#### 퀴즈 15문 (312→327):
+팀버 분석, 전조, 호흡 용량, 비브라토, 벨팅, 프레이즈 맵핑, 무대 프레즌스, 보컬 DNA, Supernova, 다이나믹 콘트라스트, 횡격막 호흡, DAY6, 립 트릴, Super Shy, 프레이즈 맵핑 심화
+
+#### 업적 12종 (258→270):
+timbre_analyst(🎙), key_master(🔑), breath_champion(💨), vibrato_precision(〰), genre_explorer(🌀), phrase_decoder(📝), stage_star(⭐), vocal_dna(🧬), quiz_v28_master(🏆), song_255(🎵), v28_explorer(🔍), v28_complete(👑)
+
+#### 네비게이션:
+- 기존 bottomNav 감지 후 9개 버튼 추가 (🎙팀버, 🔑키전조, 💨호흡, 〰비브라토, 🌀장르, 📝프레이즈, ⭐무대, 🧬DNA, 🔄v28)
+- 키보드: Shift+Q/W/E/R/T/Y/U/I/0
+- 그라디언트: linear-gradient(135deg,#6d28d9,#9333ea)
+
+### Stage 3: 품질검증 (30%)
+
+#### 코드 검증:
+- ✅ `node --check v28_patch.js` — JS 문법 오류 없음
+- ✅ `manifest.json` — 유효한 JSON
+- ✅ 외부 CDN 참조 — 0건 (자기완결)
+- ✅ 개인정보 노출 — 0건
+- ✅ 새 fixed bottom 네비바 — 0건 (기존 nav 감지 후 추가 패턴 유지)
+- ✅ HTML entities — 따옴표 인코딩 확인
+- ✅ IIFE 가드: `window.__v28KaraokeLoaded` 중복 실행 방지
+- ✅ localStorage 키: `sv28_` 접두사 네임스페이스 격리
+
+#### UI 불가침 규칙:
+- ✅ 기존 `.bottomNav` 또는 `position:fixed; bottom` 요소 감지 후 버튼만 추가
+- ✅ 새로운 `position:fixed; bottom:0` 스트립/네비바 생성 없음
+- ✅ 기존 메인 네비게이션 클릭 가능 상태 유지
+
+### Stage 4: 배포 (10%)
+
+#### 변경 파일 목록:
+- v28_patch.js: 신규 (1050줄, 자기완결형 IIFE 패치 모듈)
+- index.html: v28.0 SEO 전면 갱신 (title/desc/keywords/OG/Twitter/JSON-LD) + v28 스크립트태그
+- sw.js: v27→v28 (starvoice-v28 캐시, v28_patch.js PRECACHE+자동주입)
+- manifest.json: v28.0 설명+shortcuts 8종 추가 (총88종)
+- AUTO_REPORT.md: v28.0 리포트 추가

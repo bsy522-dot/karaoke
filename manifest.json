@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v27 — AI 노래방",
+  "name": "StarVoice v28 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 245곡, 음정히트맵Canvas12音5옥타브, 난이도매칭Canvas8축Radar, 배음분석Canvas8배음바차트, 파티스코어보드Canvas10인랭킹, 감정팔레트Canvas10감정그리드, 에너지커브Canvas16구간3축라인, 딕션분석Canvas8자음5모음, 성장대시보드Canvas8KPI반원게이지, 퀴즈312문, 258개 업적",
+  "description": "AI 음정 분석 K-노래방. 255곡, 팀버스펙트로그램Canvas8밴드히트맵, 키모듈레이터Canvas12키원형, 호흡용량Canvas6운동반원게이지, 비브라토정밀Canvas6타입Radar, 장르마스터리Canvas10장르도넛, 프레이즈분석Canvas8구간바, 무대프레즌스Canvas8요소적층바, 보컬DNA Canvas8KPI반원게이지, 퀴즈327문, 270개 업적",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -469,6 +469,46 @@
       "name": "성장 대시보드",
       "url": "./noraebang-v6.html#sv27-growth-dashboard",
       "description": "성장 대시보드 8KPI 반원게이지 Canvas"
+    },
+    {
+      "name": "팀버 스펙트로그램",
+      "url": "./noraebang-v6.html#sv28-timbre-spectrogram",
+      "description": "팀버 스펙트로그램 8밴드 히트맵 Canvas"
+    },
+    {
+      "name": "키 모듈레이터",
+      "url": "./noraebang-v6.html#sv28-key-modulator",
+      "description": "키 모듈레이터 12키 원형 다이어그램 Canvas"
+    },
+    {
+      "name": "호흡 용량",
+      "url": "./noraebang-v6.html#sv28-breath-capacity",
+      "description": "호흡 용량 6운동 반원게이지 Canvas"
+    },
+    {
+      "name": "비브라토 정밀",
+      "url": "./noraebang-v6.html#sv28-vibrato-precision",
+      "description": "비브라토 정밀 6타입 Radar Canvas"
+    },
+    {
+      "name": "장르 마스터리",
+      "url": "./noraebang-v6.html#sv28-genre-mastery",
+      "description": "장르 마스터리 10장르 도넛차트 Canvas"
+    },
+    {
+      "name": "프레이즈 분석",
+      "url": "./noraebang-v6.html#sv28-phrase-breakdown",
+      "description": "프레이즈 분석 8구간 정확도 바 Canvas"
+    },
+    {
+      "name": "무대 프레즌스",
+      "url": "./noraebang-v6.html#sv28-stage-presence",
+      "description": "무대 프레즌스 8요소 적층바 Canvas"
+    },
+    {
+      "name": "보컬 DNA",
+      "url": "./noraebang-v6.html#sv28-vocal-dna",
+      "description": "보컬 DNA 8KPI 반원게이지 Canvas"
     }
   ]
 }
