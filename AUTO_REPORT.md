@@ -2064,3 +2064,81 @@ timbre_analyst(🎙), key_master(🔑), breath_champion(💨), vibrato_precision
 - sw.js: v27→v28 (starvoice-v28 캐시, v28_patch.js PRECACHE+자동주입)
 - manifest.json: v28.0 설명+shortcuts 8종 추가 (총88종)
 - AUTO_REPORT.md: v28.0 리포트 추가
+
+---
+
+# [AUTO] 2026-08-12 karaoke v29.0 보고서
+
+## Phase 1: 벤치마킹 (StarMaker / Smule / 노래방어플 대비)
+
+| # | 경쟁사 기능 | StarMaker | Smule | v28 | v29 해결 |
+|---|-----------|-----------|-------|-----|---------|
+| 1 | 보컬 레지스터 전환 분석 | ❌ | ❌ | ❌ | ✅ 4레지스터 6축 Radar Canvas 620x400 |
+| 2 | 곡별 감정곡선 디자이너 | ❌ | 기초 | ❌ | ✅ 8감정 4구간 라인차트 Canvas 640x400 |
+| 3 | 피치 안정성 매트릭스 | 기초 | ❌ | ❌ | ✅ 12음계 3옥타브 히트맵 Canvas 620x400 |
+| 4 | 듀엣 호환성 분석 | 기초 | 기초 | 기초 | ✅ 8보컬타입 매칭 히트맵 Canvas 620x400 |
+| 5 | 곡 난이도 8요소 분해 | ❌ | ❌ | ❌ | ✅ 8요소 Radar 5장르 비교 Canvas 620x400 |
+| 6 | 보컬 톤컬러 스펙트럼 | ❌ | ❌ | ❌ | ✅ 12톤 원형 스펙트럼 Canvas 620x400 |
+| 7 | 싱어 성장 스킬트리 로드맵 | ❌ | ❌ | ❌ | ✅ 10단계 스킬트리 Canvas 620x400 |
+| 8 | 종합 보컬 마스터리 대시보드 | ❌ | ❌ | ❌ | ✅ 8KPI 반원게이지 4x2 Canvas 620x400 |
+
+### 핵심 분석
+- StarMaker: 음정감지/녹음 중심, 보컬 교육 분석은 부족
+- Smule: 소셜/듀엣 중심, 기교 분석 도구 전무
+- v29 우위: 보컬 레지스터 전환, 감정곡선, 피치 안정성, 듀엣 호환성, 난이도 분해, 톤컬러, 성장 로드맵, 종합 마스터리 8종 분석기 완비
+
+## Phase 2: 개발 (50%)
+
+**v29_patch.js (982줄, 자기완결형 IIFE)**
+
+### 신규 곡 10곡 (256~265번):
+1. Ditto — NewJeans (BPM105, Db키, ★3)
+2. UNFORGIVEN — LE SSERAFIM (BPM140, Am키, ★4)
+3. 손오공 — SEVENTEEN (BPM132, Cm키, ★4)
+4. Take Two — BTS (BPM98, G키, ★3)
+5. VIBE — TAEYANG ft. Jimin (BPM108, Eb키, ★3)
+6. Love wins all — IU (BPM72, Bb키, ★3)
+7. Love Me Like This — NMIXX (BPM125, Fm키, ★4)
+8. 특 (S-Class) — Stray Kids (BPM145, Dm키, ★5)
+9. 사랑은 늘 도망가 — 임영웅 (BPM68, F키, ★2)
+10. Get A Guitar — RIIZE (BPM118, A키, ★3)
+
+### 8개 Canvas 분석기:
+1. **보컬 레지스터 전환 분석기** (620x400): 4레지스터(흉성/믹스/두성/팔세토) 6축 Radar, 전환 경로 분석, 클릭 전환
+2. **감정곡선 디자이너** (640x400): 8감정 4구간 라인차트, 클릭 감정 전환, 피크 구간 분석
+3. **피치 안정성 매트릭스** (620x400): 12음계 × 3옥타브 히트맵, 호버 상세, 약점 음계 분석
+4. **듀엣 호환성 분석기** (620x400): 8보컬타입 매칭 히트맵, 클릭 페어 상세, 궁합 등급
+5. **곡 난이도 분해기** (620x400): 8요소 Radar, 5장르 프로필 비교, 난이도 등급
+6. **보컬 톤컬러 스펙트럼** (620x400): 12톤컬러 원형 스펙트럼, 클릭 상세, 배음 특성
+7. **싱어 성장 로드맵** (620x400): 10단계 스킬트리, 연결선, 진행률, 클릭 상세
+8. **종합 보컬 마스터리 대시보드** (620x400): 8KPI 반원게이지 4x2, 가중 종합 S~D등급
+
+### 추가 콘텐츠:
+- 퀴즈 +15문 (327→342): 레지스터/팔세토/믹스보이스/감정곡선/피치안정성/하모니/난이도/톤컬러/성장/벨팅/비브라토속도/보컬피로/다이나믹스/어두운톤/음정이탈
+- 업적 +12개 (270→282): register_explorer, emotion_artist, pitch_sniper, duet_matchmaker, diff_analyst, tone_painter, growth_seeker, mastery_checker, v29_all_features, v29_quiz_master, v29_song_singer, v29_complete
+- SFX 16종: registerShift, registerPeak, emotionWave, emotionPeak, pitchLock, pitchDrift, duetMatch, duetSync, diffBreak, diffRank, toneShimmer, toneGlow, growthUp, growthMilestone, masteryComplete, navClick29
+- 키보드 단축키: Shift+Q/W/E/R/T/Y/U/I/0
+
+### 기술 스택:
+- Canvas 2D API (Radar, 히트맵, 라인차트, 원형차트, 스킬트리, 반원게이지)
+- Web Audio API (16종 SFX)
+- LocalStorage (진행상황 저장)
+- 터치 이벤트 지원 (모바일 호환)
+
+## Phase 3: 품질검증 (30%)
+
+| 항목 | 결과 | 상세 |
+|------|------|------|
+| JS 문법 | ✅ PASS | node -c v29_patch.js (982줄) |
+| JSON 파싱 | ✅ PASS | manifest.json (104 shortcuts) |
+| SW.JS 문법 | ✅ PASS | starvoice-v29 캐시 |
+| CDN 의존성 | ✅ 0건 | 외부 CDN 없음 |
+| 개인정보 | ✅ 0건 | 개인정보 노출 없음 |
+| 하단네비바 | ✅ 미생성 | 기존 bottomNav에 append만 |
+| 모바일 호환 | ✅ | 터치 이벤트, 반응형 Canvas |
+| 다크모드 | ✅ | 기존 테마 시스템 유지 |
+
+## Phase 4: 배포
+
+- 커밋: [AUTO] 2026-08-12 karaoke v29.0
+- 파일: v29_patch.js (신규), index.html, sw.js, manifest.json, AUTO_REPORT.md

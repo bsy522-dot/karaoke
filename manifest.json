@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v28 — AI 노래방",
+  "name": "StarVoice v29 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 255곡, 팀버스펙트로그램Canvas8밴드히트맵, 키모듈레이터Canvas12키원형, 호흡용량Canvas6운동반원게이지, 비브라토정밀Canvas6타입Radar, 장르마스터리Canvas10장르도넛, 프레이즈분석Canvas8구간바, 무대프레즌스Canvas8요소적층바, 보컬DNA Canvas8KPI반원게이지, 퀴즈327문, 270개 업적",
+  "description": "AI 음정 분석 K-노래방. 265곡, 보컬레지스터전환분석기Canvas4레지스터6축Radar, 감정곡선디자이너Canvas8감정4구간라인차트, 피치안정성매트릭스Canvas12음계3옥타브히트맵, 듀엣호환성분석기Canvas8보컬타입매칭히트맵, 곡난이도분해기Canvas8요소Radar, 톤컬러스펙트럼Canvas12톤원형, 싱어성장로드맵Canvas10단계스킬트리, 종합보컬마스터리Canvas8KPI반원게이지, 퀴즈342문, 282개 업적",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -509,6 +509,46 @@
       "name": "보컬 DNA",
       "url": "./noraebang-v6.html#sv28-vocal-dna",
       "description": "보컬 DNA 8KPI 반원게이지 Canvas"
+    },
+    {
+      "name": "레지스터 전환",
+      "url": "./noraebang-v6.html#sv29-register-transition",
+      "description": "보컬 레지스터 전환 4종 6축 Radar Canvas"
+    },
+    {
+      "name": "감정곡선 디자이너",
+      "url": "./noraebang-v6.html#sv29-emotion-curve",
+      "description": "감정곡선 디자이너 8감정 4구간 라인차트 Canvas"
+    },
+    {
+      "name": "피치 안정성",
+      "url": "./noraebang-v6.html#sv29-pitch-stability",
+      "description": "피치 안정성 12음계 3옥타브 히트맵 Canvas"
+    },
+    {
+      "name": "듀엣 호환성",
+      "url": "./noraebang-v6.html#sv29-duet-compat",
+      "description": "듀엣 호환성 8보컬타입 매칭 히트맵 Canvas"
+    },
+    {
+      "name": "곡 난이도 분해",
+      "url": "./noraebang-v6.html#sv29-difficulty",
+      "description": "곡 난이도 8요소 Radar 분해기 Canvas"
+    },
+    {
+      "name": "톤컬러 스펙트럼",
+      "url": "./noraebang-v6.html#sv29-tone-color",
+      "description": "보컬 톤컬러 12종 원형 스펙트럼 Canvas"
+    },
+    {
+      "name": "싱어 성장 로드맵",
+      "url": "./noraebang-v6.html#sv29-growth-roadmap",
+      "description": "싱어 성장 10단계 스킬트리 Canvas"
+    },
+    {
+      "name": "종합 보컬 마스터리",
+      "url": "./noraebang-v6.html#sv29-vocal-mastery",
+      "description": "종합 보컬 마스터리 8KPI 반원게이지 Canvas"
     }
   ]
 }
