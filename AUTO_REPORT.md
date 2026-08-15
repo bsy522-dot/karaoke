@@ -1,3 +1,99 @@
+# [AUTO] 2026-08-15 karaoke v30.0 보고서
+
+## Phase 1: 벤치마킹 (StarMaker / Smule 대비)
+
+| # | 경쟁사 기능 | StarMaker | Smule | v29 | v30 해결 |
+|---|-----------|-----------|-------|-----|---------|
+| 1 | 보컬 다이나믹 레벨 분석 | ✅ | ❌ | ❌ | ✅ 보컬다이나믹스컨트롤러Canvas8레벨6테크닉히트맵 |
+| 2 | 호흡 기법 체인 분석 | ✅ | ❌ | ❌ | ✅ 호흡체인분석기Canvas8기법6축Radar |
+| 3 | 음정 기억력 훈련 | ✅ | ✅ | ❌ | ✅ 피치메모리트레이너Canvas12음계레벨진행 |
+| 4 | 음색 유형 블렌딩 | ❌ | ❌ | ❌ | ✅ 보컬팀버블렌더Canvas8유형6축Radar비교모드 |
+| 5 | 곡별 감정 흐름 매핑 | ✅ | ❌ | ❌ | ✅ 곡감정매퍼Canvas10감정4구간라인차트 |
+| 6 | 보컬 지구력 추적 | ✅ | ✅ | ❌ | ✅ 보컬지구력트래커Canvas7일8시간대히트맵 |
+| 7 | 퍼포먼스 피크 타임 분석 | ✅ | ❌ | ❌ | ✅ 퍼포먼스피크파인더Canvas12시간대5지표영역차트 |
+| 8 | 종합 보컬 IQ 지표 | ✅ | ✅ | ❌ | ✅ 종합보컬IQCanvas8KPI반원게이지 |
+| 9 | 곡 대폭 추가 | ✅ | ✅ | 265곡 | ✅ 275곡 (+10곡) |
+| 10 | 퀴즈/업적 확대 | ✅ | ❌ | 342/282 | ✅ 357퀴즈/294업적 |
+
+## Phase 2: 개발 (전체 팀 투입)
+
+### v30_patch.js 신규 (~982줄, 자기완결형 IIFE 패치 모듈)
+
+**프론트엔드 (UI/UX)**
+- v30 모달 헬퍼 (다크 그라디언트 테마, 반응형, 터치/클릭 닫기)
+- 하단 스크롤 네비바 8버튼 (오렌지 테마 #7c2d12→#ea580c, 기존 nav 검색 후 append)
+- 키보드 단축키 Shift+Q/W/E/R/T/Y/U/I 8종
+
+**콘텐츠 제작 (+10곡: 265→275)**
+- 266: Supernatural (NewJeans, pop)
+- 267: Armageddon (aespa, dance)
+- 268: 고민중독 (QWER, rock)
+- 269: Whiplash (aespa, dance)
+- 270: How Sweet (NewJeans, pop)
+- 271: Small girl (이영지, hiphop)
+- 272: Bubble Gum (NewJeans, pop)
+- 273: SPOT! (ZICO feat. JENNIE, hiphop)
+- 274: I DO ((G)I-DLE, dance)
+- 275: 선물 (멜로망스, ballad)
+
+**퀴즈 제작 (+15문: 342→357)**
+- NewJeans Supernatural/How Sweet/Bubble Gum 관련 3문
+- aespa Armageddon/Whiplash 관련 2문
+- QWER 고민중독, 이영지 Small girl 관련 2문
+- ZICO SPOT!, (G)I-DLE I DO, 멜로망스 선물 관련 3문
+- 보컬다이나믹스/호흡체인/피치메모리/팀버블렌더/감정매퍼 기능 5문
+
+**업적 제작 (+12종: 282→294)**
+- 보컬다이나믹스 관련 2종 (첫분석/8레벨올그린)
+- 호흡체인 관련 1종 (8기법분석)
+- 피치메모리 관련 2종 (첫도전/레벨10달성)
+- 팀버블렌더 관련 1종 (8유형분석)
+- 감정매퍼 관련 1종 (10감정모두매핑)
+- 지구력트래커 관련 2종 (첫기록/7일연속)
+- 피크파인더 관련 1종 (12시간대분석)
+- 종합보컬IQ 관련 2종 (첫측정/8KPI모두70이상)
+
+**SFX 사운드 (16종)**
+- dynLevel, dynHit, breathChain, breathRadar
+- pitchMemPlay, pitchMemCorrect, timbreSelect, timbreCompare
+- emotionMap, emotionLine, endurLog, endurHeat
+- peakFind, peakArea, iqGauge, navClick30
+
+**Canvas 시각화 (8종)**
+1. 보컬 다이나믹스 컨트롤러: 8레벨×6테크닉 히트맵 + 색상 강도 매핑 (640×400)
+2. 호흡 체인 분석기: 8기법 6축 Radar + 기법별 상세점수 (620×400)
+3. 피치 메모리 트레이너: 12음계 노트 버튼 + 레벨1~10 진행 (640×400)
+4. 보컬 팀버 블렌더: 8유형 6축 Radar + 2유형 비교모드 (620×400)
+5. 곡 감정 매퍼: 10감정 4구간(인트로/벌스/코러스/아웃트로) 라인차트 (640×400)
+6. 보컬 지구력 트래커: 7일×8시간대 히트맵 + 주간 요약 (640×400)
+7. 퍼포먼스 피크 파인더: 12시간대 5지표(음정/리듬/감정/체력/기술) 영역차트 (640×400)
+8. 종합 보컬 IQ: 8KPI 반원 게이지 4×2 그리드 + 종합점수 (640×400)
+
+## Phase 3: 품질 검증
+
+| 검증 항목 | 결과 |
+|-----------|------|
+| v30_patch.js 구문 검사 (node --check) | ✅ 통과 |
+| 외부 CDN 참조 | ✅ 0건 |
+| 개인정보 노출 | ✅ 0건 |
+| 하단 고정 네비바 신규생성 | ✅ 0건 (기존 nav 검색만) |
+| manifest.json 유효성 | ✅ valid JSON (112 shortcuts) |
+| sw.js 구문 검사 | ✅ 통과 |
+| IIFE 가드 패턴 | ✅ window.__v30KaraokeLoaded |
+| Canvas self-contained | ✅ 8종 모두 자기완결 |
+| 곡 ID 중복 | ✅ 없음 (266-275 고유) |
+| 노트/가사/duration 배열 | ✅ 모두 16요소 |
+
+## Phase 4: 파일 변경 요약
+
+- v30_patch.js: 신규 (~982줄, 자기완결형 IIFE 패치 모듈)
+- index.html: v30.0 SEO 전면 갱신 (title/desc/keywords/OG/Twitter/JSON-LD) + v30 스크립트태그
+- sw.js: v29→v30 (starvoice-v30 캐시, v30_patch.js PRECACHE+자동주입)
+- manifest.json: v30.0 설명+shortcuts 8종 추가 (총112종)
+- AUTO_REPORT.md: v30.0 리포트 추가
+
+---
+
 # [AUTO] 2026-08-05 karaoke v27.0 보고서
 
 ## Phase 1: 벤치마킹 (StarMaker / Smule 대비)

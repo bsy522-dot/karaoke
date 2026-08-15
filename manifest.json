@@ -1,7 +1,7 @@
 {
-  "name": "StarVoice v29 — AI 노래방",
+  "name": "StarVoice v30 — AI 노래방",
   "short_name": "StarVoice",
-  "description": "AI 음정 분석 K-노래방. 265곡, 보컬레지스터전환분석기Canvas4레지스터6축Radar, 감정곡선디자이너Canvas8감정4구간라인차트, 피치안정성매트릭스Canvas12음계3옥타브히트맵, 듀엣호환성분석기Canvas8보컬타입매칭히트맵, 곡난이도분해기Canvas8요소Radar, 톤컬러스펙트럼Canvas12톤원형, 싱어성장로드맵Canvas10단계스킬트리, 종합보컬마스터리Canvas8KPI반원게이지, 퀴즈342문, 282개 업적",
+  "description": "AI 음정 분석 K-노래방. 275곡, 보컬다이나믹스컨트롤러Canvas8레벨6테크닉히트맵, 호흡체인분석기Canvas8기법6축Radar, 피치메모리트레이너Canvas12음계레벨진행, 보컬팀버블렌더Canvas8유형6축Radar비교모드, 곡감정매퍼Canvas10감정4구간라인차트, 보컬지구력트래커Canvas7일8시간대히트맵, 퍼포먼스피크파인더Canvas12시간대5지표영역차트, 종합보컬IQCanvas8KPI반원게이지, 퀴즈357문, 294개 업적",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -549,6 +549,46 @@
       "name": "종합 보컬 마스터리",
       "url": "./noraebang-v6.html#sv29-vocal-mastery",
       "description": "종합 보컬 마스터리 8KPI 반원게이지 Canvas"
+    },
+    {
+      "name": "다이나믹스 컨트롤",
+      "url": "./noraebang-v6.html#sv30-dynamics",
+      "description": "보컬 다이나믹스 컨트롤러 8레벨 6테크닉 히트맵 Canvas"
+    },
+    {
+      "name": "호흡 체인 분석",
+      "url": "./noraebang-v6.html#sv30-breath-chain",
+      "description": "호흡 체인 분석기 8기법 6축 Radar Canvas"
+    },
+    {
+      "name": "피치 메모리",
+      "url": "./noraebang-v6.html#sv30-pitch-memory",
+      "description": "피치 메모리 트레이너 12음계 레벨 진행 Canvas"
+    },
+    {
+      "name": "팀버 블렌더",
+      "url": "./noraebang-v6.html#sv30-timbre-blender",
+      "description": "보컬 팀버 블렌더 8유형 6축 Radar 비교모드 Canvas"
+    },
+    {
+      "name": "곡 감정 매퍼",
+      "url": "./noraebang-v6.html#sv30-emotion-mapper",
+      "description": "곡 감정 매퍼 10감정 4구간 라인차트 Canvas"
+    },
+    {
+      "name": "보컬 지구력",
+      "url": "./noraebang-v6.html#sv30-endurance",
+      "description": "보컬 지구력 트래커 7일 8시간대 히트맵 Canvas"
+    },
+    {
+      "name": "퍼포먼스 피크",
+      "url": "./noraebang-v6.html#sv30-peak-finder",
+      "description": "퍼포먼스 피크 파인더 12시간대 5지표 영역차트 Canvas"
+    },
+    {
+      "name": "종합 보컬 IQ",
+      "url": "./noraebang-v6.html#sv30-vocal-iq",
+      "description": "종합 보컬 IQ 8KPI 반원게이지 Canvas"
     }
   ]
 }
