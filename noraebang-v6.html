@@ -498,6 +498,7 @@ button{font-family:inherit;cursor:pointer}
   overflow: visible;
 }
 </style>
+<script src="hub-back.js"></script>
 </head>
 <body>
 <div id="app">
@@ -2921,5 +2922,61 @@ console.log('[v6]',
 <script src="v13_patch.js"></script>
 <script src="v14_patch.js"></script>
 <script src="v15_patch.js"></script>
+<script>
+/* 폰 뒤로가기(◁) 한 단계 되돌리기 — hub-back 배선 (2026-09-14)
+   모달 3개 + 하단탭 + 결과화면을 배선한다.
+   제외: 노래 부르는 중(singScreen) — 마이크·오디오 정리가 내부 클로저에 묶여 있어 손대지 않음. */
+(function(){
+  if(!window.HubBack || !window.MutationObserver) return;
+
+  /* 1) 모달 3종 — show 클래스 */
+  var MODALS = ["practiceModal", "hsModal", "warmupModal"];
+  for(var k = 0; k < MODALS.length; k++) wireClass(MODALS[k]);
+  function wireClass(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var tok = null;
+    function sync(){
+      var open = el.classList.contains("show");
+      if(open && !tok){ tok = HubBack.push(id, function(){ tok = null; el.classList.remove("show"); }); }
+      else if(!open && tok){ var t = tok; tok = null; HubBack.pop(t); }
+    }
+    new MutationObserver(sync).observe(el, {attributes: true, attributeFilter: ["class"]});
+    sync();
+  }
+
+  /* 2) 결과화면 — 곡 선택 버튼(rBack)이 앱 자체 복귀 경로 */
+  (function(){
+    var el = document.getElementById("resultScreen");
+    if(!el) return;
+    var tok = null;
+    function sync(){
+      var open = !!(el.style.display && el.style.display !== "none");
+      if(open && !tok){
+        tok = HubBack.push("resultScreen", function(){
+          tok = null;
+          var b = document.getElementById("rBack");
+          if(b) b.click();
+        });
+      } else if(!open && tok){ var t = tok; tok = null; HubBack.pop(t); }
+    }
+    new MutationObserver(sync).observe(el, {attributes: true, attributeFilter: ["style"]});
+    sync();
+  })();
+
+  /* 3) 하단 탭(노래/통계/업적) — 한 층만 쌓고 ◁ 로 '노래' 탭 복귀 */
+  (function(){
+    var orig = window.switchTab;
+    if(typeof orig !== "function") return;
+    var FIRST = "songs", tok = null;
+    window.switchTab = function(tab){
+      orig.apply(this, arguments);
+      if(tab !== FIRST){
+        tok = HubBack.push("tab", function(){ tok = null; window.switchTab(FIRST); }, {replace: true});
+      } else if(tok){ var t = tok; tok = null; HubBack.pop(t); }
+    };
+  })();
+})();
+</script>
 </body>
 </html>

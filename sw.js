@@ -1,5 +1,5 @@
-const CACHE_NAME = 'starvoice-v30';
-const ASSETS = ['./', './index.html', './noraebang-v6.html', './v7_patch.js', './v8_patch.js', './v9_patch.js', './v10_patch.js', './v11_patch.js', './v12_patch.js', './v13_patch.js', './v14_patch.js', './v15_patch.js', './v16_patch.js', './v17_patch.js', './v18_patch.js', './v19_patch.js', './v20_patch.js', './v21_patch.js', './v22_patch.js', './v23_patch.js', './v24_patch.js', './v25_patch.js', './v26_patch.js', './v27_patch.js', './v28_patch.js', './v29_patch.js', './v30_patch.js', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
+const CACHE_NAME = 'starvoice-v30b';
+const ASSETS = ['./', './index.html', './noraebang-v6.html', './hub-back.js', './v7_patch.js', './v8_patch.js', './v9_patch.js', './v10_patch.js', './v11_patch.js', './v12_patch.js', './v13_patch.js', './v14_patch.js', './v15_patch.js', './v16_patch.js', './v17_patch.js', './v18_patch.js', './v19_patch.js', './v20_patch.js', './v21_patch.js', './v22_patch.js', './v23_patch.js', './v24_patch.js', './v25_patch.js', './v26_patch.js', './v27_patch.js', './v28_patch.js', './v29_patch.js', './v30_patch.js', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => e.waitUntil(
   caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())
