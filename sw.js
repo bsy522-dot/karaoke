@@ -1,50 +1,25 @@
-const CACHE_NAME = 'starvoice-v30b';
-const ASSETS = ['./', './index.html', './noraebang-v6.html', './hub-back.js', './v7_patch.js', './v8_patch.js', './v9_patch.js', './v10_patch.js', './v11_patch.js', './v12_patch.js', './v13_patch.js', './v14_patch.js', './v15_patch.js', './v16_patch.js', './v17_patch.js', './v18_patch.js', './v19_patch.js', './v20_patch.js', './v21_patch.js', './v22_patch.js', './v23_patch.js', './v24_patch.js', './v25_patch.js', './v26_patch.js', './v27_patch.js', './v28_patch.js', './v29_patch.js', './v30_patch.js', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
-
-self.addEventListener('install', e => e.waitUntil(
-  caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())
-));
-
-self.addEventListener('activate', e => e.waitUntil(
-  caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))).then(() => self.clients.claim())
-));
-
-self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
-  const isHTML = e.request.mode === 'navigate' || url.pathname.endsWith('.html');
-
-  if (isHTML && !url.pathname.includes('_archive')) {
-    e.respondWith(
-      (async () => {
-        let response;
-        try {
-          response = await fetch(e.request);
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
-        } catch {
-          response = await caches.match(e.request);
-          if (!response) response = await caches.match('./index.html');
-        }
-        if (response && response.headers.get('content-type')?.includes('text/html')) {
-          const text = await response.text();
-          if (text.includes('noraebang') || text.includes('StarVoice')) {
-            const injected = text.replace('</body>', '<script src="./v7_patch.js"><\/script>\n<script src="./v8_patch.js"><\/script>\n<script src="./v9_patch.js"><\/script>\n<script src="./v10_patch.js"><\/script>\n<script src="./v11_patch.js"><\/script>\n<script src="./v12_patch.js"><\/script>\n<script src="./v13_patch.js"><\/script>\n<script src="./v14_patch.js"><\/script>\n<script src="./v15_patch.js"><\/script>\n<script src="./v16_patch.js"><\/script>\n<script src="./v17_patch.js"><\/script>\n<script src="./v18_patch.js"><\/script>\n<script src="./v19_patch.js"><\/script>\n<script src="./v20_patch.js"><\/script>\n<script src="./v21_patch.js"><\/script>\n<script src="./v22_patch.js"><\/script>\n<script src="./v23_patch.js"><\/script>\n<script src="./v24_patch.js"><\/script>\n<script src="./v25_patch.js"><\/script>\n<script src="./v26_patch.js"><\/script>\n<script src="./v27_patch.js"><\/script>\n<script src="./v28_patch.js"><\/script>\n<script src="./v29_patch.js"><\/script>\n<script src="./v30_patch.js"><\/script>\n</body>');
-            return new Response(injected, {
-              status: response.status,
-              statusText: response.statusText,
-              headers: new Headers(response.headers)
-            });
-          }
-        }
-        return response || new Response('Offline', { status: 503 });
-      })()
-    );
-  } else {
-    e.respondWith(
-      caches.match(e.request).then(r => r || fetch(e.request).then(res => {
-        if (res.ok) { const clone = res.clone(); caches.open(CACHE_NAME).then(c => c.put(e.request, clone)); }
-        return res;
-      }).catch(() => caches.match('./index.html')))
-    );
-  }
+// 이 앱은 배움퀘스트(levelplay)로 이사했습니다.
+// 예전 기기에 남은 서비스워커를 스스로 지우는 파일입니다.
+// 방식: NekR/self-destroying-sw (install -> skipWaiting, activate -> unregister -> 열린 창 새로고침)
+// 추가: 이 앱 이름의 캐시만 지웁니다. 같은 주소를 쓰는 다른 앱(배움퀘스트 등)의 캐시는 건드리지 않습니다.
+var OWN = /^starvoice-v\d+[a-z]?$/;
+self.addEventListener('install', function () {
+  self.skipWaiting();
+});
+self.addEventListener('activate', function (e) {
+  e.waitUntil(
+    caches.keys()
+      .then(function (keys) {
+        return Promise.all(keys.filter(function (k) { return OWN.test(k); }).map(function (k) { return caches.delete(k); }));
+      })
+      .catch(function () {})
+      .then(function () { return self.registration.unregister(); })
+      .then(function () { return self.clients.matchAll({ type: 'window' }); })
+      .then(function (clients) {
+        clients.forEach(function (c) {
+          try { if (c.navigate) c.navigate(c.url).catch(function () {}); } catch (err) {}
+        });
+      })
+      .catch(function () {})
+  );
 });
